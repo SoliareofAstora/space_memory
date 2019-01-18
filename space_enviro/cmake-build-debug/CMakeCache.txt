@@ -14,24 +14,6 @@
 # EXTERNAL cache entries
 ########################
 
-//The directory containing a CMake configuration file for /usr/include/boost/python.
-/usr/include/boost/python_DIR:PATH=/usr/include/boost/python_DIR-NOTFOUND
-
-//The directory containing a CMake configuration file for /usr/include/boost.
-/usr/include/boost_DIR:PATH=/usr/include/boost_DIR-NOTFOUND
-
-//The directory containing a CMake configuration file for Boost.
-Boost_DIR:PATH=Boost_DIR-NOTFOUND
-
-//Path to a file.
-Boost_INCLUDE_DIR:PATH=Boost_INCLUDE_DIR-NOTFOUND
-
-//Boost python library (debug)
-Boost_PYTHON_LIBRARY_DEBUG:FILEPATH=Boost_PYTHON_LIBRARY_DEBUG-NOTFOUND
-
-//Boost python library (release)
-Boost_PYTHON_LIBRARY_RELEASE:FILEPATH=Boost_PYTHON_LIBRARY_RELEASE-NOTFOUND
-
 //Path to a program.
 CMAKE_AR:FILEPATH=/usr/bin/ar
 
@@ -235,6 +217,9 @@ ProcessorCount_cmd_getconf:FILEPATH=/usr/bin/getconf
 //Path to a program.
 ProcessorCount_cmd_sysctl:FILEPATH=/sbin/sysctl
 
+//Dependencies for the target
+env_LIB_DEPENDS:STATIC=general;boost_python3-py36;general;-lsfml-graphics;general;-lsfml-window;general;-lsfml-system;
+
 //Value Computed by CMake
 space_enviro_BINARY_DIR:STATIC=/home/overlord/space_memory/space_enviro/cmake-build-debug
 
@@ -246,14 +231,6 @@ space_enviro_SOURCE_DIR:STATIC=/home/overlord/space_memory/space_enviro
 # INTERNAL cache entries
 ########################
 
-//ADVANCED property for variable: Boost_DIR
-Boost_DIR-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: Boost_INCLUDE_DIR
-Boost_INCLUDE_DIR-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: Boost_PYTHON_LIBRARY_DEBUG
-Boost_PYTHON_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: Boost_PYTHON_LIBRARY_RELEASE
-Boost_PYTHON_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_AR
 CMAKE_AR-ADVANCED:INTERNAL=1
 //This is the directory where this CMakeCache.txt was created
@@ -403,12 +380,4 @@ CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
 ProcessorCount_cmd_getconf-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: ProcessorCount_cmd_sysctl
 ProcessorCount_cmd_sysctl-ADVANCED:INTERNAL=1
-//Components requested for this build tree.
-_Boost_COMPONENTS_SEARCHED:INTERNAL=python
-//Last used Boost_INCLUDE_DIR value.
-_Boost_INCLUDE_DIR_LAST:INTERNAL=Boost_INCLUDE_DIR-NOTFOUND
-//Last used Boost_NAMESPACE value.
-_Boost_NAMESPACE_LAST:INTERNAL=boost
-//Last used Boost_USE_MULTITHREADED value.
-_Boost_USE_MULTITHREADED_LAST:INTERNAL=TRUE
 
