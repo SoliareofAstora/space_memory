@@ -7,7 +7,6 @@
 using namespace boost::python;
 namespace np = boost::python::numpy;
 
-
 class hello {
 
 public:
@@ -18,8 +17,8 @@ public:
 
     // Constructor
     hello(std::string msg) :m_msg(msg){
-        Py_Initialize();
-        np::initialize();
+     //   Py_Initialize();
+      //  np::initialize();
         shape = sf::CircleShape(100.f);
         shape.setFillColor(sf::Color::Green);
     }
@@ -32,12 +31,12 @@ public:
 
     std::string get_msg() const { return m_msg; }
 
-    np::ndarray func(){
-        tuple shape = make_tuple(3, 3);
-        np::dtype dtype = np::dtype::get_builtin<double>();
-        np::ndarray a = np::zeros(shape, dtype);
-        return a;
-    }
+//    np::ndarray func(){
+//        tuple shape = make_tuple(3, 3);
+//        np::dtype dtype = np::dtype::get_builtin<double>();
+//        np::ndarray a = np::zeros(shape, dtype);
+//        return a;
+//    }
 
     bool stillplayin() const { return window->isOpen(); }
 
@@ -65,12 +64,12 @@ public:
     }
 };
 
+//            .def("getArr",&hello::func)
 
 BOOST_PYTHON_MODULE(spaceLib)
 {
     class_< hello >("hello", init<std::string>())
             .def("greet", &hello::greet)
-            .def("getArr",&hello::func)
             .def("display",&hello::display)
             .def("stillPlaying", &hello::stillplayin)
             .add_property("msg", &hello::get_msg, &hello::set_msg);
