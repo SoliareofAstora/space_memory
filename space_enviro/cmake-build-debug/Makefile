@@ -123,32 +123,86 @@ env/fast:
 	$(MAKE) -f CMakeFiles/env.dir/build.make CMakeFiles/env.dir/build
 .PHONY : env/fast
 
-main.o: main.cpp.o
+entity_manager.o: entity_manager.cpp.o
 
-.PHONY : main.o
+.PHONY : entity_manager.o
 
 # target to build an object file
-main.cpp.o:
-	$(MAKE) -f CMakeFiles/env.dir/build.make CMakeFiles/env.dir/main.cpp.o
-.PHONY : main.cpp.o
+entity_manager.cpp.o:
+	$(MAKE) -f CMakeFiles/env.dir/build.make CMakeFiles/env.dir/entity_manager.cpp.o
+.PHONY : entity_manager.cpp.o
 
-main.i: main.cpp.i
+entity_manager.i: entity_manager.cpp.i
 
-.PHONY : main.i
+.PHONY : entity_manager.i
 
 # target to preprocess a source file
-main.cpp.i:
-	$(MAKE) -f CMakeFiles/env.dir/build.make CMakeFiles/env.dir/main.cpp.i
-.PHONY : main.cpp.i
+entity_manager.cpp.i:
+	$(MAKE) -f CMakeFiles/env.dir/build.make CMakeFiles/env.dir/entity_manager.cpp.i
+.PHONY : entity_manager.cpp.i
 
-main.s: main.cpp.s
+entity_manager.s: entity_manager.cpp.s
 
-.PHONY : main.s
+.PHONY : entity_manager.s
 
 # target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) -f CMakeFiles/env.dir/build.make CMakeFiles/env.dir/main.cpp.s
-.PHONY : main.cpp.s
+entity_manager.cpp.s:
+	$(MAKE) -f CMakeFiles/env.dir/build.make CMakeFiles/env.dir/entity_manager.cpp.s
+.PHONY : entity_manager.cpp.s
+
+environment_controller.o: environment_controller.cpp.o
+
+.PHONY : environment_controller.o
+
+# target to build an object file
+environment_controller.cpp.o:
+	$(MAKE) -f CMakeFiles/env.dir/build.make CMakeFiles/env.dir/environment_controller.cpp.o
+.PHONY : environment_controller.cpp.o
+
+environment_controller.i: environment_controller.cpp.i
+
+.PHONY : environment_controller.i
+
+# target to preprocess a source file
+environment_controller.cpp.i:
+	$(MAKE) -f CMakeFiles/env.dir/build.make CMakeFiles/env.dir/environment_controller.cpp.i
+.PHONY : environment_controller.cpp.i
+
+environment_controller.s: environment_controller.cpp.s
+
+.PHONY : environment_controller.s
+
+# target to generate assembly for a file
+environment_controller.cpp.s:
+	$(MAKE) -f CMakeFiles/env.dir/build.make CMakeFiles/env.dir/environment_controller.cpp.s
+.PHONY : environment_controller.cpp.s
+
+render_engine.o: render_engine.cpp.o
+
+.PHONY : render_engine.o
+
+# target to build an object file
+render_engine.cpp.o:
+	$(MAKE) -f CMakeFiles/env.dir/build.make CMakeFiles/env.dir/render_engine.cpp.o
+.PHONY : render_engine.cpp.o
+
+render_engine.i: render_engine.cpp.i
+
+.PHONY : render_engine.i
+
+# target to preprocess a source file
+render_engine.cpp.i:
+	$(MAKE) -f CMakeFiles/env.dir/build.make CMakeFiles/env.dir/render_engine.cpp.i
+.PHONY : render_engine.cpp.i
+
+render_engine.s: render_engine.cpp.s
+
+.PHONY : render_engine.s
+
+# target to generate assembly for a file
+render_engine.cpp.s:
+	$(MAKE) -f CMakeFiles/env.dir/build.make CMakeFiles/env.dir/render_engine.cpp.s
+.PHONY : render_engine.cpp.s
 
 # Help Target
 help:
@@ -159,9 +213,15 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... env"
 	@echo "... edit_cache"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
+	@echo "... entity_manager.o"
+	@echo "... entity_manager.i"
+	@echo "... entity_manager.s"
+	@echo "... environment_controller.o"
+	@echo "... environment_controller.i"
+	@echo "... environment_controller.s"
+	@echo "... render_engine.o"
+	@echo "... render_engine.i"
+	@echo "... render_engine.s"
 .PHONY : help
 
 

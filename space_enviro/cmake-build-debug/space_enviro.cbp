@@ -86,7 +86,22 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/overlord/space_memory/space_enviro/main.cpp">
+		<Unit filename="/home/overlord/space_memory/space_enviro/entity_manager.cpp">
+			<Option target="env"/>
+		</Unit>
+		<Unit filename="/home/overlord/space_memory/space_enviro/entity_manager.h">
+			<Option target="env"/>
+		</Unit>
+		<Unit filename="/home/overlord/space_memory/space_enviro/environment_controller.cpp">
+			<Option target="env"/>
+		</Unit>
+		<Unit filename="/home/overlord/space_memory/space_enviro/environment_controller.h">
+			<Option target="env"/>
+		</Unit>
+		<Unit filename="/home/overlord/space_memory/space_enviro/render_engine.cpp">
+			<Option target="env"/>
+		</Unit>
+		<Unit filename="/home/overlord/space_memory/space_enviro/render_engine.h">
 			<Option target="env"/>
 		</Unit>
 		<Unit filename="/home/overlord/space_memory/space_enviro/CMakeLists.txt">

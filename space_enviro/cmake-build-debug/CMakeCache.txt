@@ -218,7 +218,7 @@ ProcessorCount_cmd_getconf:FILEPATH=/usr/bin/getconf
 ProcessorCount_cmd_sysctl:FILEPATH=/sbin/sysctl
 
 //Dependencies for the target
-env_LIB_DEPENDS:STATIC=general;boost_python3-py36;general;-lsfml-graphics;general;-lsfml-window;general;-lsfml-system;
+env_LIB_DEPENDS:STATIC=general;boost_python3-py36;general;boost_numpy3-py36;general;-lsfml-graphics;general;-lsfml-window;general;-lsfml-system;
 
 //Value Computed by CMake
 space_enviro_BINARY_DIR:STATIC=/home/overlord/space_memory/space_enviro/cmake-build-debug
