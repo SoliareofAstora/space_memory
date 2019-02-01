@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <stdlib.h>
+#include <vector>
 
 #include <boost/python.hpp>
 #include <boost/python/numpy.hpp>
@@ -17,7 +18,7 @@
 namespace np = boost::python::numpy;
 namespace py = boost::python;
 
-class enviroment_controller {
+class environment_controller {
 
 private:
 
@@ -26,31 +27,29 @@ private:
     rendering::RenderEngine* render_engine_;
     entities::EntityManager* entity_manager_;
 
-    // parse keyboard input ()
+    std::vector<int> team_size_;
+    std::vector<float> player_input_;
 
-    // get observations
-    // update enviro
-
-    // load confing from file
-
+    bool render_ = true;
 
 public:
-    enviroment_controller(std::string path_to_config);
+
+    bool simulation(){ return render_;}
+
+    environment_controller(std::string path_to_config);
 
     np::ndarray GetObservations();
 
     int Update(np::ndarray action_vector);
-
-    bool todelete(){return render_engine_->window.isOpen();}
 };
 
 
 BOOST_PYTHON_MODULE(spaceLib)
 {
-    py::class_< enviroment_controller >("initialize", py::init<std::string>())
-        .def("get_observations", &enviroment_controller::GetObservations)
-        .def("update", &enviroment_controller::Update)
-        .def("bol", &enviroment_controller::todelete);
+    py::class_< environment_controller >("initialize", py::init<std::string>())
+        .def("check",&environment_controller::simulation)
+        .def("get_observations", &environment_controller::GetObservations)
+        .def("update", &environment_controller::Update);
 }
 
 #endif //SPACE_ENVIRO_ENVIROMENT_CONTROLLER_H

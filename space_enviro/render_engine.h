@@ -6,6 +6,12 @@
 #define SPACE_ENVIRO_RENDERENGINE_H
 
 #include <SFML/Graphics.hpp>
+#include <math.h>
+#include <boost/math_fwd.hpp>
+
+#include <iostream>
+
+#define PI 3.14159265
 
 namespace rendering {
 
@@ -16,41 +22,34 @@ namespace rendering {
         sf::VertexArray buffer = sf::VertexArray(sf::Triangles,9);
 
         RenderEngine() {
-//            for (int i = 0; i < 30; ++i) {
-            buffer[0] = sf::Vector2f(0,0);
-            buffer[1] = sf::Vector2f(0,100);
-            buffer[2] = sf::Vector2f(100,0);
-            buffer[3] = sf::Vector2f(100,100);
-            buffer[4] = sf::Vector2f(100,0);
-            buffer[5] = sf::Vector2f(0,100);
-            buffer[6] = sf::Vector2f(0,0);
-            buffer[7] = sf::Vector2f(100,100);
-            buffer[8] = sf::Vector2f(0,100);
+
+            window.setFramerateLimit(60);
+            float arr[7]={500,500,190,200,0,0,0};
+            arr[2] = arr[2]*PI/180;
+            int i = 0;
+            sf::Vector2f tmp = sf::Vector2f((-1./3.)*arr[3]*sin(arr[2])+arr[0],(-1./3.)*arr[3]*cos(arr[2])+arr[1]);
+            buffer[i+0]=sf::Vector2f((2./3.)*arr[3]*sin(arr[2])+arr[0],(2./3.)*arr[3]*cos(arr[2])+arr[1]);
             buffer[0].color = sf::Color::Red;
-            buffer[3].color = sf::Color::Blue;
-            buffer[6].color = sf::Color::Green;
-//            }
+            buffer[i+1]=sf::Vector2f((1./2.)*arr[3]*sin(arr[2]+90),(1./2.)*arr[3]*cos(arr[2]+90))+tmp;
+            buffer[1].color = sf::Color::Green;
+            buffer[i+2]=sf::Vector2f((1./2.)*arr[3]*sin(arr[2]-90),(1./2.)*arr[3]*cos(arr[2]-90))+tmp;
+            buffer[2].color = sf::Color::Blue;
+//            buffer[i+3]=sf::Vector2f(sin(arr[2]),cos(arr[2]));
+//            buffer[i+4]=sf::Vector2f(sin(arr[2]),cos(arr[2]));
+//            buffer[i+5]=sf::Vector2f(sin(arr[2]),cos(arr[2]));
+//            buffer[i+6]=sf::Vector2f(sin(arr[2]),cos(arr[2]));
+//            buffer[i+7]=sf::Vector2f(sin(arr[2]),cos(arr[2]));
+//            buffer[i+8]=sf::Vector2f(sin(arr[2]),cos(arr[2]));
+
         }
 
         void display() {
 
-//            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
-//                shape.setFillColor(sf::Color::Red);
-//            }
-//            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
-//                shape.setFillColor(sf::Color::Blue);
-//            }
-//            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
-//                shape.setFillColor(sf::Color::Green);
-//            }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape) && window.hasFocus()) {
-                window.close();
-            }
             window.clear();
             window.draw(buffer);
             window.display();
-        }
 
+        }
     };
 
 } // namespace rendering

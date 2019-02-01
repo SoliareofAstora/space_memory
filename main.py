@@ -16,10 +16,7 @@ import argparse
 # p = p.parse_args()
 
 b = env.initialize("habababa")
-while b.bol:
+while b.check():
     b.update(np.array([[1, 2, 3], [4, 5, 6]]))
-print(b.get_observations())
-print()
-
 
 
