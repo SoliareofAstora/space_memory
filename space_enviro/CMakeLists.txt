@@ -6,7 +6,8 @@ set(CMAKE_CXX_STANDARD 17)
 add_library(env SHARED
         environment_controller.cpp environment_controller.h
         render_engine.cpp render_engine.h
-        entity_manager.cpp entity_manager.h)
+        entity_manager.cpp entity_manager.h
+        team_info.h)
 target_include_directories(env PUBLIC /usr/include/python3.6)
 target_link_libraries(env
         boost_python3-py36

@@ -14,21 +14,26 @@
 
 #include "render_engine.h"
 #include "entity_manager.h"
+#include "team_info.h"
 
+//struct TeamInfo{
+//    int team;
+//    int begin;
+//    int n_ships;
+//    sf::Color color;
+//};
 namespace np = boost::python::numpy;
 namespace py = boost::python;
+
 
 class environment_controller {
 
 private:
 
-    std::map<std::string,std::string> config_;
-
     rendering::RenderEngine* render_engine_;
     entities::EntityManager* entity_manager_;
 
-    std::vector<int> team_size_;
-    std::vector<float> player_input_;
+    std::vector<TeamInfo> teams_;
 
     bool render_ = true;
 

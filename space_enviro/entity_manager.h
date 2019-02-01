@@ -8,7 +8,7 @@ namespace entities{
 
     class EntityManager {
 
-
+        float arr[];//={500,500,0,100,1,1,1};
 
     };
 
