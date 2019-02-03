@@ -26,7 +26,7 @@ namespace np = boost::python::numpy;
 namespace py = boost::python;
 
 
-class environment_controller {
+class EnvironmentController {
 
 private:
 
@@ -35,13 +35,21 @@ private:
 
     std::vector<TeamInfo> teams_;
 
-    bool render_ = true;
+    bool render_to_screen_ = true;
+    bool render_to_file_ = true;
+
+    sf::Clock toremove;
 
 public:
 
-    bool simulation(){ return render_;}
+    virtual ~EnvironmentController(){
+        //free(render_engine_);
+       // free(entity_manager_);
+    }
 
-    environment_controller(std::string path_to_config);
+    bool simulation(){ return render_to_screen_;}
+
+    EnvironmentController(std::string path_to_config);
 
     np::ndarray GetObservations();
 
@@ -51,10 +59,10 @@ public:
 
 BOOST_PYTHON_MODULE(spaceLib)
 {
-    py::class_< environment_controller >("initialize", py::init<std::string>())
-        .def("check",&environment_controller::simulation)
-        .def("get_observations", &environment_controller::GetObservations)
-        .def("update", &environment_controller::Update);
+    py::class_< EnvironmentController >("initialize", py::init<std::string>())
+        .def("check",&EnvironmentController::simulation)
+        .def("get_observations", &EnvironmentController::GetObservations)
+        .def("update", &EnvironmentController::Update);
 }
 
 #endif //SPACE_ENVIRO_ENVIROMENT_CONTROLLER_H

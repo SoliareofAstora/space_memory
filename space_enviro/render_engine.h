@@ -10,6 +10,8 @@
 #include <boost/math_fwd.hpp>
 #include <iostream>//todo delete this
 #include "team_info.h"
+#include "entity_manager.h"
+
 
 #define PI 3.14159265
 
@@ -38,16 +40,16 @@ namespace rendering {
             ship_vertices_ = sf::VertexArray(sf::Triangles,9*n_ships);
 
             for(TeamInfo team:a){
-                std::cout<<team.begin;
                 for (int i = team.begin; i < team.begin+team.n_ships; ++i) {
                     for (int j = 6; j < 9; ++j) {
                         ship_vertices_[9*i+j].color = team.color;
                     }
                 }
             }
+            window.setFramerateLimit(60);
         }
 
-        void RenderShip(int i, float arr[]);
+        void RenderShip(entities::EntityManager a);
 
         void RenderScreen() {
 
