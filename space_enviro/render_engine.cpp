@@ -3,6 +3,7 @@
 //
 
 #include "render_engine.h"
+#include "constants.h"
 
 namespace rendering{
 
@@ -10,49 +11,72 @@ namespace rendering{
     //Also its probably not cash optimal
     void RenderEngine::RenderShip(entities::EntityManager a){
 
-        float arr[] = {a.ship_x,a.ship_y,a.ship_angle,a.ship_size ,a.direction,a.sideinput,a.maininput};
-
-//        std::cout<<arr[4]<<" "<<arr[6]<<"\n";
+        float arr[] = {a.x,a.y,a.angle,a.size ,a.sideinput,a.maininput};
 
         int i = 0;
-        float angle = arr[2]*PI/180;
+        float angle = arr[2];
         float size = arr[3];
-        float mainpower = arr[6];
-        float sidepower = arr[5];
-        sf::Vector2f ap = sf::Vector2f((-1./3.)*size*sin(angle)+arr[0],(-1./3.)*size*cos(angle)+arr[1]);
+        float mainpower = arr[5];
+        float sidepower = arr[4];
+        sf::Vector2f ap = sf::Vector2f(
+                (-1.f/3)*size*sinf(angle)+arr[0],
+                (-1.f/3)*size*cosf(angle)+arr[1]);
 
         //Side Engine
         ship_vertices_[i+0].position=sf::Vector2f(
-                (2./3.)*size*sin(angle)+arr[0],
-                (2./3.)*size*cos(angle)+arr[1]);
+                (2.f/3)*size*sinf(angle)+arr[0],
+                (2.f/3)*size*cosf(angle)+arr[1]);
         ship_vertices_[i+1].position=sf::Vector2f(
-                (1./3.)*size*sin(angle)+arr[0] - ((1./2.)*sidepower*size*sin(angle+90*PI/180)+(1./4.))*arr[4],
-                (1./3.)*size*cos(angle)+arr[1] - ((1./2.)*sidepower*size*cos(angle+90*PI/180)+(1./4.))*arr[4]);
+                (1.f/3)*size*sinf(angle)+arr[0] -
+                ((1.f/2)*sidepower*size*sinf(angle + M_PI_2f32) + (1.f / 4)),
+                (1.f/3)*size*cosf(angle)+arr[1] -
+                ((1.f/2)*sidepower*size*cosf(angle + M_PI_2f32) + (1.f / 4)));
         ship_vertices_[i+2].position=sf::Vector2f(
-                (1./6.)*size*sin(angle)+arr[0],
-                (1./6.)*size*cos(angle)+arr[1]);
+                (1.f/6)*size*sinf(angle)+arr[0],
+                (1.f/6)*size*cosf(angle)+arr[1]);
 
         //Main Engine
         ship_vertices_[i+3].position=ap - sf::Vector2f(
-                (1./2.)*size*mainpower*sin(angle),
-                (1./2.)*size*mainpower*cos(angle));
+                (1.f/2)*size*sinf(angle)*mainpower,
+                (1.f/2)*size*cosf(angle)*mainpower);
         ship_vertices_[i+4].position=ap + sf::Vector2f(
-                (1./4.)*size*sin(angle+90*PI/180),
-                (1./4.)*size*cos(angle+90*PI/180));
+                (1.f/4)*size*sinf(angle+M_PI_2f32),
+                (1.f/4)*size*cosf(angle+M_PI_2f32));
         ship_vertices_[i+5].position=ap + sf::Vector2f(
-                (1./4.)*size*sin(angle-90*PI/180),
-                (1./4.)*size*cos(angle-90*PI/180));
+                (1.f/4)*size*sinf(angle-M_PI_2f32),
+                (1.f/4)*size*cosf(angle-M_PI_2f32));
 
         //Ship Body
         ship_vertices_[i+6].position=sf::Vector2f(
-                (2./3.)*size*sin(angle)+arr[0],
-                (2./3.)*size*cos(angle)+arr[1]);
+                (2.f/3)*size*sinf(angle)+arr[0],
+                (2.f/3)*size*cosf(angle)+arr[1]);
         ship_vertices_[i+7].position=ap + sf::Vector2f(
-                (1./2.)*size*sin(angle+90*PI/180),
-                (1./2.)*size*cos(angle+90*PI/180));
+                (1.f/2)*size*sinf(angle+M_PI_2f32),
+                (1.f/2)*size*cosf(angle+M_PI_2f32));
         ship_vertices_[i+8].position=ap + sf::Vector2f(
-                (1./2.)*size*sin(angle-90*PI/180),
-                (1./2.)*size*cos(angle-90*PI/180));
+                (1.f/2)*size*sinf(angle-M_PI_2f32),
+                (1.f/2)*size*cosf(angle-M_PI_2f32));
+    }
 
+    void RenderEngine::RenderAsteroids(entities::EntityManager a) {
+        for (int i = 0; i < a.n_asteroids; ++i) {
+            asteroid_vertices_[i*3+0].position =sf::Vector2f(a.asteroids[i].x+a.asteroids[i].size/2,a.asteroids[i].y-a.asteroids[i].size/3);
+            asteroid_vertices_[i*3+1].position =sf::Vector2f(a.asteroids[i].x-a.asteroids[i].size/2,a.asteroids[i].y-a.asteroids[i].size/3);
+            asteroid_vertices_[i*3+2].position =sf::Vector2f(a.asteroids[i].x,a.asteroids[i].y+2*a.asteroids[i].size/3);
+        }
+
+    }
+
+    void RenderEngine::RenderRays(entities::EntityManager a){
+        for (int i = 0; i < a.n_rays;i++) {
+            if(reinterpret_cast<float*>(a.ships_wiev.get_data())[i]>0){
+                ray_vertices_[i*2+1].position = sf::Vector2f(
+                        a.wiev_range*(1-reinterpret_cast<float*>(a.ships_wiev.get_data())[i])*cosf(-a.begin+i*a.step+a.angle),
+                        a.wiev_range*(1-reinterpret_cast<float*>(a.ships_wiev.get_data())[i])*sinf(-a.begin+i*a.step+a.angle));
+            }
+            else{
+                ray_vertices_[i*2+1].position = sf::Vector2f(0,0);
+            }
+        }
     }
 }

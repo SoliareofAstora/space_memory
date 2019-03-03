@@ -15,59 +15,72 @@ EnvironmentController::EnvironmentController(std::string a) {
     np::initialize();
 
 
+    std::cout<<"Initializing Entity Manager\n";
+    entity_manager_= new entities::EntityManager();
+
     if(render_to_screen_ || render_to_file_){
         std::cout<<"Initializing RenderEngine\n";
         render_engine_ = new rendering::RenderEngine(teams_);
     }
 
-    std::cout<<"Initializing Entity Manager\n";
-    entity_manager_= new entities::EntityManager();
-    std::cout<<"Space Environment is READY\n\n";
+    std::cout<<"Space Environment initialization DONE\n\n";
 }
 
 np::ndarray EnvironmentController::GetObservations() {
-    py::tuple shape = py::make_tuple(3, 3);
-    np::dtype dtype = np::dtype::get_builtin<float>();
-    np::ndarray a = np::zeros(shape, dtype);
-    return a;
+//    py::tuple shape = py::make_tuple(2,1024);
+//    np::dtype dtype = np::dtype::get_builtin<float>();
+//    np::ndarray a = np::zeros(shape, dtype);
+//    std::cout<<"test\ns";
+//    reinterpret_cast<float*>(a.get_data())[2*1023]=100;
+//    std::cout<< reinterpret_cast<float*>(a.get_data())[2*1023]<<std::endl;
+//    return a;
+    return entity_manager_->ships_wiev;
 }
 
 int EnvironmentController::Update(np::ndarray action_vector) {
     //todo Send it to the entity manager
 
+    GetObservations();
     if (render_to_screen_) {
         float delta = toremove.getElapsedTime().asSeconds();
         if (delta > 0.02) {
 
             toremove.restart();
 
-            if (render_engine_->window.hasFocus()) {
+            if (true){
+//                    //render_engine_->window.hasFocus()) {
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
+
                     render_to_screen_ = false;
                     free(render_engine_);
                     free(entity_manager_);
+                    return 1;
                 }
-                float dir=0;
-                float power=0;
+
+                float side_engine=0;
                 float main_engine = 0;
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
-                    dir = -1;
-                    power = 1;
+                    side_engine = -1;
                 }
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
 
                 }
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
-                    dir = 1;
-                    power = 1;
+                    side_engine = 1;
                 }
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) {
                     main_engine = 1;
 
                 }
-                entity_manager_->update(dir, power, main_engine);
+
+                entity_manager_->update(side_engine, main_engine);
 
                 render_engine_->RenderShip(*entity_manager_);
+
+                render_engine_->RenderAsteroids(*entity_manager_);
+
+                render_engine_->RenderRays(*entity_manager_);
+
                 render_engine_->RenderScreen();
             }
         }

@@ -110,7 +110,7 @@ BOOST_PYTHON_MODULE(spaceLib)
 //    std::string get_msg() const { return m_msg; }
 //
 ////    np::ndarray func(){
-////        tuple shape = make_tuple(3, 3);
+////        tuple shape = make_tuple(3, 3.f);
 ////        np::dtype dtype = np::dtype::get_builtin<double>();
 ////        np::ndarray a = np::zeros(shape, dtype);
 ////        return a;

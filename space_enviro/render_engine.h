@@ -6,14 +6,12 @@
 #define SPACE_ENVIRO_RENDERENGINE_H
 
 #include <SFML/Graphics.hpp>
-#include <math.h>
+#include <cmath>
 #include <boost/math_fwd.hpp>
 #include <iostream>//todo delete this
 #include "team_info.h"
 #include "entity_manager.h"
 
-
-#define PI 3.14159265
 
 //struct TeamInfo{
 //    int team;
@@ -26,8 +24,11 @@ namespace rendering {
     class RenderEngine {
     public:
 
-        sf::RenderWindow window = sf::RenderWindow(sf::VideoMode(1024, 1024), "SFML works!");
+
+        sf::RenderWindow window = sf::RenderWindow(sf::VideoMode(1024, 1024), "Space memory");
         sf::VertexArray ship_vertices_;
+        sf::VertexArray asteroid_vertices_;
+        sf::VertexArray ray_vertices_;
         sf::Clock frame_clock_;
 
 
@@ -38,6 +39,12 @@ namespace rendering {
                 n_ships+=team.n_ships;
             }
             ship_vertices_ = sf::VertexArray(sf::Triangles,9*n_ships);
+            asteroid_vertices_ = sf::VertexArray(sf::Triangles,100*3);
+            ray_vertices_ = sf::VertexArray(sf::Lines,512*2);
+
+            for (int k = 0; k < 512*2; ++k) {
+                ray_vertices_[k].position=sf::Vector2f(0,0);
+            }
 
             for(TeamInfo team:a){
                 for (int i = team.begin; i < team.begin+team.n_ships; ++i) {
@@ -46,17 +53,31 @@ namespace rendering {
                     }
                 }
             }
+
             window.setFramerateLimit(60);
+
+            sf::View v(sf::FloatRect(-750,-750, 1500, 1500));
+            window.setView(v);
         }
 
         void RenderShip(entities::EntityManager a);
+        void RenderAsteroids(entities::EntityManager a);
+        void RenderRays(entities::EntityManager a);
 
         void RenderScreen() {
+            sf::Event e;
+            window.pollEvent(e);
 
             window.clear();
             window.draw(ship_vertices_);
+            window.draw(asteroid_vertices_);
+            window.draw(ray_vertices_);
             window.display();
 
+        }
+
+        void test(){
+            std::cout<<"render_engine_test\n"<<std::endl;
         }
     };
 

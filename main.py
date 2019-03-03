@@ -18,5 +18,6 @@ import argparse
 b = env.initialize("habababa")
 while b.check():
     b.update(np.array([[1, 2, 3], [4, 5, 6]]))
-
-
+    a = b.get_observations()
+print(a)
+print(a.shape)
