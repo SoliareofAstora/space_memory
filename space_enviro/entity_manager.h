@@ -65,8 +65,8 @@ namespace entities{
         float sideinput = 0;
         float maininput = 0;
 
-        int n_asteroids = 1;
-        asteroid asteroids[1];
+        int n_asteroids = 100;
+        asteroid asteroids[100];
 
         float wiev_range = 500;
         float wiev_angle = 2.5f;
@@ -133,7 +133,6 @@ namespace entities{
             angle_v += angle_a*dtime;
             angle += angle_v*dtime;
 
-//            std::cout<<angle<<"  "<<angle/M_PIf32<<"  "<<sin(angle)<<"  "<<asin(sin(angle))<<"  "<<cos(angle)<<"  "<<acos(cos(angle))<<std::endl;
             if(angle>2*M_PIf32) angle-=2*M_PIf32;
             if(angle<0) angle +=2*M_PIf32;
 
@@ -148,7 +147,7 @@ namespace entities{
 
                 //Obiekt znajduje się w zasięgu widzenia
                 if(distance_between<wiev_range){
-                    //kolizja
+                    //RESET SYMULACJI PO KOLIZJI
 //                    if(distance_between-size < 0){
 //                        reset();
 //                        break;

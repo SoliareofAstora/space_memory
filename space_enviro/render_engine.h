@@ -42,8 +42,10 @@ namespace rendering {
             asteroid_vertices_ = sf::VertexArray(sf::Triangles,100*3);
             ray_vertices_ = sf::VertexArray(sf::Lines,512*2);
 
-            for (int k = 0; k < 512*2; ++k) {
-                ray_vertices_[k].position=sf::Vector2f(0,0);
+            for (int k = 0; k < 512; ++k) {
+                ray_vertices_[k*2].position=sf::Vector2f(0,0);
+                ray_vertices_[k*2].color=sf::Color::Black;
+                ray_vertices_[k*2+1].position=sf::Vector2f(0,0);
             }
 
             for(TeamInfo team:a){
@@ -69,9 +71,9 @@ namespace rendering {
             window.pollEvent(e);
 
             window.clear();
+            window.draw(ray_vertices_);
             window.draw(ship_vertices_);
             window.draw(asteroid_vertices_);
-            window.draw(ray_vertices_);
             window.display();
 
         }

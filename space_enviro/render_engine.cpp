@@ -77,6 +77,15 @@ namespace rendering{
             else{
                 ray_vertices_[i*2+1].position = sf::Vector2f(0,0);
             }
+            ray_vertices_[1].position = sf::Vector2f(
+                    a.wiev_range*sinf(-a.begin+a.angle),
+                    a.wiev_range*cosf(-a.begin+a.angle));
+            ray_vertices_[1].color = sf::Color::Red;
+            ray_vertices_[511].position = sf::Vector2f(
+                    a.wiev_range*sinf(-a.begin+511*a.step+a.angle),
+                    a.wiev_range*cosf(-a.begin+511*a.step+a.angle));
+            ray_vertices_[511].color = sf::Color::Green;
+
         }
     }
 }
