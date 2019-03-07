@@ -71,8 +71,8 @@ namespace rendering{
         for (int i = 0; i < a.n_rays;i++) {
             if(reinterpret_cast<float*>(a.ships_wiev.get_data())[i]>0){
                 ray_vertices_[i*2+1].position = sf::Vector2f(
-                        a.wiev_range*(1-reinterpret_cast<float*>(a.ships_wiev.get_data())[i])*cosf(-a.begin+i*a.step+a.angle),
-                        a.wiev_range*(1-reinterpret_cast<float*>(a.ships_wiev.get_data())[i])*sinf(-a.begin+i*a.step+a.angle));
+                        a.wiev_range*(1-reinterpret_cast<float*>(a.ships_wiev.get_data())[i])*sinf(-a.begin+i*a.step+a.angle),
+                        a.wiev_range*(1-reinterpret_cast<float*>(a.ships_wiev.get_data())[i])*cosf(-a.begin+i*a.step+a.angle));
             }
             else{
                 ray_vertices_[i*2+1].position = sf::Vector2f(0,0);
@@ -81,10 +81,10 @@ namespace rendering{
                     a.wiev_range*sinf(-a.begin+a.angle),
                     a.wiev_range*cosf(-a.begin+a.angle));
             ray_vertices_[1].color = sf::Color::Red;
-            ray_vertices_[511].position = sf::Vector2f(
-                    a.wiev_range*sinf(-a.begin+511*a.step+a.angle),
-                    a.wiev_range*cosf(-a.begin+511*a.step+a.angle));
-            ray_vertices_[511].color = sf::Color::Green;
+            ray_vertices_[a.n_rays-1].position = sf::Vector2f(
+                    a.wiev_range*sinf(-a.begin+(a.n_rays-1)*a.step+a.angle),
+                    a.wiev_range*cosf(-a.begin+(a.n_rays-1)*a.step+a.angle));
+            ray_vertices_[a.n_rays-1].color = sf::Color::Green;
 
         }
     }

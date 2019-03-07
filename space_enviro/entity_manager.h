@@ -65,11 +65,11 @@ namespace entities{
         float sideinput = 0;
         float maininput = 0;
 
-        int n_asteroids = 100;
-        asteroid asteroids[100];
+        const static int n_asteroids = 100;
+        asteroid asteroids[n_asteroids];
 
         float wiev_range = 500;
-        float wiev_angle = 2.5f;
+        float wiev_angle = 6;//2.5f;
         const int n_rays = 512;
         np::ndarray ships_wiev = np::zeros(boost::python::make_tuple(1,2,n_rays), np::dtype::get_builtin<float>());
         float step = wiev_angle/n_rays;
@@ -154,11 +154,13 @@ namespace entities{
 //                    }
 
                     float alfa = asinf(a.size/real_distance);
-                    float asteroid_angle =atan2f(a.y,a.x);
-                    float beta = asteroid_angle - angle;
-                    //znajduje się w polu widzenia
-                    if(beta-alfa < wiev_angle/2 or beta+alfa > -wiev_angle/2){
-                        std::cout<<asteroid_angle/M_PI<<" "<<beta/M_PI<<"\n";
+//                    float beta = acosf((a.x*sinf(angle)+a.y*cosf(angle))/real_distance);
+
+                    float beta = atan2(a.x,a.y)-angle;
+                    if(beta>M_PIf32) beta-=2*M_PIf32;
+                    if(beta<-M_PIf32) beta +=2*M_PIf32;
+
+                    if( abs(beta) - alfa < wiev_angle/2){
 
                         int start = std::max(0,static_cast<int>(ceilf((beta - alfa + begin) / step)));
                         int end = std::min(n_rays, static_cast<int>(floorf((beta + alfa + begin) / step))+1);
