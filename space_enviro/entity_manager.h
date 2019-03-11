@@ -65,20 +65,22 @@ namespace entities{
         float sideinput = 0;
         float maininput = 0;
 
-        const static int n_asteroids = 100;
+        const static int n_asteroids = 75;
         asteroid asteroids[n_asteroids];
 
         float wiev_range = 500;
-        float wiev_angle = 6;//2.5f;
-        const int n_rays = 512;
+        float wiev_angle = 2.5f;
+        const int n_rays = 128;
         np::ndarray ships_wiev = np::zeros(boost::python::make_tuple(1,2,n_rays), np::dtype::get_builtin<float>());
+        np::ndarray ships_stats = np::zeros(boost::python::make_tuple(1,5), np::dtype::get_builtin<float>());
         float step = wiev_angle/n_rays;
         float offset = step/2;
         float begin = wiev_angle/2-offset;
 
-
+        int epoch_counter_ = 0;
         float reward =0;
         float total_reward = 0;
+        float max_reward= 0;
 
         EntityManager(){
             x=0;
@@ -93,16 +95,16 @@ namespace entities{
             vx = 0;
             vy = 0;
 
-            for (int i = 0; i < n_asteroids; ++i) {
-                asteroids[i] = asteroid();
+            for (auto &i : asteroids) {
+                i = asteroid();
             }
 
 
         }
 
         void reset(){
-            for (int i = 0; i < n_asteroids; ++i) {
-                asteroids[i].reset_asteroid();
+            for (auto &asteroid : asteroids) {
+                asteroid.reset_asteroid();
             }
             angle = M_PIf32;
             angle_v = 0;
@@ -110,86 +112,91 @@ namespace entities{
             vy = 0;
             std::memset(reinterpret_cast<float*>(ships_wiev.get_data()),0,1*2*n_rays* sizeof(float));
 
-            float reward = -100;
-            float total_reward = 0;
+            if(total_reward>max_reward)max_reward=total_reward;
+            reward = -100;
+            total_reward = 0;
+            epoch_counter_++;
         }
+        void save_stats(){
+            reinterpret_cast<float *>(ships_stats.get_data())[0] = vx;
+            reinterpret_cast<float *>(ships_stats.get_data())[1] = vy;
+            reinterpret_cast<float *>(ships_stats.get_data())[2] = angle_v;
+            reinterpret_cast<float *>(ships_stats.get_data())[3] = sinf(angle);
+            reinterpret_cast<float *>(ships_stats.get_data())[4] = cosf(angle);
 
-        void update(float side_engine, float main_engine){
+        }
+        void update(float side_engine, float main_engine) {
 
             float dtime = 0.02;
 
 
-            std::memset(reinterpret_cast<float*>(ships_wiev.get_data()),0,1*2*n_rays* sizeof(float));
+            std::memset(reinterpret_cast<float *>(ships_wiev.get_data()), 0, 1 * 2 * n_rays * sizeof(float));
 
             maininput = main_engine;
             sideinput = side_engine;
 
-            ax = maininput*sinf(angle)*main_engine_power/ship_mass;
-            ay = maininput*cosf(angle)*main_engine_power/ship_mass;
-            vx+=ax*dtime;
-            vy+=ay*dtime;
+            ax = maininput * sinf(angle) * main_engine_power / ship_mass;
+            ay = maininput * cosf(angle) * main_engine_power / ship_mass;
+            vx += ax * dtime;
+            vy += ay * dtime;
+
+            reward = sqrtf(powf(vx, 2) + powf(vy, 2))/1000;
+            total_reward += reward;
 
             angle_a = (side_booster_power * sideinput) / (0.5f * ship_mass * size);
-            angle_v += angle_a*dtime;
-            angle += angle_v*dtime;
+            angle_v += angle_a * dtime;
+            angle += angle_v * dtime;
 
-            if(angle>2*M_PIf32) angle-=2*M_PIf32;
-            if(angle<0) angle +=2*M_PIf32;
 
-            for (int j = 0; j < n_asteroids; ++j) {
-                asteroids[j].update_position(vx,vy);
-                auto a = asteroids[j];
-                float real_distance = sqrtf(powf(a.x,2)+powf(a.y,2));
-                if(real_distance>800){
-                    asteroids[j].reset_asteroid();
+
+            if (angle > 2 * M_PIf32) angle -= 2 * M_PIf32;
+            if (angle < 0) angle += 2 * M_PIf32;
+            save_stats();
+            for (auto &asteroid : asteroids) {
+                asteroid.update_position(vx, vy);
+                auto a = asteroid;
+                float real_distance = sqrtf(powf(a.x, 2) + powf(a.y, 2));
+                if (real_distance > 800) {
+                    asteroid.reset_asteroid();
                 }
                 float distance_between = real_distance - a.size;
 
                 //Obiekt znajduje się w zasięgu widzenia
-                if(distance_between<wiev_range){
+                if (distance_between < wiev_range) {
                     //RESET SYMULACJI PO KOLIZJI
-//                    if(distance_between-size < 0){
-//                        reset();
-//                        break;
-//                    }
+                    if (distance_between - size < 0) {
+                        reset();
+                        break;
+                    }
 
-                    float alfa = asinf(a.size/real_distance);
+                    float alfa = asinf(a.size / real_distance);
 //                    float beta = acosf((a.x*sinf(angle)+a.y*cosf(angle))/real_distance);
 
-                    float beta = atan2(a.x,a.y)-angle;
-                    if(beta>M_PIf32) beta-=2*M_PIf32;
-                    if(beta<-M_PIf32) beta +=2*M_PIf32;
+                    float beta = atan2(a.x, a.y) - angle;
+                    if (beta > M_PIf32) beta -= 2 * M_PIf32;
+                    if (beta < -M_PIf32) beta += 2 * M_PIf32;
 
-                    if( abs(beta) - alfa < wiev_angle/2){
+                    if (abs(beta) - alfa < wiev_angle / 2) {
 
-                        int start = std::max(0,static_cast<int>(ceilf((beta - alfa + begin) / step)));
-                        int end = std::min(n_rays, static_cast<int>(floorf((beta + alfa + begin) / step))+1);
+                        int start = std::max(0, static_cast<int>(ceilf((beta - alfa + begin) / step)));
+                        int end = std::min(n_rays, static_cast<int>(floorf((beta + alfa + begin) / step)) + 1);
                         for (int i = start; i < end; ++i) {
-                            float ray_angle = -begin+i*step;
+                            float ray_angle = -begin + i * step;
                             float gamma = beta - ray_angle;
-                            float dist = real_distance-a.size*sinf(acosf((sinf(gamma)*real_distance)/a.size));
-                            if(dist<wiev_range){
-                                dist = 1 - dist/wiev_range;
-                                if(dist > reinterpret_cast<float*>(ships_wiev.get_data())[i]) {
-                                    reinterpret_cast<float*>(ships_wiev.get_data())[512+i]=1;
-                                    reinterpret_cast<float*>(ships_wiev.get_data())[i]=dist;
+                            float dist = real_distance - a.size * sinf(acosf((sinf(gamma) * real_distance) / a.size));
+                            if (dist < wiev_range) {
+                                dist = 1 - dist / wiev_range;
+                                if (dist > reinterpret_cast<float *>(ships_wiev.get_data())[i]) {
+                                    reinterpret_cast<float *>(ships_wiev.get_data())[n_rays + i] = 1;
+                                    reinterpret_cast<float *>(ships_wiev.get_data())[i] = dist;
                                 }
                             }
                         }
-
-
                     }
                 }
             }
 //            ship_x+=vx*dtime;
 //            ship_y+=vy*dtime;
-
-           // std::cout<<"Angle:"<<ship_angle<<" V:"<<vx<<" "<<vy<<"\n";
-
-        }
-
-        void update_view(){
-
         }
     };
 

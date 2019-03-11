@@ -38,8 +38,6 @@ private:
     bool render_to_screen_ = true;
     bool render_to_file_ = true;
 
-    sf::Clock toremove;
-
 public:
 
     virtual ~EnvironmentController(){
@@ -52,6 +50,8 @@ public:
     EnvironmentController(std::string path_to_config);
 
     np::ndarray GetObservations();
+    np::ndarray GetStats();
+    float GetReward();
 
     int Update(np::ndarray action_vector);
 };
@@ -62,6 +62,8 @@ BOOST_PYTHON_MODULE(spaceLib)
     py::class_< EnvironmentController >("initialize", py::init<std::string>())
         .def("check",&EnvironmentController::simulation)
         .def("get_observations", &EnvironmentController::GetObservations)
+        .def("get_stats", &EnvironmentController::GetStats)
+        .def("get_reward", &EnvironmentController::GetReward)
         .def("update", &EnvironmentController::Update);
 }
 

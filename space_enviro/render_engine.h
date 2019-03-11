@@ -29,8 +29,8 @@ namespace rendering {
         sf::VertexArray ship_vertices_;
         sf::VertexArray asteroid_vertices_;
         sf::VertexArray ray_vertices_;
-        sf::Clock frame_clock_;
-
+        sf::Text info_text_;
+        sf::Font font;
 
 
         RenderEngine(std::vector<TeamInfo>a) {
@@ -40,9 +40,9 @@ namespace rendering {
             }
             ship_vertices_ = sf::VertexArray(sf::Triangles,9*n_ships);
             asteroid_vertices_ = sf::VertexArray(sf::Triangles,100*3);
-            ray_vertices_ = sf::VertexArray(sf::Lines,512*2);
+            ray_vertices_ = sf::VertexArray(sf::Lines,256*2);
 
-            for (int k = 0; k < 512; ++k) {
+            for (int k = 0; k < 256; ++k) {
                 ray_vertices_[k*2].position=sf::Vector2f(0,0);
                 ray_vertices_[k*2].color=sf::Color::Black;
                 ray_vertices_[k*2+1].position=sf::Vector2f(0,0);
@@ -56,30 +56,37 @@ namespace rendering {
                 }
             }
 
-            window.setFramerateLimit(60);
-
             sf::View v(sf::FloatRect(-750,-750, 1500, 1500));
             window.setView(v);
+
+            if (!font.loadFromFile("space_enviro/PIXEARG_.TTF"))
+            {
+                std::cout << "Couldn't load font!" << std::endl;
+            } else {
+                std::cout << "Font has been loaded!" << std::endl;
+            }
+
+            info_text_.setFont(font);
+            info_text_.setCharacterSize(16);
+            info_text_.setFillColor(sf::Color::White);
+            info_text_.setPosition(sf::Vector2f(-750,-750));
+
         }
 
         void RenderShip(entities::EntityManager a);
         void RenderAsteroids(entities::EntityManager a);
         void RenderRays(entities::EntityManager a);
+        void RenderInfo(entities::EntityManager a);
 
         void RenderScreen() {
-            sf::Event e;
-            window.pollEvent(e);
 
             window.clear();
             window.draw(ray_vertices_);
             window.draw(ship_vertices_);
             window.draw(asteroid_vertices_);
+            window.draw(info_text_);
             window.display();
 
-        }
-
-        void test(){
-            std::cout<<"render_engine_test\n"<<std::endl;
         }
     };
 

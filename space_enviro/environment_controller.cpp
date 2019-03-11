@@ -23,6 +23,12 @@ EnvironmentController::EnvironmentController(std::string a) {
         render_engine_ = new rendering::RenderEngine(teams_);
     }
 
+    render_engine_->RenderShip(*entity_manager_);
+    render_engine_->RenderAsteroids(*entity_manager_);
+    render_engine_->RenderRays(*entity_manager_);
+    render_engine_->RenderInfo(*entity_manager_);
+    render_engine_->RenderScreen();
+
     std::cout<<"Space Environment initialization DONE\n\n";
 }
 
@@ -37,53 +43,64 @@ np::ndarray EnvironmentController::GetObservations() {
     return entity_manager_->ships_wiev;
 }
 
+np::ndarray EnvironmentController::GetStats() {
+    return entity_manager_->ships_stats;
+}
+
+void wait(int miliseconds){
+    sf::Clock toremove;
+    toremove.restart();
+    while(toremove.getElapsedTime().asMilliseconds()<miliseconds){}
+}
+
 int EnvironmentController::Update(np::ndarray action_vector) {
     //todo Send it to the entity manager
 
-    GetObservations();
     if (render_to_screen_) {
-        float delta = toremove.getElapsedTime().asSeconds();
-        if (delta > 0.02) {
+        sf::Event e;
+        render_engine_->window.pollEvent(e);
+//        if (render_engine_->window.hasFocus()) {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
 
-            toremove.restart();
+                render_to_screen_ = false;
+                free(render_engine_);
+                free(entity_manager_);
+                return 1;
+            }
 
-            if (true){
-//                    //render_engine_->window.hasFocus()) {
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
+            float side_engine = reinterpret_cast<float *>(action_vector.get_data())[0];
+            float main_engine = reinterpret_cast<float *>(action_vector.get_data())[1];
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
+                side_engine = -1;
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
+                //shoot rockets :D
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
+                side_engine = 1;
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) {
+                main_engine = 1;
 
-                    render_to_screen_ = false;
-                    free(render_engine_);
-                    free(entity_manager_);
-                    return 1;
-                }
+            }
 
-                float side_engine=0;
-                float main_engine = 0;
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
-                    side_engine = -1;
-                }
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
+            entity_manager_->update(side_engine, main_engine);
 
-                }
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
-                    side_engine = 1;
-                }
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) {
-                    main_engine = 1;
-
-                }
-
-                entity_manager_->update(side_engine, main_engine);
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
+//                if (true) {
+                wait(20);
 
                 render_engine_->RenderShip(*entity_manager_);
-
                 render_engine_->RenderAsteroids(*entity_manager_);
-
                 render_engine_->RenderRays(*entity_manager_);
-
+                render_engine_->RenderInfo(*entity_manager_);
                 render_engine_->RenderScreen();
             }
-        }
+//        }
     }
     return 0;
+}
+
+float EnvironmentController::GetReward() {
+    return entity_manager_->reward;
 }
