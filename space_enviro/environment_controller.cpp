@@ -59,35 +59,34 @@ int EnvironmentController::Update(np::ndarray action_vector) {
     if (render_to_screen_) {
         sf::Event e;
         render_engine_->window.pollEvent(e);
-//        if (render_engine_->window.hasFocus()) {
+
+        float side_engine = reinterpret_cast<float *>(action_vector.get_data())[0];
+        float main_engine = reinterpret_cast<float *>(action_vector.get_data())[1];
+
+        if (render_engine_->window.hasFocus()) {
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
 
                 render_to_screen_ = false;
                 free(render_engine_);
                 free(entity_manager_);
-                return 1;
+                return 2;
             }
 
-            float side_engine = reinterpret_cast<float *>(action_vector.get_data())[0];
-            float main_engine = reinterpret_cast<float *>(action_vector.get_data())[1];
+
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
                 side_engine = -1;
             }
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
-                //shoot rockets :D
+                //TODO shoot rockets later
             }
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
                 side_engine = 1;
             }
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) {
                 main_engine = 1;
-
             }
 
-            entity_manager_->update(side_engine, main_engine);
-
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
-//                if (true) {
                 wait(20);
 
                 render_engine_->RenderShip(*entity_manager_);
@@ -96,10 +95,17 @@ int EnvironmentController::Update(np::ndarray action_vector) {
                 render_engine_->RenderInfo(*entity_manager_);
                 render_engine_->RenderScreen();
             }
-//        }
+        }
+
+        if (entity_manager_->update(side_engine, main_engine)) {
+            return 1;
+        }
+
+        return 0;
     }
-    return 0;
+    return 2;
 }
+
 
 float EnvironmentController::GetReward() {
     return entity_manager_->reward;

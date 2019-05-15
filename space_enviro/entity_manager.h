@@ -24,7 +24,7 @@ namespace entities{
         float vx=0;
         float vy = 0;
         float size = 0;
-        int range = 750;
+        int range = 500;
         asteroid(){
             reset_asteroid();
         }
@@ -65,11 +65,11 @@ namespace entities{
         float sideinput = 0;
         float maininput = 0;
 
-        const static int n_asteroids = 75;
+        const static int n_asteroids = 40;
         asteroid asteroids[n_asteroids];
 
         float wiev_range = 500;
-        float wiev_angle = 2.5f;
+        float wiev_angle = 5.f;
         const int n_rays = 128;
         np::ndarray ships_wiev = np::zeros(boost::python::make_tuple(1,2,n_rays), np::dtype::get_builtin<float>());
         np::ndarray ships_stats = np::zeros(boost::python::make_tuple(1,5), np::dtype::get_builtin<float>());
@@ -88,7 +88,7 @@ namespace entities{
             angle = M_PIf32;
             angle_v = 0;
             angle_a=0;
-            ship_mass = 10000;
+            ship_mass = 1000;
             size = 50;
             main_engine_power = 2000000;
             side_booster_power = 1000000;
@@ -125,7 +125,7 @@ namespace entities{
             reinterpret_cast<float *>(ships_stats.get_data())[4] = cosf(angle);
 
         }
-        void update(float side_engine, float main_engine) {
+        bool update(float side_engine, float main_engine) {
 
             float dtime = 0.02;
 
@@ -166,7 +166,7 @@ namespace entities{
                     //RESET SYMULACJI PO KOLIZJI
                     if (distance_between - size < 0) {
                         reset();
-                        break;
+                        return true;
                     }
 
                     float alfa = asinf(a.size / real_distance);
@@ -197,6 +197,7 @@ namespace entities{
             }
 //            ship_x+=vx*dtime;
 //            ship_y+=vy*dtime;
+            return false;
         }
     };
 
