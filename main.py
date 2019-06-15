@@ -1,4 +1,15 @@
+import numpy as np
 import space_enviro.spaceLib as environment
+print("Loaded")
+
+
+env = environment.Environment("haba")
+print('Initialized')
+
+arr = np.array([1,2,3,4], np.float32)
+tmp = env.step(arr)
+print("Step output ", tmp)
+exit(0)
 import numpy as np
 
 import math

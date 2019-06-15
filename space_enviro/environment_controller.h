@@ -8,22 +8,16 @@
 #include <iostream>
 #include <stdlib.h>
 #include <vector>
-
+#include <SFML/Window/Event.hpp>
 #include <boost/python.hpp>
 #include <boost/python/numpy.hpp>
 
 #include "render_engine.h"
 #include "entity_manager.h"
-#include "team_info.h"
-
-//struct TeamInfo{
-//    int team;
-//    int begin;
-//    int n_ships;
-//    sf::Color color;
-//};
-namespace np = boost::python::numpy;
-namespace py = boost::python;
+#include "Scenarios/scenario_base.h"
+#include "Scenarios/checkpoint_scenario.h"
+#include "global_config.h"
+#include "waiter.h"
 
 
 class EnvironmentController {
@@ -31,40 +25,29 @@ class EnvironmentController {
 private:
 
     rendering::RenderEngine* render_engine_;
-    entities::EntityManager* entity_manager_;
-
-    std::vector<TeamInfo> teams_;
+    ScenarioBase* scenario_;
+    Waiter w = Waiter(static_cast<int>(time_step*1000));
 
     bool render_to_screen_ = true;
     bool render_to_file_ = true;
 
 public:
 
-    virtual ~EnvironmentController(){
-        //free(render_engine_);
-       // free(entity_manager_);
-    }
-
-    bool simulation(){ return render_to_screen_;}
-
     EnvironmentController(std::string path_to_config);
 
-    np::ndarray GetObservations();
-    np::ndarray GetStats();
-    float GetReward();
+    ~EnvironmentController();
+    bool simulation(){ return render_to_screen_;}
 
-    int Update(np::ndarray action_vector);
+    boost::python::tuple Step(boost::python::numpy::ndarray* action_vector);
 };
 
 
 BOOST_PYTHON_MODULE(spaceLib)
 {
-    py::class_< EnvironmentController >("initialize", py::init<std::string>())
-        .def("check",&EnvironmentController::simulation)
-        .def("get_observations", &EnvironmentController::GetObservations)
-        .def("get_stats", &EnvironmentController::GetStats)
-        .def("get_reward", &EnvironmentController::GetReward)
-        .def("update", &EnvironmentController::Update);
+    boost::python::class_< EnvironmentController >(
+            "initialize", boost::python::init<std::string>())
+        .def("done", &EnvironmentController::simulation)
+        .def("step", &EnvironmentController::Step);
 }
 
 #endif //SPACE_ENVIRO_ENVIROMENT_CONTROLLER_H

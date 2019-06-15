@@ -9,9 +9,6 @@
 #include <iostream>
 #include <boost/python/numpy.hpp>
 
-#include "entities_data.h"
-#include "constants.h"
-
 namespace np = boost::python::numpy;
 
 namespace entities{
@@ -49,6 +46,7 @@ namespace entities{
         }
     };
 
+
     class EntityManager {
     public:
         float x; // position on X axis
@@ -72,7 +70,7 @@ namespace entities{
         float wiev_angle = 5.f;
         const int n_rays = 128;
         np::ndarray ships_wiev = np::zeros(boost::python::make_tuple(1,2,n_rays), np::dtype::get_builtin<float>());
-        np::ndarray ships_stats = np::zeros(boost::python::make_tuple(1,5), np::dtype::get_builtin<float>());
+        np::ndarray ships_stats = np::zeros(boost::python::make_tuple(1,7), np::dtype::get_builtin<float>());
         float step = wiev_angle/n_rays;
         float offset = step/2;
         float begin = wiev_angle/2-offset;
@@ -123,8 +121,14 @@ namespace entities{
             reinterpret_cast<float *>(ships_stats.get_data())[2] = angle_v;
             reinterpret_cast<float *>(ships_stats.get_data())[3] = sinf(angle);
             reinterpret_cast<float *>(ships_stats.get_data())[4] = cosf(angle);
-
+            reinterpret_cast<float *>(ships_stats.get_data())[5] = angle;
+//            for (int i = 0; i < 5; ++i) {
+//                std::cout<<reinterpret_cast<float *>(ships_stats.get_data())[i]<<" ";
+//
+//            }
+            std::cout<<std::endl;
         }
+
         bool update(float side_engine, float main_engine) {
 
             float dtime = 0.02;
@@ -140,8 +144,8 @@ namespace entities{
             vx += ax * dtime;
             vy += ay * dtime;
 
-            reward = sqrtf(powf(vx, 2) + powf(vy, 2))/1000;
-            total_reward += reward;
+//            reward = sqrtf(powf(vx, 2) + powf(vy, 2))/1000;
+//            total_reward += reward;
 
             angle_a = (side_booster_power * sideinput) / (0.5f * ship_mass * size);
             angle_v += angle_a * dtime;
@@ -151,7 +155,9 @@ namespace entities{
 
             if (angle > 2 * M_PIf32) angle -= 2 * M_PIf32;
             if (angle < 0) angle += 2 * M_PIf32;
+
             save_stats();
+
             for (auto &asteroid : asteroids) {
                 asteroid.update_position(vx, vy);
                 auto a = asteroid;
@@ -195,8 +201,8 @@ namespace entities{
                     }
                 }
             }
-//            ship_x+=vx*dtime;
-//            ship_y+=vy*dtime;
+            x+=vx*dtime;
+            y+=vy*dtime;
             return false;
         }
     };
