@@ -11,10 +11,10 @@ EnvironmentController::EnvironmentController(std::string a) {
 
     std::cout<<"Initializing Boost, Numpy \n";
     Py_Initialize();
-    np::initialize();
+    boost::python::numpy::initialize();
 
     std::cout<<"Initializing Scenario\n";
-    scenario_= new NCheckpoints(10);
+    scenario_= new NCheckpoints(3);
 
     if(render_to_screen_ || render_to_file_) {
         std::cout << "Initializing RenderEngine\n";
@@ -25,8 +25,8 @@ EnvironmentController::EnvironmentController(std::string a) {
 }
 
 
-boost::python::tuple EnvironmentController::Step(np::ndarray* action_vector) {
-    auto tmp = scenario_->Step(action_vector);
+boost::python::tuple EnvironmentController::Step(boost::python::numpy::ndarray action_vector) {
+    auto tmp = scenario_->Step(reinterpret_cast<float *>(action_vector.get_data()));
 
     sf::Event e;
     render_engine_->window.pollEvent(e);
@@ -39,10 +39,11 @@ boost::python::tuple EnvironmentController::Step(np::ndarray* action_vector) {
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
-            w.wait();
+
             render_engine_->RenderState(scenario_);
         }
     }
-
+    w.wait();
+    render_engine_->RenderState(scenario_);
     return tmp;
 }

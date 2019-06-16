@@ -3,13 +3,22 @@ import space_enviro.spaceLib as environment
 print("Loaded")
 
 
-env = environment.Environment("haba")
+env = environment.initialize("haba")
 print('Initialized')
 
-arr = np.array([1,2,3,4], np.float32)
-tmp = env.step(arr)
+while True:
+    arr = np.random.rand(6).astype(np.float32)
+    tmp = env.step(arr)
+
+
+
+
+
+
 print("Step output ", tmp)
 exit(0)
+
+
 import numpy as np
 
 import math

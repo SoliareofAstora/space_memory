@@ -19,7 +19,7 @@ void render_ship(sf::VertexArray* varr, int offset, entites::ShipArray* ships, i
     float sidepower = ships->engines_control[i+ships->n];
     sf::Vector2f ap = sf::Vector2f(
             (-1.f/3)*size*sinf(angle)+x,
-            (-1.f/3)*size+y);
+            (-1.f/3)*size*cosf(angle)+y);
 
     //Side Engine
     varr->operator[](offset+0).position=sf::Vector2f(

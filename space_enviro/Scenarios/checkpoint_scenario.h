@@ -28,11 +28,9 @@ public:
     NCheckpoints(int n) : n(n) {
         shipArray = new entites::ShipArray(n);
         checkpointArray = new CheckpointArray(n, 400);
-
         observations = new float[n * 5];
         reward = new float[n];
         distance = new float[n];
-
         for (int i = 0; i < n; ++i) {
             distance[i] = entites::Distance(shipArray, i, checkpointArray, i);
             reward[i] = 0;
@@ -72,8 +70,8 @@ public:
         return varr;
     }
 
-    boost::python::tuple Step(boost::python::numpy::ndarray* actions) override {
-        shipArray->Update(reinterpret_cast<float *>(actions->get_data()));
+    boost::python::tuple Step(float* actions) override {
+        shipArray->Update(actions);
 
         std::memcpy(reward, distance, n * sizeof(float));
         for (int i = 0; i < n; ++i) {
@@ -103,19 +101,27 @@ public:
                                              c * shipArray->v[i] - s * shipArray->v[n + i]);
         }
 
+        // TODO optimize
         boost::python::tuple observation_shape = boost::python::make_tuple(n,5);
-        boost::python::tuple reward_shape = boost::python::make_tuple(5);
-        boost::python::tuple stride = boost::python::make_tuple(sizeof(float));
+        boost::python::tuple reward_shape = boost::python::make_tuple(n);
+        boost::python::tuple strideo = boost::python::make_tuple(n*sizeof(float),sizeof(float));
+        boost::python::tuple strider = boost::python::make_tuple(sizeof(float));
         boost::python::object own;
         boost::python::object owner;
         boost::python::numpy::dtype dt = boost::python::numpy::dtype::get_builtin<float>();
 
+        auto a = boost::python::numpy::from_data(observations, dt, observation_shape, strideo, own);
+        auto b =boost::python::numpy::from_data(reward, dt, reward_shape, strider, owner);
+
         return boost::python::make_tuple(
-                boost::python::numpy::from_data(observations, dt, observation_shape, stride, own),
-                boost::python::numpy::from_data(reward, dt, reward_shape, stride, owner)
+                a,
+                b
                 );
     }
 
+    int test(){
+        return 100;
+    }
 
 };
 

@@ -43,8 +43,8 @@ namespace entites{
         }
 
         void ResetValues(){
-            std::fill(position, position + 2*n*sizeof(float), 0);
-            std::fill(size, size + n*sizeof(float), 25);
+            std::fill(position, position + 2*n, 0);
+            std::fill(size, size + n, 25);
         }
 
         //Returns true if element you want to delete is the current last one 
@@ -74,7 +74,6 @@ namespace entites{
             a = new float [2*n]();
             mass = new float [n]();
             ResetValues();
-
         }
 
         ~DynamicArray(){
@@ -94,9 +93,9 @@ namespace entites{
         }
 
         void ResetValues(){
-            std::fill(v, v + 2*n*sizeof(float), 0);
-            std::fill(a, a + 2*n*sizeof(float), 0);
-            std::fill(mass, mass + n*sizeof(float), 100);
+            std::fill(v, v + 2*n, 0);
+            std::fill(a, a + 2*n, 0);
+            std::fill(mass, mass + n, 100);
         }
         void ResetAllValues(){
             EntityArray::ResetValues();
@@ -143,13 +142,13 @@ namespace entites{
         }
 
         void ResetValues(){
-            std::fill(hit_points, hit_points + n*sizeof(float), 100);
-            std::fill(main_engine_power, main_engine_power + n*sizeof(float), 100);
-            std::fill(side_engine_power, side_engine_power + n*sizeof(float), 100);
-            std::fill(angle, angle + n*sizeof(float), 0);
-            std::fill(a_angle, a_angle + n*sizeof(float), 0);
-            std::fill(v_angle, v_angle + n*sizeof(float), 0);
-            std::fill(engines_control, engines_control + 2*n*sizeof(float), 0);
+            std::fill(hit_points, hit_points + n, 100);
+            std::fill(main_engine_power, main_engine_power + n, 100);
+            std::fill(side_engine_power, side_engine_power + n, 100);
+            std::fill(angle, angle + n, 0);
+            std::fill(a_angle, a_angle + n, 0);
+            std::fill(v_angle, v_angle + n, 0);
+            std::fill(engines_control, engines_control + 2*n, 0);
         }
 
         void ResetAllValues(){
@@ -174,8 +173,11 @@ namespace entites{
         }
 
         void Update(float* actions){
-            engines_control = actions;
+//            for (int j = 0; j < 2; ++j) {
+//                std::cout<<actions[j]<<" ";
+//            }
 
+            engines_control = actions;
             for (int i = 0; i < remaining; ++i) {
                 a[i] = engines_control[i]* sinf(angle[i]) * main_engine_power[i] / mass[i];
                 a[i+n] = engines_control[i]* cosf(angle[i]) * main_engine_power[i] / mass[i];

@@ -6,14 +6,13 @@
 #define SPACE_ENVIRO_ENVIROMENT_CONTROLLER_H
 
 #include <iostream>
-#include <stdlib.h>
-#include <vector>
+//#include <stdlib.h>
+//#include <vector>
 #include <SFML/Window/Event.hpp>
 #include <boost/python.hpp>
 #include <boost/python/numpy.hpp>
 
 #include "render_engine.h"
-#include "entity_manager.h"
 #include "Scenarios/scenario_base.h"
 #include "Scenarios/checkpoint_scenario.h"
 #include "global_config.h"
@@ -26,7 +25,7 @@ private:
 
     rendering::RenderEngine* render_engine_;
     ScenarioBase* scenario_;
-    Waiter w = Waiter(static_cast<int>(time_step*1000));
+    Waiter w = Waiter(static_cast<int>(time_step*100));
 
     bool render_to_screen_ = true;
     bool render_to_file_ = true;
@@ -35,10 +34,12 @@ public:
 
     EnvironmentController(std::string path_to_config);
 
-    ~EnvironmentController();
+    ~EnvironmentController(){
+        delete scenario_;
+    };
     bool simulation(){ return render_to_screen_;}
 
-    boost::python::tuple Step(boost::python::numpy::ndarray* action_vector);
+    boost::python::tuple Step(boost::python::numpy::ndarray action_vector);
 };
 
 
