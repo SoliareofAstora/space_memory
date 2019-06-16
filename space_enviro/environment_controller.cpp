@@ -14,7 +14,7 @@ EnvironmentController::EnvironmentController(std::string a) {
     boost::python::numpy::initialize();
 
     std::cout<<"Initializing Scenario\n";
-    scenario_= new NCheckpoints(3);
+    scenario_= new NCheckpoints(10000);
 
     if(render_to_screen_ || render_to_file_) {
         std::cout << "Initializing RenderEngine\n";
@@ -43,7 +43,7 @@ boost::python::tuple EnvironmentController::Step(boost::python::numpy::ndarray a
             render_engine_->RenderState(scenario_);
         }
     }
-    w.wait();
-    render_engine_->RenderState(scenario_);
+//    w.wait();
+//    render_engine_->RenderState(scenario_);
     return tmp;
 }

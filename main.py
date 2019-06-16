@@ -5,10 +5,16 @@ print("Loaded")
 
 env = environment.initialize("haba")
 print('Initialized')
+n=10000
 
+i=0
 while True:
-    arr = np.random.rand(6).astype(np.float32)
+    i+=1
+    print(i)
+    arr = np.random.rand(n*2).astype(np.float32)
+    # arr = np.zeros(n*2)
     tmp = env.step(arr)
+    # print(tmp)
 
 
 

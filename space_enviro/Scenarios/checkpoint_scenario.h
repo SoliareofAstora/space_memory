@@ -27,7 +27,7 @@ public:
 
     NCheckpoints(int n) : n(n) {
         shipArray = new entites::ShipArray(n);
-        checkpointArray = new CheckpointArray(n, 400);
+        checkpointArray = new CheckpointArray(n, 100);
         observations = new float[n * 5];
         reward = new float[n];
         distance = new float[n];
@@ -50,11 +50,12 @@ public:
         sf::VertexArray* varr = new sf::VertexArray(sf::Triangles, 15*shipArray->n);
         for (int i = 0; i < shipArray->n; ++i) {
             sf::Color ship_color = sf::Color(rand()%(236)+20,rand()%(236)+20,rand()%(236)+20);
-            for (int j = 6; j < 9; ++j) {
-                varr->operator[](9*i+j).color = ship_color;
-            }
+
             for (int j = 0; j < 6; ++j) {
-                varr->operator[](6*i+j+9*shipArray->n).color = ship_color;
+                varr->operator[](6*i+j).color = ship_color;
+            }
+            for (int j = 6; j < 9; ++j) {
+                varr->operator[](9*i+j+6*shipArray->n).color = ship_color;
             }
         }
         return varr;
@@ -62,10 +63,10 @@ public:
 
     sf::VertexArray* Render(sf::VertexArray* varr) override {
         for (int i = 0; i < shipArray->n; ++i) {
-            render_ship(varr, i*9,shipArray, i);
+            render_square(varr, i*6, checkpointArray, i);
         }
         for (int i = 0; i < shipArray->n; ++i) {
-            render_square(varr, shipArray->n*9+i*6, checkpointArray, i);
+            render_ship(varr, shipArray->n*6 + i*9,shipArray, i);
         }
         return varr;
     }
@@ -74,11 +75,12 @@ public:
         shipArray->Update(actions);
 
         std::memcpy(reward, distance, n * sizeof(float));
+
         for (int i = 0; i < n; ++i) {
             distance[i] = entites::Distance(shipArray, i, checkpointArray, i);
             if (distance[i] < 50) {
                 reward[i] = 100;
-                checkpointArray[i].ResetCheckpoint(i);
+                checkpointArray->ResetCheckpoint(i);
                 distance[i] = entites::Distance(shipArray, i, checkpointArray, i);
             } else {
                 reward[i] -= distance[i];
@@ -111,7 +113,7 @@ public:
         boost::python::numpy::dtype dt = boost::python::numpy::dtype::get_builtin<float>();
 
         auto a = boost::python::numpy::from_data(observations, dt, observation_shape, strideo, own);
-        auto b =boost::python::numpy::from_data(reward, dt, reward_shape, strider, owner);
+        auto b =boost::python::numpy::from_data(reward, dt, reward_shape, strider, own);
 
         return boost::python::make_tuple(
                 a,
