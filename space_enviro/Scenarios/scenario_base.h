@@ -20,7 +20,7 @@ struct ScenarioBase{
     virtual sf::VertexArray* RenderDebug(sf::VertexArray* varr){}
 
     virtual boost::python::tuple Step(float* actions){}
-
+    virtual boost::python::numpy::ndarray Reset(){}
     virtual int test(){}
 };
 

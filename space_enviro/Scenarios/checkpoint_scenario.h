@@ -27,7 +27,7 @@ public:
 
     NCheckpoints(int n) : n(n) {
         shipArray = new entites::ShipArray(n);
-        checkpointArray = new CheckpointArray(n, 100);
+        checkpointArray = new CheckpointArray(n, 700);
         observations = new float[n * 5];
         reward = new float[n];
         distance = new float[n];
@@ -106,10 +106,9 @@ public:
         // TODO optimize
         boost::python::tuple observation_shape = boost::python::make_tuple(n,5);
         boost::python::tuple reward_shape = boost::python::make_tuple(n);
-        boost::python::tuple strideo = boost::python::make_tuple(n*sizeof(float),sizeof(float));
+        boost::python::tuple strideo = boost::python::make_tuple(sizeof(float),n*sizeof(float));
         boost::python::tuple strider = boost::python::make_tuple(sizeof(float));
         boost::python::object own;
-        boost::python::object owner;
         boost::python::numpy::dtype dt = boost::python::numpy::dtype::get_builtin<float>();
 
         auto a = boost::python::numpy::from_data(observations, dt, observation_shape, strideo, own);
@@ -121,10 +120,43 @@ public:
                 );
     }
 
-    int test(){
-        return 100;
-    }
+    boost::python::numpy::ndarray Reset() override {
+//        shipArray->ResetAllValues();
+//        checkpointArray->Reset();
+        for (int i = 0; i < n; ++i) {
+            distance[i] = entites::Distance(shipArray, i, checkpointArray, i);
+            if (distance[i] < 50) {
+                reward[i] = 100;
+                checkpointArray->ResetCheckpoint(i);
+                distance[i] = entites::Distance(shipArray, i, checkpointArray, i);
+            } else {
+                reward[i] -= distance[i];
+            }
+        }
 
+        std::memcpy(observations, distance, n * sizeof(float));
+        std::memcpy(&observations[4 * n], shipArray->v_angle, n * sizeof(float));
+        for (int i = 0; i < n; ++i) {
+
+            float cx = checkpointArray->position[i] - shipArray->position[i];
+            float cy = checkpointArray->position[n + i] - shipArray->position[n + i];
+
+            float s = sinf(-shipArray->angle[i]);
+            float c = cosf(-shipArray->angle[i]);
+
+            observations[1 * n + i] = atan2f(s * cx + c * cy, c * cx - s * cy);
+            observations[2 * n + i] = sqrtf(powf(shipArray->v[i], 2) + powf(shipArray->v[n + i], 2));
+            observations[3 * n + i] = atan2f(s * shipArray->v[i] + c * shipArray->v[n + i],
+                                             c * shipArray->v[i] - s * shipArray->v[n + i]);
+        }
+
+        boost::python::tuple observation_shape = boost::python::make_tuple(n,5);
+        boost::python::tuple strideo = boost::python::make_tuple(sizeof(float),n*sizeof(float));
+        boost::python::object own;
+        boost::python::numpy::dtype dt = boost::python::numpy::dtype::get_builtin<float>();
+
+        return boost::python::numpy::from_data(observations, dt, observation_shape, strideo, own);
+    }
 };
 
 /*

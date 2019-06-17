@@ -27,8 +27,7 @@ private:
     ScenarioBase* scenario_;
     Waiter w = Waiter(static_cast<int>(time_step*100));
 
-    bool render_to_screen_ = true;
-    bool render_to_file_ = true;
+    bool render = true;
 
 public:
 
@@ -37,9 +36,13 @@ public:
     ~EnvironmentController(){
         delete scenario_;
     };
-    bool simulation(){ return render_to_screen_;}
+    // todo change it to real env.done
+    bool simulation(){ return !render;}
 
     boost::python::tuple Step(boost::python::numpy::ndarray action_vector);
+    boost::python::numpy::ndarray Reset(){
+        return scenario_->Reset();
+    };
 };
 
 
@@ -48,7 +51,8 @@ BOOST_PYTHON_MODULE(spaceLib)
     boost::python::class_< EnvironmentController >(
             "initialize", boost::python::init<std::string>())
         .def("done", &EnvironmentController::simulation)
-        .def("step", &EnvironmentController::Step);
+        .def("step", &EnvironmentController::Step)
+        .def("reset", &EnvironmentController::Reset);
 }
 
 #endif //SPACE_ENVIRO_ENVIROMENT_CONTROLLER_H

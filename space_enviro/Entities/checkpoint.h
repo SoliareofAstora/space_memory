@@ -30,6 +30,12 @@ struct CheckpointArray:entites::EntityArray{
     void ResetCheckpoint(int i){
         entites::EntityArray::ChangePosition(i,randNum(),randNum());
     }
+
+    void Reset(){
+        for (int j = 0; j < entites::EntityArray::n; ++j) {
+            ResetCheckpoint(j);
+        }
+    }
 };
 
 #endif //SPACE_ENVIRO_CHECKPOINT_H
