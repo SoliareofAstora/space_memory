@@ -15,31 +15,31 @@
 #include "../Entities/checkpoint.h"
 #include "../Entities/basic_render_types.h"
 
-class NCheckpoints : public ScenarioBase {
+class Checkpoints : public ScenarioBase {
 public:
     int n;
-    entites::ShipArray *shipArray;
-    CheckpointArray *checkpointArray;
+    entites::ShipArray* ship_array;
+    CheckpointArray* checkpoint_array;
 
-    float *observations;
-    float *reward;
-    float *distance;
+    float* observations;
+    float* reward;
+    float* distance;
 
-    NCheckpoints(int n) : n(n) {
-        shipArray = new entites::ShipArray(n);
-        checkpointArray = new CheckpointArray(n, 700);
+    Checkpoints(int n) : n(n) {
+        ship_array = new entites::ShipArray(n);
+        checkpoint_array = new CheckpointArray(n, 700);
         observations = new float[n * 5];
         reward = new float[n];
         distance = new float[n];
         for (int i = 0; i < n; ++i) {
-            distance[i] = entites::Distance(shipArray, i, checkpointArray, i);
+            distance[i] = entites::Distance(ship_array, i, checkpoint_array, i);
             reward[i] = 0;
         }
     }
 
-    ~NCheckpoints(){
-        delete shipArray;
-        delete checkpointArray;
+  ~Checkpoints(){
+        delete ship_array;
+        delete checkpoint_array;
 
         delete [] observations;
         delete [] reward;
@@ -47,60 +47,60 @@ public:
     }
 
     sf::VertexArray* InitializeVertexArray() override {
-        sf::VertexArray* varr = new sf::VertexArray(sf::Triangles, 15*shipArray->n);
-        for (int i = 0; i < shipArray->n; ++i) {
-            sf::Color ship_color = sf::Color(rand()%(236)+20,rand()%(236)+20,rand()%(236)+20);
+        sf::VertexArray* vertex_array = new sf::VertexArray(sf::Triangles, 15*ship_array->n);
+        for (int i = 0; i < ship_array->n; ++i) {
+            sf::Color ship_color = sf::Color(random()%(236)+20,random()%(236)+20,random()%(236)+20);
 
             for (int j = 0; j < 6; ++j) {
-                varr->operator[](6*i+j).color = ship_color;
+                vertex_array->operator[](6*i+j).color = ship_color;
             }
             for (int j = 6; j < 9; ++j) {
-                varr->operator[](9*i+j+6*shipArray->n).color = ship_color;
+                vertex_array->operator[](9*i+j+6*ship_array->n).color = ship_color;
             }
         }
-        return varr;
+        return vertex_array;
     }
 
-    sf::VertexArray* Render(sf::VertexArray* varr) override {
-        for (int i = 0; i < shipArray->n; ++i) {
-            render_square(varr, i*6, checkpointArray, i);
+    sf::VertexArray* Render(sf::VertexArray*vertex_array) override {
+        for (int i = 0; i < ship_array->n; ++i) {
+          RenderSquare(vertex_array, i * 6, checkpoint_array, i);
         }
-        for (int i = 0; i < shipArray->n; ++i) {
-            render_ship(varr, shipArray->n*6 + i*9,shipArray, i);
+        for (int i = 0; i < ship_array->n; ++i) {
+          RenderShip(vertex_array, ship_array->n * 6 + i * 9, ship_array, i);
         }
-        return varr;
+        return vertex_array;
     }
 
     boost::python::tuple Step(float* actions) override {
-        shipArray->Update(actions);
+        ship_array->Update(actions);
 
         std::memcpy(reward, distance, n * sizeof(float));
 
         for (int i = 0; i < n; ++i) {
-            distance[i] = entites::Distance(shipArray, i, checkpointArray, i);
+            distance[i] = entites::Distance(ship_array, i, checkpoint_array, i);
             if (distance[i] < 50) {
                 reward[i] = 100;
-                checkpointArray->ResetCheckpoint(i);
-                distance[i] = entites::Distance(shipArray, i, checkpointArray, i);
+                checkpoint_array->ResetCheckpoint(i);
+                distance[i] = entites::Distance(ship_array, i, checkpoint_array, i);
             } else {
                 reward[i] -= distance[i];
             }
         }
 
         std::memcpy(observations, distance, n * sizeof(float));
-        std::memcpy(&observations[4 * n], shipArray->v_angle, n * sizeof(float));
+        std::memcpy(&observations[4 * n], ship_array->v_angle, n * sizeof(float));
         for (int i = 0; i < n; ++i) {
 
-            float cx = checkpointArray->position[i] - shipArray->position[i];
-            float cy = checkpointArray->position[n + i] - shipArray->position[n + i];
+            float cx = checkpoint_array->position[i] - ship_array->position[i];
+            float cy = checkpoint_array->position[n + i] - ship_array->position[n + i];
 
-            float s = sinf(-shipArray->angle[i]);
-            float c = cosf(-shipArray->angle[i]);
+            float s = sinf(-ship_array->angle[i]);
+            float c = cosf(-ship_array->angle[i]);
 
             observations[1 * n + i] = atan2f(s * cx + c * cy, c * cx - s * cy);
-            observations[2 * n + i] = sqrtf(powf(shipArray->v[i], 2) + powf(shipArray->v[n + i], 2));
-            observations[3 * n + i] = atan2f(s * shipArray->v[i] + c * shipArray->v[n + i],
-                                             c * shipArray->v[i] - s * shipArray->v[n + i]);
+            observations[2 * n + i] = sqrtf(powf(ship_array->v[i], 2) + powf(ship_array->v[n + i], 2));
+            observations[3 * n + i] = atan2f(s * ship_array->v[i] + c * ship_array->v[n + i],
+                                             c * ship_array->v[i] - s * ship_array->v[n + i]);
         }
 
         // TODO optimize
@@ -121,33 +121,33 @@ public:
     }
 
     boost::python::numpy::ndarray Reset() override {
-//        shipArray->ResetAllValues();
-//        checkpointArray->Reset();
+//        ship_array->ResetAllValues();
+//        checkpoint_array->Reset();
         for (int i = 0; i < n; ++i) {
-            distance[i] = entites::Distance(shipArray, i, checkpointArray, i);
+            distance[i] = entites::Distance(ship_array, i, checkpoint_array, i);
             if (distance[i] < 50) {
                 reward[i] = 100;
-                checkpointArray->ResetCheckpoint(i);
-                distance[i] = entites::Distance(shipArray, i, checkpointArray, i);
+                checkpoint_array->ResetCheckpoint(i);
+                distance[i] = entites::Distance(ship_array, i, checkpoint_array, i);
             } else {
                 reward[i] -= distance[i];
             }
         }
 
         std::memcpy(observations, distance, n * sizeof(float));
-        std::memcpy(&observations[4 * n], shipArray->v_angle, n * sizeof(float));
+        std::memcpy(&observations[4 * n], ship_array->v_angle, n * sizeof(float));
         for (int i = 0; i < n; ++i) {
 
-            float cx = checkpointArray->position[i] - shipArray->position[i];
-            float cy = checkpointArray->position[n + i] - shipArray->position[n + i];
+            float cx = checkpoint_array->position[i] - ship_array->position[i];
+            float cy = checkpoint_array->position[n + i] - ship_array->position[n + i];
 
-            float s = sinf(-shipArray->angle[i]);
-            float c = cosf(-shipArray->angle[i]);
+            float s = sinf(-ship_array->angle[i]);
+            float c = cosf(-ship_array->angle[i]);
 
             observations[1 * n + i] = atan2f(s * cx + c * cy, c * cx - s * cy);
-            observations[2 * n + i] = sqrtf(powf(shipArray->v[i], 2) + powf(shipArray->v[n + i], 2));
-            observations[3 * n + i] = atan2f(s * shipArray->v[i] + c * shipArray->v[n + i],
-                                             c * shipArray->v[i] - s * shipArray->v[n + i]);
+            observations[2 * n + i] = sqrtf(powf(ship_array->v[i], 2) + powf(ship_array->v[n + i], 2));
+            observations[3 * n + i] = atan2f(s * ship_array->v[i] + c * ship_array->v[n + i],
+                                             c * ship_array->v[i] - s * ship_array->v[n + i]);
         }
 
         boost::python::tuple observation_shape = boost::python::make_tuple(n,5);

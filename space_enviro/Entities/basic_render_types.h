@@ -9,7 +9,7 @@
 #include <SFML/Graphics/VertexArray.hpp>
 #include "entities_data.h"
 
-void render_ship(sf::VertexArray* varr, int offset, entites::ShipArray* ships, int i){
+void RenderShip(sf::VertexArray* varr, int offset, entites::ShipArray* ships, int i){
 
     float x = ships->position[i];
     float y = ships->position[ships->n+i];
@@ -58,7 +58,7 @@ void render_ship(sf::VertexArray* varr, int offset, entites::ShipArray* ships, i
 
 }
 
-void render_square(sf::VertexArray* varr, int offset, entites::EntityArray* checkpoints, int i){
+void RenderSquare(sf::VertexArray* varr, int offset, entites::EntityArray* checkpoints, int i){
 
     float x = checkpoints->position[i];
     float y = checkpoints->position[checkpoints->n+i];

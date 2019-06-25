@@ -14,33 +14,33 @@ EnvironmentController::EnvironmentController(std::string a) {
     boost::python::numpy::initialize();
 
     std::cout<<"Initializing Scenario\n";
-    scenario_= new NCheckpoints(1000);
+    scenario= new Checkpoints(100);
 
     if(render) {
         std::cout << "Initializing RenderEngine\n";
-        render_engine_ = new rendering::RenderEngine(scenario_);
+        render_engine = new rendering::RenderEngine(scenario);
     }
 
     std::cout<<"Space Environment initialization DONE\n\n";
 }
 
 
-boost::python::tuple EnvironmentController::Step(boost::python::numpy::ndarray action_vector) {
-    boost::python::tuple tmp = scenario_->Step(reinterpret_cast<float *>(action_vector.get_data()));
+boost::python::tuple EnvironmentController::Step(const boost::python::numpy::ndarray& action_vector) {
+    boost::python::tuple tmp = scenario->Step(reinterpret_cast<float *>(action_vector.get_data()));
 
     sf::Event e;
-    render_engine_->window.pollEvent(e);
+    render_engine->window.pollEvent(e);
 
-    if (render_engine_->window.hasFocus()) {
+    if (render_engine->window.hasFocus()) {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
             render = false;
-            delete render_engine_;
-            delete scenario_;
+            delete render_engine;
+            delete scenario;
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
             w.wait();
-            render_engine_->RenderState(scenario_);
+            render_engine->RenderState(scenario);
         }
     }
 

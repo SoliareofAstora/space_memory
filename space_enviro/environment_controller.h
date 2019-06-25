@@ -2,8 +2,8 @@
 // Created by overlord on 26/01/19.
 //
 
-#ifndef SPACE_ENVIRO_ENVIROMENT_CONTROLLER_H
-#define SPACE_ENVIRO_ENVIROMENT_CONTROLLER_H
+#ifndef SPACE_ENVIRO_ENVIRONMENT_CONTROLLER_H
+#define SPACE_ENVIRO_ENVIRONMENT_CONTROLLER_H
 
 #include <iostream>
 //#include <stdlib.h>
@@ -23,8 +23,8 @@ class EnvironmentController {
 
 private:
 
-    rendering::RenderEngine* render_engine_;
-    ScenarioBase* scenario_;
+    rendering::RenderEngine* render_engine;
+    ScenarioBase* scenario;
     Waiter w = Waiter(static_cast<int>(time_step*100));
 
     bool render = true;
@@ -34,14 +34,14 @@ public:
     EnvironmentController(std::string path_to_config);
 
     ~EnvironmentController(){
-        delete scenario_;
+        delete scenario;
     };
     // todo change it to real env.done
-    bool simulation(){ return !render;}
+    bool Simulation(){ return !render;}
 
-    boost::python::tuple Step(boost::python::numpy::ndarray action_vector);
+    boost::python::tuple Step(const boost::python::numpy::ndarray& action_vector);
     boost::python::numpy::ndarray Reset(){
-        return scenario_->Reset();
+        return scenario->Reset();
     };
 };
 
@@ -50,12 +50,12 @@ BOOST_PYTHON_MODULE(spaceLib)
 {
     boost::python::class_< EnvironmentController >(
             "initialize", boost::python::init<std::string>())
-        .def("done", &EnvironmentController::simulation)
+        .def("done", &EnvironmentController::Simulation)
         .def("step", &EnvironmentController::Step)
         .def("reset", &EnvironmentController::Reset);
 }
 
-#endif //SPACE_ENVIRO_ENVIROMENT_CONTROLLER_H
+#endif //SPACE_ENVIRO_ENVIRONMENT_CONTROLLER_H
 //BOOST_PYTHON_MODULE(spaceLib)
 //{
 //    class_< hello >("hello", init<std::string>())

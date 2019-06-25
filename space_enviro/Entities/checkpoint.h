@@ -16,7 +16,7 @@ struct CheckpointArray:entites::EntityArray{
     int max_distance;
     int randNum()
     {
-       return rand() % (2*max_distance) -max_distance;
+       return random() % (2*max_distance) -max_distance;
     }
 
     CheckpointArray(const int checkpoints_count, int maxdistance):entites::EntityArray(checkpoints_count){

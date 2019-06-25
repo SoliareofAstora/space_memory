@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 add_library(env SHARED
         environment_controller.h
         environment_controller.cpp
-        render_engine.cpp render_engine.h
+        render_engine.h
         Entities/entities_data.h
         Entities/checkpoint.h
         Scenarios/scenario_base.h

@@ -11,13 +11,13 @@
 
 struct ScenarioBase{
     ScenarioBase() = default;
-    virtual ~ScenarioBase(){}
+    virtual ~ScenarioBase()= default;
 
     virtual sf::VertexArray* InitializeVertexArray(){}
-    virtual sf::VertexArray* Render(sf::VertexArray* varr){}
+    virtual sf::VertexArray* Render(sf::VertexArray* vertex_array){}
 
     virtual sf::VertexArray* InitializeDebugRender(){}
-    virtual sf::VertexArray* RenderDebug(sf::VertexArray* varr){}
+    virtual sf::VertexArray* RenderDebug(sf::VertexArray* vertex_array){}
 
     virtual boost::python::tuple Step(float* actions){}
     virtual boost::python::numpy::ndarray Reset(){}

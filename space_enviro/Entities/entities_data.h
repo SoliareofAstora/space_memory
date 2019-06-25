@@ -173,10 +173,6 @@ namespace entites{
         }
 
         void Update(float* actions){
-//            for (int j = 0; j < 2; ++j) {
-//                std::cout<<actions[j]<<" ";
-//            }
-
             engines_control = actions;
             for (int i = 0; i < remaining; ++i) {
                 a[i] = engines_control[i]* sinf(angle[i]) * main_engine_power[i] / mass[i];

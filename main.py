@@ -24,7 +24,7 @@ side_space = 3
 main_power = np.linspace(0, 1, main_space)
 side_power = np.linspace(-1, 1, side_space)
 
-size = 50
+size = 500
 class Model(nn.Module):
     def __init__(self):
         super(Model, self).__init__()
@@ -32,12 +32,12 @@ class Model(nn.Module):
         self.fc0 = nn.Linear(5, size)
         self.fc1 = nn.Linear(size, size)
         self.fc2 = nn.Linear(size, size)
-        self.fc3 = nn.Linear(size, size)
+        # self.fc3 = nn.Linear(size, size)
         # self.fc4 = nn.Linear(size, size)
 
         self.bn1 = nn.BatchNorm1d(num_features=size)
         self.bn2 = nn.BatchNorm1d(num_features=size)
-        self.bn3 = nn.BatchNorm1d(num_features=size)
+        # self.bn3 = nn.BatchNorm1d(num_features=size)
         # self.bn4 = nn.BatchNorm1d(num_features=size)
 
         self.fcmain = nn.Linear(size, main_space)
@@ -47,7 +47,7 @@ class Model(nn.Module):
         x = torch.tanh(self.fc0(x))
         x = self.bn1(torch.relu(self.fc1(x)))
         x = self.bn2(torch.relu(self.fc2(x)))
-        x = self.bn3(torch.relu(self.fc3(x)))
+        # x = self.bn3(torch.relu(self.fc3(x)))
         # x = self.bn4(torch.tanh(self.fc4(x)))
         return self.fcmain(x), self.fcside(x)
 
@@ -83,7 +83,7 @@ if not torch.cuda.is_available():
 
 device = torch.device("cuda")
 
-BATCH_SIZE = 5
+BATCH_SIZE = 50
 GAMMA = 0.8
 EPS_START = 0.999
 EPS_END = 0.15
@@ -166,15 +166,15 @@ for i_episodes in range(num_episodes):
         print(t, int(np.sum(reward)), positive_reward)
         memory.push(state, actions, new_state, torch.Tensor(reward).to(device))
 
-        if positive_reward < 5:
-            # state = env.reset()
-            # state = torch.Tensor(state).to(device)
-            exit("This universe is hopeless. Lets create another one :)")
+        # if positive_reward < 5:
+        #     # state = env.reset()
+        #     # state = torch.Tensor(state).to(device)
+        #     exit("This universe is hopeless. Lets create another one :)")
 
 
         state = new_state
-        for x in range(5):
-            optimize_model()
+        # for x in range(5):
+        optimize_model()
 
         if t % 100 == 0:
             target_net.load_state_dict(policy_net.state_dict())

@@ -7,8 +7,8 @@
 
 #include <SFML/Graphics.hpp>
 #include <cmath>
+#include <iostream>
 #include <boost/math_fwd.hpp>
-#include "entity_manager.h"
 #include "Scenarios/scenario_base.h"
 
 namespace rendering {
