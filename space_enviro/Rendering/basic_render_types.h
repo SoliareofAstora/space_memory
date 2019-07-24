@@ -7,7 +7,7 @@
 
 #include <cmath>
 #include <SFML/Graphics/VertexArray.hpp>
-#include "entities_data.h"
+#include "../Entities/entities_data.h"
 
 void RenderShip(sf::VertexArray* varr, int offset, entites::ShipArray* ships, int i){
 

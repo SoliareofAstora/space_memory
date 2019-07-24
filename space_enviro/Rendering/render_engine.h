@@ -9,7 +9,7 @@
 #include <cmath>
 #include <iostream>
 #include <boost/math_fwd.hpp>
-#include "Scenarios/scenario_base.h"
+#include "../Scenario/scenario_base.h"
 
 namespace rendering {
 
@@ -20,7 +20,7 @@ namespace rendering {
         sf::RenderWindow window = sf::RenderWindow(sf::VideoMode(1024, 1024), "Space memory");
         sf::VertexArray* vertex_array;
 
-//        sf::Text info_text_;
+//        sf::Text info_text;
         sf::Font font;
 
         RenderEngine(ScenarioBase* base) {
@@ -35,10 +35,10 @@ namespace rendering {
                 std::cout << "Font has been loaded!" << std::endl;
             }
             vertex_array = base->InitializeVertexArray();
-//            info_text_.setFont(font);
-//            info_text_.setCharacterSize(16);
-//            info_text_.setFillColor(sf::Color::White);
-//            info_text_.setPosition(sf::Vector2f(-750,-750));
+//            info_text.setFont(font);
+//            info_text.setCharacterSize(16);
+//            info_text.setFillColor(sf::Color::White);
+//            info_text.setPosition(sf::Vector2f(-750,-750));
         }
 
         void RenderState(ScenarioBase* base) {
@@ -46,9 +46,13 @@ namespace rendering {
             window.clear();
             vertex_array = base->Render(vertex_array);
             window.draw(*vertex_array);
-//            window.draw(info_text_);
+//            window.draw(info_text);
             window.display();
 
+        }
+
+        ~RenderEngine(){
+          delete vertex_array;
         }
     };
 

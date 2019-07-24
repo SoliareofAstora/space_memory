@@ -6,14 +6,14 @@ set(CMAKE_CXX_STANDARD 17)
 add_library(env SHARED
         environment_controller.h
         environment_controller.cpp
-        render_engine.h
+        Rendering/render_engine.h
         Entities/entities_data.h
         Entities/checkpoint.h
-        Scenarios/scenario_base.h
-        Scenarios/checkpoint_scenario.h
-        Entities/basic_render_types.h
+        Scenario/scenario_base.h
+        Scenario/checkpoint_scenario.h
+        Rendering/basic_render_types.h
         global_config.h
-        waiter.h
+        Utils/waiter.h
         )
 target_include_directories(env PUBLIC /usr/include/python3.6)
 target_link_libraries(

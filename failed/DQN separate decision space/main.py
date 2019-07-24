@@ -1,4 +1,4 @@
-import space_enviro.spaceLib as environment
+import spaceLib as environment
 
 import math
 import random

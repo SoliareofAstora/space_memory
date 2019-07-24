@@ -13,7 +13,7 @@
 #include "scenario_base.h"
 #include "../Entities/entities_data.h"
 #include "../Entities/checkpoint.h"
-#include "../Entities/basic_render_types.h"
+#include "../Rendering/basic_render_types.h"
 
 class Checkpoints : public ScenarioBase {
 public:
@@ -21,6 +21,13 @@ public:
     entites::ShipArray* ship_array;
     CheckpointArray* checkpoint_array;
 
+  /*
+* 0 - distance between ship and checkpoint
+* 1 - angle between ship direction and checkpoint
+* 2 - velocity
+* 3 - velocity vector angle wr to ship direction
+* 4 - angular velocity
+*/
     float* observations;
     float* reward;
     float* distance;
@@ -78,6 +85,11 @@ public:
 
         for (int i = 0; i < n; ++i) {
             distance[i] = entites::Distance(ship_array, i, checkpoint_array, i);
+            if (distance[i] > 3000) {
+              reward[i]= -100;
+              ship_array->Reset(i);
+              distance[i] = entites::Distance(ship_array, i, checkpoint_array, i);
+            }
             if (distance[i] < 50) {
                 reward[i] = 100;
                 checkpoint_array->ResetCheckpoint(i);

@@ -12,11 +12,11 @@
 #include <boost/python.hpp>
 #include <boost/python/numpy.hpp>
 
-#include "render_engine.h"
-#include "Scenarios/scenario_base.h"
-#include "Scenarios/checkpoint_scenario.h"
+#include "Rendering/render_engine.h"
+#include "Scenario/scenario_base.h"
+#include "Scenario/checkpoint_scenario.h"
 #include "global_config.h"
-#include "waiter.h"
+#include "Utils/waiter.h"
 
 
 class EnvironmentController {
@@ -35,7 +35,9 @@ public:
 
     ~EnvironmentController(){
         delete scenario;
+        delete render_engine;
     };
+
     // todo change it to real env.done
     bool Simulation(){ return !render;}
 

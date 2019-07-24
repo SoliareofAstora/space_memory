@@ -14,7 +14,7 @@ EnvironmentController::EnvironmentController(std::string a) {
     boost::python::numpy::initialize();
 
     std::cout<<"Initializing Scenario\n";
-    scenario= new Checkpoints(100);
+    scenario= new Checkpoints(1000);
 
     if(render) {
         std::cout << "Initializing RenderEngine\n";
