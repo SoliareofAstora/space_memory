@@ -1,4 +1,4 @@
-import space_enviro.spaceLib as environment
+import spaceLib as environment
 
 import math
 import random
@@ -24,7 +24,11 @@ side_space = 3
 main_power = np.linspace(0, 1, main_space)
 side_power = np.linspace(-1, 1, side_space)
 
-size = 50
+action_matrix = np.array([[0,0],[1,0],[0,-1],[0,1]])
+action_space = 4
+# action_space = main_space * side_space
+
+size = 100
 class Model(nn.Module):
     def __init__(self):
         super(Model, self).__init__()
@@ -40,8 +44,7 @@ class Model(nn.Module):
         self.bn3 = nn.BatchNorm1d(num_features=size)
         self.bn4 = nn.BatchNorm1d(num_features=size)
 
-        self.fcmain = nn.Linear(size, main_space)
-        self.fcside = nn.Linear(size, side_space)
+        self.fcoutput = nn.Linear(size, action_space)
 
     def forward(self, x):
         x = torch.tanh(self.fc0(x))
@@ -49,7 +52,7 @@ class Model(nn.Module):
         x = self.bn2(torch.relu(self.fc2(x)))
         x = self.bn3(torch.relu(self.fc3(x)))
         x = self.bn4(torch.tanh(self.fc4(x)))
-        return self.fcmain(x), self.fcside(x)
+        return self.fcoutput(x)
 
 
 transition = namedtuple('Transition', ('state', 'actions', 'next_state', 'reward'))
@@ -83,12 +86,12 @@ if not torch.cuda.is_available():
 
 device = torch.device("cuda")
 
-BATCH_SIZE = 10
+BATCH_SIZE = 30
 GAMMA = 0.999
-EPS_START = 0.50
+EPS_START = 0.80
 
-EPS_END = 0.01
-EPS_DECAY = 5000
+EPS_END = 0.001
+EPS_DECAY = 10000
 
 policy_net = Model().to(device)
 target_net = Model().to(device)
@@ -96,7 +99,7 @@ target_net = Model().to(device)
 target_net.load_state_dict(policy_net.state_dict())
 target_net.eval()
 
-optimizer = optim.RMSprop(policy_net.parameters(), 0.0001)
+optimizer = optim.RMSprop(policy_net.parameters(), 0.001)
 memory = ReplayMemory(1000)
 
 steps_done = 0
@@ -104,17 +107,17 @@ steps_done = 0
 def get_actions(state):
     with torch.no_grad():
         output = policy_net(state)
-        q_values_0 = F.softmax(output[0], dim=1)
-        q_values_1 = F.softmax(output[1], dim=1)
+        q_values = F.softmax(output, dim=0)
+
     sample = random.random()
     eps_threshold = EPS_END + (EPS_START - EPS_END) * \
                     math.exp(-1. * steps_done / EPS_DECAY)
 
     if sample > eps_threshold:
-        return torch.cat([q_values_0.max(1)[1].unsqueeze(1), q_values_1.max(1)[1].unsqueeze(1)],1)
+        return q_values.max(1)[1]
     else:
-        # return torch.cat([q_values_0.multinomial(1), q_values_1.multinomial(1)],1)
-        return torch.cat([torch.randint(main_space, (q_values_0.shape[0],1)).to(device), torch.randint(side_space, (q_values_1.shape[0],1)).to(device)],1)
+        # return q_values.multinomial(1).squeeze()
+        return torch.randint(action_space, [q_values.shape[0]]).to(device)
 
 
 def optimize_model(i):
@@ -128,47 +131,42 @@ def optimize_model(i):
     actions_batch = torch.cat(batch.actions)
     next_state_batch = torch.cat(batch.next_state)
 
-    main_engine, side_engine = policy_net(state_batch)
-    main_action_values = main_engine.gather(1, actions_batch[:, 0].unsqueeze(-1))
-    side_action_values = side_engine.gather(1, actions_batch[:, 1].unsqueeze(-1))
+    action = policy_net(state_batch)
+    action_values = action.gather(1, actions_batch.unsqueeze(-1))
 
-    next_state_main_values, next_state_side_values = target_net(next_state_batch)
+    next_state_value = target_net(next_state_batch)
 
-    excepted_state_action_value = ((next_state_main_values.max(1)[0] + next_state_side_values.max(1)[0]) * GAMMA) + reward_batch
+    excepted_state_action_value = (next_state_value.max(1)[0] * GAMMA) + reward_batch
 
-    loss = F.smooth_l1_loss(main_action_values + side_action_values,
-                            excepted_state_action_value.unsqueeze(1).detach())
+    loss = F.smooth_l1_loss(action_values, excepted_state_action_value.unsqueeze(1).detach())
     loss.backward()
 
-    if (i+1)%200 == 0:
-        for param in policy_net.parameters():
-            param.grad.data.clamp_(-1, 1)
-        optimizer.step()
-        optimizer.zero_grad()
-        memory.erase()
-        target_net.load_state_dict(policy_net.state_dict())
+    # for param in policy_net.parameters():
+    #     param.grad.data.clamp_(-1, 1)
+    optimizer.step()
+    optimizer.zero_grad()
 
 
 env = environment.initialize("haba")
 num_episodes = 99999
 
 
+
 for i_episodes in range(num_episodes):
     state = env.reset()
     state = torch.Tensor(state).to(device)
-    state[:,0] = state[:,0]/3000
     for t in count():
         actions = get_actions(state)
         #TODO check whats faster. actions[].cpu or action.cpu()[]
-        actions_real = np.array((main_power[actions[:,0].cpu().tolist()], side_power[actions[:,1].cpu().tolist()]),dtype=np.float32)
+        actions_real = np.array((action_matrix[actions.cpu().tolist(),0], action_matrix[actions.cpu().tolist(),1]),dtype=np.float32)
+        # actions_real = np.array((main_power[(actions / side_space).cpu().tolist()], side_power[(actions % side_space).cpu().tolist()]),            dtype=np.float32)
         new_state, reward = env.step(actions_real)
         # reward -= 0.01*new_state[:,4]**2
         new_state = torch.Tensor(new_state).to(device)
-        new_state[:, 0] = new_state[:, 0] / 3000
         if env.done():
             exit(0)
-        positive_reward = len(list(filter(lambda x: x>0, reward)))
-        print(t, int(np.sum(reward)), positive_reward)
+        positive_reward = list(filter(lambda x: x>0, reward))
+        print(t, int(np.sum(positive_reward)), len(positive_reward))
         memory.push(state, actions, new_state, torch.Tensor(reward).to(device))
 
         # if positive_reward < 5:
@@ -176,10 +174,10 @@ for i_episodes in range(num_episodes):
         #     # state = torch.Tensor(state).to(device)
         #     exit("This universe is hopeless. Lets create another one :)")
 
-
         state = new_state
         # for x in range(5):
         optimize_model(t)
 
-        # if (t+1) % 200 == 0:
-        #     target_net.load_state_dict(policy_net.state_dict())
+        if (t+1) % 10 == 0:
+            target_net.load_state_dict(policy_net.state_dict())
+            # memory.erase()
