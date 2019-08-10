@@ -1,5 +1,5 @@
 //
-// Created by overlord on 13/02/19.
+// Created by SoliareofAstora on 13/02/19.
 //
 
 #ifndef SPACE_ENVIRO_ENTITIES_DATA_H
@@ -72,8 +72,8 @@ struct EntityArray {
 
 float Distance(EntityArray* a, int i, EntityArray* b, int j) {
   return sqrtf(
-      powf(a->position[i] + b->position[j], 2)
-          + powf(a->position[a->n + i] + b->position[b->n + j], 2));
+      powf(a->position[i] - b->position[j], 2)
+          + powf(a->position[a->n + i] - b->position[b->n + j], 2));
 }
 
 struct DynamicArray:EntityArray {
@@ -194,7 +194,7 @@ struct ShipArray:DynamicArray {
 
   void Reset(int index) {
     DynamicArray::Reset(index);
-    angle[index] = randNum(360);
+    angle[index] = 0; //randNum(360);
     v_angle[index] = 0;
     a_angle[index] = 0;
 

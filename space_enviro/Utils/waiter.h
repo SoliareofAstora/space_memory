@@ -1,5 +1,5 @@
 //
-// Created by overlord on 14/06/19.
+// Created by SoliareofAstora on 14/06/19.
 //
 
 #ifndef SPACE_ENVIRO_WAITER_H

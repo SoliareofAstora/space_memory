@@ -1,5 +1,5 @@
 //
-// Created by overlord on 26/01/19.
+// Created by SoliareofAstora on 26/01/19.
 //
 
 #include "environment_controller.h"
@@ -25,25 +25,32 @@ EnvironmentController::EnvironmentController(std::string a) {
 }
 
 boost::python::tuple EnvironmentController::Step(const boost::python::numpy::ndarray &action_vector) {
-  boost::python::tuple tmp = scenario->Step(reinterpret_cast<float*>(action_vector.get_data()));
+  boost::python::tuple state = scenario->Step(reinterpret_cast<float*>(action_vector.get_data()));
 
   sf::Event e;
   render_engine->window.pollEvent(e);
-
   if (render_engine->window.hasFocus()) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
-      render = false;
+      active = false;
       delete render_engine;
       delete scenario;
     }
-
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
-      if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift)) {
+    //todo refactor
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)
+    || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
+      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift)) {
         w.wait();
       }
-      render_engine->RenderState(scenario);
+      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
+        render_engine->RenderState(scenario, true);
+      } else {
+        render_engine->RenderState(scenario, false);
+      }
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R)){
+      Reset();
     }
   }
 
-  return tmp;
+  return state;
 }

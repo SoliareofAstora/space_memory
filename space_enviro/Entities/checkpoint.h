@@ -1,5 +1,5 @@
 //
-// Created by overlord on 28/05/19.
+// Created by SoliareofAstora on 28/05/19.
 //
 
 #ifndef SPACE_ENVIRO_CHECKPOINT_H

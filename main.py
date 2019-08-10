@@ -1,4 +1,4 @@
-import spaceLib as environment
+import space_enviro.spaceLib as environment
 
 import math
 import random
@@ -28,30 +28,31 @@ action_matrix = np.array([[0,0],[1,0],[0,-1],[0,1]])
 action_space = 4
 # action_space = main_space * side_space
 
-size = 100
+size = 50
 class Model(nn.Module):
     def __init__(self):
         super(Model, self).__init__()
 
-        self.fc0 = nn.Linear(5, size)
-        self.fc1 = nn.Linear(size, size)
-        self.fc2 = nn.Linear(size, size)
-        self.fc3 = nn.Linear(size, size)
-        self.fc4 = nn.Linear(size, size)
+        self.fc0 = nn.Linear(5, size, False)
+        self.fc1 = nn.Linear(size, size, False)
+        self.fc2 = nn.Linear(size, size, False)
+        # self.fc3 = nn.Linear(size, size, False)
+        # self.fc4 = nn.Linear(size, size)
+        self.fcoutput = nn.Linear(size, action_space, False)
 
         self.bn1 = nn.BatchNorm1d(num_features=size)
         self.bn2 = nn.BatchNorm1d(num_features=size)
-        self.bn3 = nn.BatchNorm1d(num_features=size)
-        self.bn4 = nn.BatchNorm1d(num_features=size)
+        # self.bn3 = nn.BatchNorm1d(num_features=size)
+        # self.bn4 = nn.BatchNorm1d(num_features=size)
 
-        self.fcoutput = nn.Linear(size, action_space)
+
 
     def forward(self, x):
-        x = torch.tanh(self.fc0(x))
+        x = torch.relu(self.fc0(x))
         x = self.bn1(torch.relu(self.fc1(x)))
         x = self.bn2(torch.relu(self.fc2(x)))
-        x = self.bn3(torch.relu(self.fc3(x)))
-        x = self.bn4(torch.tanh(self.fc4(x)))
+        # x = self.bn3(torch.relu(self.fc3(x)))
+        # x = self.bn4(torch.tanh(self.fc4(x)))
         return self.fcoutput(x)
 
 
@@ -82,15 +83,15 @@ class ReplayMemory(object):
 
 
 if not torch.cuda.is_available():
-    exit("No cuda")
+    exit("No cuda available ")
 
 device = torch.device("cuda")
 
-BATCH_SIZE = 30
+BATCH_SIZE = 50
 GAMMA = 0.999
-EPS_START = 0.80
+EPS_START = 0.8
 
-EPS_END = 0.001
+EPS_END = 0.01
 EPS_DECAY = 10000
 
 policy_net = Model().to(device)
@@ -99,14 +100,15 @@ target_net = Model().to(device)
 target_net.load_state_dict(policy_net.state_dict())
 target_net.eval()
 
-optimizer = optim.RMSprop(policy_net.parameters(), 0.001)
+loss_function = F.smooth_l1_loss
+optimizer = optim.RMSprop(policy_net.parameters(), 0.01)
 memory = ReplayMemory(1000)
 
 steps_done = 0
 
 def get_actions(state):
     with torch.no_grad():
-        output = policy_net(state)
+        output = target_net(state)
         q_values = F.softmax(output, dim=0)
 
     sample = random.random()
@@ -116,7 +118,7 @@ def get_actions(state):
     if sample > eps_threshold:
         return q_values.max(1)[1]
     else:
-        # return q_values.multinomial(1).squeeze()
+        # return q_values.multinomial(1).squeeze().detach()
         return torch.randint(action_space, [q_values.shape[0]]).to(device)
 
 
@@ -138,46 +140,37 @@ def optimize_model(i):
 
     excepted_state_action_value = (next_state_value.max(1)[0] * GAMMA) + reward_batch
 
-    loss = F.smooth_l1_loss(action_values, excepted_state_action_value.unsqueeze(1).detach())
+    loss = loss_function(action_values, excepted_state_action_value.unsqueeze(1).detach())
     loss.backward()
 
-    # for param in policy_net.parameters():
-    #     param.grad.data.clamp_(-1, 1)
+    for param in policy_net.parameters():
+        param.grad.data.clamp_(-1, 1)
     optimizer.step()
     optimizer.zero_grad()
-
 
 env = environment.initialize("haba")
 num_episodes = 99999
 
-
-
 for i_episodes in range(num_episodes):
     state = env.reset()
-    state = torch.autograd.Variable(torch.Tensor(state).to(device))
+    state = torch.Tensor(state).to(device)
     for t in count():
         actions = get_actions(state)
-        #TODO check whats faster. actions[].cpu or action.cpu()[]
         actions_real = np.array((action_matrix[actions.cpu().tolist(),0], action_matrix[actions.cpu().tolist(),1]),dtype=np.float32)
         # actions_real = np.array((main_power[(actions / side_space).cpu().tolist()], side_power[(actions % side_space).cpu().tolist()]),            dtype=np.float32)
-        new_state, reward = env.step(actions_real)
-        # reward -= 0.01*new_state[:,4]**2
-        new_state = torch.autograd.Variable(torch.Tensor(new_state).to(device))
-        if env.done():
+        new_state, reward, done = env.step(actions_real)
+        new_state[:, 0] = new_state[:, 0] / 3000
+        new_state = torch.Tensor(new_state).to(device)
+        if not env.active():
             exit(0)
         positive_reward = list(filter(lambda x: x>0, reward))
-        print(t, int(np.sum(positive_reward)), len(positive_reward))
-        memory.push(state, actions, new_state, torch.autograd.Variable(torch.Tensor(reward).to(device)))
+        print(t, int(np.sum(positive_reward)), len(positive_reward), int(np.sum(reward)))
+        memory.push(state, actions, new_state, torch.Tensor(reward).to(device))
 
-        # if positive_reward < 5:
-        #     # state = env.reset()
-        #     # state = torch.Tensor(state).to(device)
-        #     exit("This universe is hopeless. Lets create another one :)")
 
         state = new_state
-        # for x in range(5):
         optimize_model(t)
 
-        if (t+1) % 10 == 0:
+        if (t+1) % 100 == 0:
             target_net.load_state_dict(policy_net.state_dict())
             # memory.erase()

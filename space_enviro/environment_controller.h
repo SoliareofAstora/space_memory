@@ -1,5 +1,5 @@
 //
-// Created by overlord on 26/01/19.
+// Created by SoliareofAstora on 26/01/19.
 //
 
 #ifndef SPACE_ENVIRO_ENVIRONMENT_CONTROLLER_H
@@ -28,8 +28,9 @@ class EnvironmentController {
 
   bool render = true;
 
- public:
 
+ public:
+  bool active = true;
   EnvironmentController(std::string path_to_config);
 
   ~EnvironmentController() {
@@ -37,19 +38,18 @@ class EnvironmentController {
     delete render_engine;
   };
 
-  // todo change it to real env.done
-  bool Simulation() { return !render; }
-
   boost::python::tuple Step(const boost::python::numpy::ndarray &action_vector);
   boost::python::numpy::ndarray Reset() {
     return scenario->Reset();
   };
+
+  bool Active(){ return active;}
 };
 
 BOOST_PYTHON_MODULE (spaceLib) {
   boost::python::class_<EnvironmentController>(
       "initialize", boost::python::init<std::string>())
-      .def("done", &EnvironmentController::Simulation)
+      .def("active", &EnvironmentController::Active)
       .def("step", &EnvironmentController::Step)
       .def("reset", &EnvironmentController::Reset);
 }

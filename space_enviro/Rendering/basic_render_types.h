@@ -1,5 +1,5 @@
 //
-// Created by overlord on 13/06/19.
+// Created by SoliareofAstora on 13/06/19.
 //
 
 #ifndef SPACE_ENVIRO_BASIC_RENDER_TYPES_H
@@ -58,11 +58,11 @@ void RenderShip(sf::VertexArray* varr, int offset, entites::ShipArray* ships, in
 
 }
 
-void RenderSquare(sf::VertexArray* varr, int offset, entites::EntityArray* checkpoints, int i){
+void RenderSquare(sf::VertexArray* varr, int offset, entites::EntityArray* entities, int i){
 
-    float x = checkpoints->position[i];
-    float y = checkpoints->position[checkpoints->n+i];
-    float size = checkpoints->size[i];
+    float x = entities->position[i];
+    float y = entities->position[entities->n+i];
+    float size = entities->size[i];
 
     varr->operator[](offset+0).position=sf::Vector2f(
             (1.f/2)*size+x,
