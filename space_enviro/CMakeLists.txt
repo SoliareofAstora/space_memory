@@ -14,7 +14,7 @@ add_library(env SHARED
         Rendering/basic_render_types.h
         global_config.h
         Utils/waiter.h
-        )
+        Entities/ship_array.hpp Entities/dynamic_array.hpp)
 target_include_directories(env PUBLIC /usr/include/python3.6)
 target_link_libraries(
         env

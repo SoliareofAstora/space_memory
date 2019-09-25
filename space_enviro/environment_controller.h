@@ -31,7 +31,7 @@ class EnvironmentController {
 
  public:
   bool active = true;
-  EnvironmentController(std::string path_to_config);
+  EnvironmentController(int);
 
   ~EnvironmentController() {
     delete scenario;
@@ -48,7 +48,7 @@ class EnvironmentController {
 
 BOOST_PYTHON_MODULE (spaceLib) {
   boost::python::class_<EnvironmentController>(
-      "initialize", boost::python::init<std::string>())
+      "initialize", boost::python::init<int>())
       .def("active", &EnvironmentController::Active)
       .def("step", &EnvironmentController::Step)
       .def("reset", &EnvironmentController::Reset);

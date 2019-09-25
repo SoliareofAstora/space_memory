@@ -6,6 +6,7 @@ channels:
 dependencies:
   - python 3.7.1
   - ssl
+  - pip
   - conda-forge
   - cudnn
   - pytorch 
@@ -16,4 +17,13 @@ dependencies:
     - pandas
     - pytorch
     - torchvision
+    - namedlist
+  - pip:
+    - ray
+    - psutil
+    - setproctitle
+    - matplotlib
+    - gym
+    - gym[classic_control]
+    - gym[box2d]
   

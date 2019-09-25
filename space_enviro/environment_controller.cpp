@@ -4,9 +4,10 @@
 
 #include "environment_controller.h"
 
-EnvironmentController::EnvironmentController(std::string a) {
+EnvironmentController::EnvironmentController(int n_ships) {
 
-  std::cout << "Initializing Space_Memory Environment\nLoading config from: " << a << "\n";
+  std::cout << "Initializing Space_Memory Environment\n";
+//  std::cout << "Loading config from: " << a << "\n";
   // Load config file
 
   std::cout << "Initializing Boost, Numpy \n";
@@ -14,7 +15,7 @@ EnvironmentController::EnvironmentController(std::string a) {
   boost::python::numpy::initialize();
 
   std::cout << "Initializing Scenario\n";
-  scenario = new Checkpoints(1000);
+  scenario = new Checkpoints(n_ships);
 
   if (render) {
     std::cout << "Initializing RenderEngine\n";

@@ -1,4 +1,4 @@
-import spaceLib as environment
+import space_enviro.spaceLib as environment
 
 import math
 import random
@@ -147,7 +147,7 @@ def optimize_model(i):
     optimizer.zero_grad()
 
 
-env = environment.initialize("haba")
+env = environment.initialize(100)
 num_episodes = 99999
 
 
@@ -160,10 +160,10 @@ for i_episodes in range(num_episodes):
         #TODO check whats faster. actions[].cpu or action.cpu()[]
         actions_real = np.array((action_matrix[actions.cpu().tolist(),0], action_matrix[actions.cpu().tolist(),1]),dtype=np.float32)
         # actions_real = np.array((main_power[(actions / side_space).cpu().tolist()], side_power[(actions % side_space).cpu().tolist()]),            dtype=np.float32)
-        new_state, reward = env.step(actions_real)
+        new_state, reward, _ = env.step(actions_real)
         # reward -= 0.01*new_state[:,4]**2
         new_state = torch.autograd.Variable(torch.Tensor(new_state).to(device))
-        if env.done():
+        if not env.active():
             exit(0)
         positive_reward = list(filter(lambda x: x>0, reward))
         print(t, int(np.sum(positive_reward)), len(positive_reward))
@@ -177,6 +177,7 @@ for i_episodes in range(num_episodes):
         state = new_state
         # for x in range(5):
         optimize_model(t)
+        steps_done +=1
 
         if (t+1) % 10 == 0:
             target_net.load_state_dict(policy_net.state_dict())

@@ -12,7 +12,7 @@ import math
 env = gym.make('CartPole-v1')
 action_space = env.action_space.n
 state_shape = env.observation_space.shape[0]
-hidden_size = 200
+hidden_size = 100
 
 
 class Model(nn.Module):
@@ -57,7 +57,7 @@ optimizer = optim.Adam(policy_net.parameters())
 
 N_EPISODES = 5000
 BATCH_SIZE = 500
-GAMMA = 0.8
+GAMMA = 0.9
 
 
 def optimize_model():

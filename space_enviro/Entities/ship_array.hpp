@@ -1,0 +1,8 @@
+//
+// Created by SoliareofAstora on 15.08.2019.
+//
+
+#ifndef SPACE_ENVIRO_ENTITIES_SHIP_ARRAY_HPP_
+#define SPACE_ENVIRO_ENTITIES_SHIP_ARRAY_HPP_
+
+#endif //SPACE_ENVIRO_ENTITIES_SHIP_ARRAY_HPP_

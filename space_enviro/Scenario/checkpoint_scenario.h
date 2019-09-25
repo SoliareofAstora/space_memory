@@ -20,8 +20,7 @@ class Checkpoints:public ScenarioBase {
   int n;
   entites::ShipArray* ship_array;
   CheckpointArray* checkpoint_array;
-
-  /*
+/*
 * 0 - distance between ship and checkpoint
 * 1 - angle between ship direction and checkpoint
 * 2 - velocity
@@ -70,7 +69,7 @@ class Checkpoints:public ScenarioBase {
         distance[i] = entites::Distance(ship_array, i, checkpoint_array, i);
         done[i] = true;
       }
-      if (distance[i] < 50) {
+      if (distance[i] < 100) {
         reward[i] = 100;
         checkpoint_array->ResetCheckpoint(i);
         distance[i] = entites::Distance(ship_array, i, checkpoint_array, i);

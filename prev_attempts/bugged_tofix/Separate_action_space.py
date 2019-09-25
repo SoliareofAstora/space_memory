@@ -1,4 +1,4 @@
-import spaceLib as environment
+import space_enviro.spaceLib as environment
 
 import math
 import random
@@ -149,7 +149,7 @@ def optimize_model(i):
         target_net.load_state_dict(policy_net.state_dict())
 
 
-env = environment.initialize("haba")
+env = environment.initialize(100)
 num_episodes = 99999
 
 
@@ -161,11 +161,11 @@ for i_episodes in range(num_episodes):
         actions = get_actions(state)
         #TODO check whats faster. actions[].cpu or action.cpu()[]
         actions_real = np.array((main_power[actions[:,0].cpu().tolist()], side_power[actions[:,1].cpu().tolist()]),dtype=np.float32)
-        new_state, reward = env.step(actions_real)
+        new_state, reward,_ = env.step(actions_real)
         # reward -= 0.01*new_state[:,4]**2
         new_state = torch.Tensor(new_state).to(device)
         new_state[:, 0] = new_state[:, 0] / 3000
-        if env.done():
+        if not env.active():
             exit(0)
         positive_reward = len(list(filter(lambda x: x>0, reward)))
         print(t, int(np.sum(reward)), positive_reward)
