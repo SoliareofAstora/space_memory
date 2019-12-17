@@ -11,14 +11,15 @@
 #include <SFML/Graphics/VertexArray.hpp>
 
 #include "scenario_base.h"
-#include "../Entities/entities_data.h"
+#include "../Entities/Data/ship.h"
 #include "../Entities/checkpoint.h"
-#include "../Rendering/basic_render_types.h"
+#include "../Rendering/Primitives/render_ship.h"
+#include "../Rendering/Primitives/render_square.hpp"
 
 class Checkpoints:public ScenarioBase {
  public:
   int n;
-  entites::ShipArray* ship_array;
+  entity_data::Ship* ship_array;
   CheckpointArray* checkpoint_array;
 /*
 * 0 - distance between ship and checkpoint
@@ -33,14 +34,14 @@ class Checkpoints:public ScenarioBase {
   bool* done;
 
   Checkpoints(int n):n(n) {
-    ship_array = new entites::ShipArray(n);
+    ship_array = new entity_data::Ship(n);
     checkpoint_array = new CheckpointArray(n, 700);
     observations = new float[n * 5];
     reward = new float[n];
     distance = new float[n];
     done = new bool[n];
     for (int i = 0; i < n; ++i) {
-      distance[i] = entites::Distance(ship_array, i, checkpoint_array, i);
+      distance[i] = entity_data::Distance(ship_array, i, checkpoint_array, i);
       reward[i] = 0;
     }
   }
@@ -62,17 +63,17 @@ class Checkpoints:public ScenarioBase {
     std::fill(done, done + n, false);
 
     for (int i = 0; i < n; ++i) {
-      distance[i] = entites::Distance(ship_array, i, checkpoint_array, i);
+      distance[i] = entity_data::Distance(ship_array, i, checkpoint_array, i);
       if (distance[i] > 3000) {
         reward[i] = -100;
         ship_array->Reset(i);
-        distance[i] = entites::Distance(ship_array, i, checkpoint_array, i);
+        distance[i] = entity_data::Distance(ship_array, i, checkpoint_array, i);
         done[i] = true;
       }
       if (distance[i] < 100) {
         reward[i] = 100;
         checkpoint_array->ResetCheckpoint(i);
-        distance[i] = entites::Distance(ship_array, i, checkpoint_array, i);
+        distance[i] = entity_data::Distance(ship_array, i, checkpoint_array, i);
       } else {
         reward[i] -= distance[i];
       }
@@ -98,7 +99,7 @@ class Checkpoints:public ScenarioBase {
     checkpoint_array->Reset();
     ship_array->ResetAllValues();
     for (int i = 0; i < n; ++i) {
-      distance[i] = entites::Distance(ship_array, i, checkpoint_array, i);
+      distance[i] = entity_data::Distance(ship_array, i, checkpoint_array, i);
     }
     return CalculateObservations();
   }

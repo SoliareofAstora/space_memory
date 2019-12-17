@@ -5,13 +5,13 @@
 #ifndef SPACE_ENVIRO_CHECKPOINT_H
 #define SPACE_ENVIRO_CHECKPOINT_H
 
-#include "entities_data.h"
+#include "Data/base_entity.h"
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
 
 
-struct CheckpointArray:entites::EntityArray{
+struct CheckpointArray:entity_data::BaseEntity{
 
     int max_distance;
     int randNum()
@@ -19,20 +19,20 @@ struct CheckpointArray:entites::EntityArray{
        return random() % (2*max_distance) -max_distance;
     }
 
-    CheckpointArray(const int checkpoints_count, int maxdistance):entites::EntityArray(checkpoints_count){
+    CheckpointArray(const int checkpoints_count, int maxdistance):entity_data::BaseEntity(checkpoints_count){
         srand(time(0));
         max_distance = maxdistance;
         for (int i = 0; i < n; ++i) {
-            entites::EntityArray::ChangePosition(i,randNum(), randNum());
+          entity_data::BaseEntity::ChangePosition(i, randNum(), randNum());
         }
     }
 
     void ResetCheckpoint(int i){
-        entites::EntityArray::ChangePosition(i,randNum(),randNum());
+      entity_data::BaseEntity::ChangePosition(i, randNum(), randNum());
     }
 
     void Reset(){
-        for (int j = 0; j < entites::EntityArray::n; ++j) {
+        for (int j = 0; j < entity_data::BaseEntity::n; ++j) {
             ResetCheckpoint(j);
         }
     }

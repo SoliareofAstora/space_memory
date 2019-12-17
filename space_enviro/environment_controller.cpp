@@ -7,8 +7,6 @@
 EnvironmentController::EnvironmentController(int n_ships) {
 
   std::cout << "Initializing Space_Memory Environment\n";
-//  std::cout << "Loading config from: " << a << "\n";
-  // Load config file
 
   std::cout << "Initializing Boost, Numpy \n";
   Py_Initialize();
@@ -36,13 +34,16 @@ boost::python::tuple EnvironmentController::Step(const boost::python::numpy::nda
       delete render_engine;
       delete scenario;
     }
+
     //todo refactor
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)
     || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift)) {
         w.wait();
       }
+
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
+        //todo write debug mode parameter into
         render_engine->RenderState(scenario, true);
       } else {
         render_engine->RenderState(scenario, false);
@@ -54,4 +55,13 @@ boost::python::tuple EnvironmentController::Step(const boost::python::numpy::nda
   }
 
   return state;
+}
+
+boost::python::numpy::ndarray EnvironmentController::Reset() {return scenario->Reset();}
+
+bool EnvironmentController::Active() { return active;}
+
+EnvironmentController::~EnvironmentController() {
+  delete scenario;
+  delete render_engine;
 }

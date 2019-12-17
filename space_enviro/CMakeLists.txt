@@ -4,17 +4,21 @@ project(space_enviro)
 set(CMAKE_CXX_STANDARD 17)
 
 add_library(env SHARED
-        environment_controller.h
         environment_controller.cpp
+        environment_controller.h
         Rendering/render_engine.h
-        Entities/entities_data.h
         Entities/checkpoint.h
         Scenario/scenario_base.h
         Scenario/checkpoint_scenario.h
-        Rendering/basic_render_types.h
         global_config.h
         Utils/waiter.h
-        Entities/ship_array.hpp Entities/dynamic_array.hpp)
+        Entities/ship_array.hpp
+        Entities/Data/base_entity.h
+        Entities/Data/dynamic_entity.h
+        Entities/Data/ship.h
+        Rendering/Primitives/render_ship.h
+        Rendering/Primitives/render_square.hpp
+        )
 target_include_directories(env PUBLIC /usr/include/python3.6)
 target_link_libraries(
         env
