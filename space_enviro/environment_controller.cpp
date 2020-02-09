@@ -4,7 +4,7 @@
 
 #include "environment_controller.h"
 
-EnvironmentController::EnvironmentController(int n_ships) {
+EnvironmentController::EnvironmentController(const boost::python::dict& parameters) {
 
   std::cout << "Initializing Space_Memory Environment\n";
 
@@ -13,7 +13,7 @@ EnvironmentController::EnvironmentController(int n_ships) {
   boost::python::numpy::initialize();
 
   std::cout << "Initializing Scenario\n";
-  scenario = new Checkpoints(n_ships);
+  scenario = load_scenario(parameters);
 
   if (render) {
     std::cout << "Initializing RenderEngine\n";
@@ -30,9 +30,7 @@ boost::python::tuple EnvironmentController::Step(const boost::python::numpy::nda
   render_engine->window.pollEvent(e);
   if (render_engine->window.hasFocus()) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
-      active = false;
-      delete render_engine;
-      delete scenario;
+      Close();
     }
 
     //todo refactor
@@ -42,12 +40,7 @@ boost::python::tuple EnvironmentController::Step(const boost::python::numpy::nda
         w.wait();
       }
 
-      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
-        //todo write debug mode parameter into
-        render_engine->RenderState(scenario, true);
-      } else {
-        render_engine->RenderState(scenario, false);
-      }
+      render_engine->RenderState(scenario, sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) ? true : false);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R)){
       Reset();
@@ -64,4 +57,10 @@ bool EnvironmentController::Active() { return active;}
 EnvironmentController::~EnvironmentController() {
   delete scenario;
   delete render_engine;
+}
+
+void EnvironmentController::Close() {
+  active = false;
+  delete render_engine;
+  delete scenario;
 }

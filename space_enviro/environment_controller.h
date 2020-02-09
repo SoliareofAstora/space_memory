@@ -12,7 +12,7 @@
 
 #include "Rendering/render_engine.h"
 #include "Scenario/scenario_base.h"
-#include "Scenario/checkpoint_scenario.h"
+#include "Scenario/load_scenario.hpp"
 #include "global_config.h"
 #include "Utils/waiter.h"
 
@@ -28,25 +28,26 @@ class EnvironmentController {
 
   bool render = true;
 
-
  public:
   bool active = true;
-  EnvironmentController(int);
+  explicit EnvironmentController(const boost::python::dict&);
 
   ~EnvironmentController();
 
   boost::python::tuple Step(const boost::python::numpy::ndarray &action_vector);
   boost::python::numpy::ndarray Reset();
 
+  void Close();
   bool Active();
 };
 
 BOOST_PYTHON_MODULE (spaceLib) {
-  boost::python::class_<EnvironmentController>(
-      "initialize", boost::python::init<int>())
+  boost::python::class_<EnvironmentController>("initialize", boost::python::init<boost::python::dict>())
       .def("active", &EnvironmentController::Active)
       .def("step", &EnvironmentController::Step)
-      .def("reset", &EnvironmentController::Reset);
+      .def("reset", &EnvironmentController::Reset)
+      .def("close",&EnvironmentController::Close)
+      ;
 }
 
 #endif

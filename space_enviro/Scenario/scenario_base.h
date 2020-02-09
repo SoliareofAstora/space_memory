@@ -9,6 +9,8 @@
 #include <boost/python/tuple.hpp>
 #include <boost/python/numpy.hpp>
 
+
+
 struct ScenarioBase {
   ScenarioBase() = default;
   virtual ~ScenarioBase() = default;
