@@ -74,7 +74,16 @@ struct Ship:DynamicEntity {
 
     engines_control[index] = 0;
     engines_control[index + n] = 0;
+  }
 
+  void ResetWithRandomVelocity(int index, int minV, int maxV, int maxAngleV) {
+    DynamicEntity::ResetWithRandomVelocity(index, minV, maxV);
+    angle[index] = random() % 360;
+    v_angle[index] = random() % (2*maxAngleV) - maxAngleV;
+    a_angle[index] = 0;
+
+    engines_control[index] = 0;
+    engines_control[index + n] = 0;
   }
 
   void Update(float* actions) {

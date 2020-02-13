@@ -10,43 +10,44 @@
 #include <boost/python.hpp>
 #include <boost/python/numpy.hpp>
 
-#include "Rendering/render_engine.h"
-#include "Scenario/scenario_base.h"
-#include "Scenario/load_scenario.hpp"
+#include "Scenario/base.h"
 #include "global_config.h"
 #include "Utils/waiter.h"
+#include "Utils/switch_bools.hpp"
+#include "Rendering/render_engine.h"
 
 class EnvironmentController {
 
  private:
 
   rendering::RenderEngine* render_engine;
-  ScenarioBase* scenario;
+  scenario::ScenarioBase* scenario;
 
-  //todo move frame rate limiter to render_engine
   Waiter w = Waiter(static_cast<int>(time_step * 1000));
+  SwitchBools controller = SwitchBools(std::vector<std::string>({"reset", "render", "real_time", "debug"}));
 
-  bool render = true;
 
  public:
-  bool active = true;
   explicit EnvironmentController(const boost::python::dict&);
 
   ~EnvironmentController();
 
   boost::python::tuple Step(const boost::python::numpy::ndarray &action_vector);
+  boost::python::tuple RenderStep(const boost::python::numpy::ndarray &action_vector);
+//  boost::python::tuple ManualStep();
   boost::python::numpy::ndarray Reset();
 
   void Close();
-  bool Active();
 };
 
 BOOST_PYTHON_MODULE (spaceLib) {
-  boost::python::class_<EnvironmentController>("initialize", boost::python::init<boost::python::dict>())
-      .def("active", &EnvironmentController::Active)
+  boost::python::class_<EnvironmentController>
+      ("initialize", boost::python::init<boost::python::dict>())
       .def("step", &EnvironmentController::Step)
+      .def("render_step", &EnvironmentController::RenderStep)
       .def("reset", &EnvironmentController::Reset)
       .def("close",&EnvironmentController::Close)
+//      .def("manual_step", &EnvironmentController::ManualStep)
       ;
 }
 

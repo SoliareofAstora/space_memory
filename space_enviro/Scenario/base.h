@@ -8,8 +8,9 @@
 #include <SFML/Graphics/VertexArray.hpp>
 #include <boost/python/tuple.hpp>
 #include <boost/python/numpy.hpp>
+#include <boost/python.hpp>
 
-
+namespace scenario{
 
 struct ScenarioBase {
   ScenarioBase() = default;
@@ -27,4 +28,5 @@ struct ScenarioBase {
   virtual void RenderDebug(sf::VertexArray* vertex_array) {}
 };
 
+}// namespace scenario
 #endif //SPACE_ENVIRO_SCENARIO_BASE_H

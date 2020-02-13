@@ -59,6 +59,15 @@ struct DynamicEntity:BaseEntity {
     a[index] = 0;
     a[n + index] =0;
   }
+
+  void ResetWithRandomVelocity(int index, int minV, int maxV){
+    BaseEntity::Reset(index);
+    v[index] = random() % (maxV-minV)+minV;
+    v[n + index] = random() % (maxV-minV)+minV;
+    a[index] = 0;
+    a[n + index] =0;
+  }
+
   void Update() {
 //            todo parallel here
     for (int i = 0; i < remaining; ++i) {
@@ -75,6 +84,15 @@ struct DynamicEntity:BaseEntity {
     }
   }
   // todo Gravity_influence
+  void SaveVelocityNorms(float* output){
+    for (int i = 0; i < remaining; ++i) {
+      output[i]=  sqrtf(powf(v[i],2) + powf(v[n + i],2));
+    }
+  }
+
+  float GetVelovityNorm(int index){
+    return sqrtf(powf(v[index],2) + powf(v[n + index],2));
+  }
 };
 }// namespace entity_data
 

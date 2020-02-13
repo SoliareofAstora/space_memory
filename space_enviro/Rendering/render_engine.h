@@ -9,7 +9,7 @@
 #include <cmath>
 #include <iostream>
 #include <boost/math_fwd.hpp>
-#include "../Scenario/scenario_base.h"
+#include "../Scenario/base.h"
 
 namespace rendering{
 
@@ -20,7 +20,7 @@ class RenderEngine {
   sf::VertexArray* vertex_array;
   sf::VertexArray* debug_vertex_array;
 
-  RenderEngine(ScenarioBase* scenario) {
+  RenderEngine(scenario::ScenarioBase* scenario) {
 
     sf::View v(sf::FloatRect(-750, -750, 1500, 1500));
     window.setView(v);
@@ -30,7 +30,7 @@ class RenderEngine {
 
   }
 
-  void RenderState(ScenarioBase* scenario, bool debug) {
+  void RenderState(scenario::ScenarioBase* scenario, bool debug) {
     window.clear();
     scenario->Render(vertex_array);
     window.draw(*vertex_array);

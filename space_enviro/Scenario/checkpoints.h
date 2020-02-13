@@ -10,17 +10,18 @@
 #include <boost/python/numpy.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
 
-#include "scenario_base.h"
+#include "base.h"
 #include "../Entities/Data/ship.h"
 #include "../Entities/checkpoint.h"
 #include "../Rendering/Primitives/render_ship.h"
 #include "../Rendering/Primitives/render_square.hpp"
 
+namespace scenario{
+
 class Checkpoints:public ScenarioBase {
  public:
   int n;
-  entity_data::Ship* ship_array;
-  CheckpointArray* checkpoint_array;
+
 /*
 * 0 - distance between ship and checkpoint
 * 1 - angle between ship direction and checkpoint
@@ -28,12 +29,15 @@ class Checkpoints:public ScenarioBase {
 * 3 - velocity vector angle wr to ship direction
 * 4 - angular velocity
 */
+  entity_data::Ship* ship_array;
+  CheckpointArray* checkpoint_array;
   float* observations;
   float* reward;
   float* distance;
   bool* done;
 
-  Checkpoints(int n):n(n) {
+  Checkpoints(const boost::python::dict &parameters)
+  :n(boost::python::extract<int>(parameters["n"])) {
     ship_array = new entity_data::Ship(n);
     checkpoint_array = new CheckpointArray(n, 700);
     observations = new float[n * 5];
@@ -159,28 +163,29 @@ class Checkpoints:public ScenarioBase {
           ship_array->position[n + i]);
 
       //Target checkpoint
-      vertex_array->operator[](6*i+0).position=ship_position;
-      vertex_array->operator[](6*i+1).position=
+      vertex_array->operator[](6 * i + 0).position = ship_position;
+      vertex_array->operator[](6 * i + 1).position =
           ship_position + sf::Vector2f(
-          observations[i]*sinf(ship_array->angle[i] + observations[1 * n + i]),
-          observations[i]*cosf(ship_array->angle[i] + observations[1 * n + i]));
+              observations[i] * sinf(ship_array->angle[i] + observations[1 * n + i]),
+              observations[i] * cosf(ship_array->angle[i] + observations[1 * n + i]));
 
       //Velocity vector
-      vertex_array->operator[](6*i+2).position=ship_position;
-      vertex_array->operator[](6*i+3).position=
+      vertex_array->operator[](6 * i + 2).position = ship_position;
+      vertex_array->operator[](6 * i + 3).position =
           ship_position + sf::Vector2f(
-          10*observations[2*n + i]*sinf(ship_array->angle[i] + observations[3 * n + i]),
-          10*observations[2*n + i]*cosf(ship_array->angle[i] + observations[3 * n + i]));
+              10 * observations[2 * n + i] * sinf(ship_array->angle[i] + observations[3 * n + i]),
+              10 * observations[2 * n + i] * cosf(ship_array->angle[i] + observations[3 * n + i]));
 
       //Angular velocity
-      vertex_array->operator[](6*i+4).position= vertex_array->operator[](6*i+3).position;
-      vertex_array->operator[](6*i+5).position= vertex_array->operator[](6*i+3).position + sf::Vector2f(
-              20*observations[4*n + i]*sinf(ship_array->angle[i] + observations[3 * n + i] + M_PI_2f32),
-              20*observations[4*n + i]*cosf(ship_array->angle[i] + observations[3 * n + i] + M_PI_2f32));
+      vertex_array->operator[](6 * i + 4).position = vertex_array->operator[](6 * i + 3).position;
+      vertex_array->operator[](6 * i + 5).position = vertex_array->operator[](6 * i + 3).position + sf::Vector2f(
+          20 * observations[4 * n + i] * sinf(ship_array->angle[i] + observations[3 * n + i] + M_PI_2f32),
+          20 * observations[4 * n + i] * cosf(ship_array->angle[i] + observations[3 * n + i] + M_PI_2f32));
     }
   }
 };
 
+} // namespace scenario
 /*
 * 0 - distance between ship and checkpoint
 * 1 - angle between ship direction and checkpoint
