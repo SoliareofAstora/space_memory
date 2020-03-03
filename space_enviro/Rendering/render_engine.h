@@ -27,7 +27,6 @@ class RenderEngine {
 
     vertex_array = scenario->InitializeVertexArray();
     debug_vertex_array = scenario->InitializeDebugRender();
-
   }
 
   void RenderState(scenario::ScenarioBase* scenario, bool debug) {
@@ -39,7 +38,6 @@ class RenderEngine {
       window.draw(*debug_vertex_array);
     }
     window.display();
-
   }
 
   ~RenderEngine() {

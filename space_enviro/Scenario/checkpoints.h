@@ -145,10 +145,10 @@ class Checkpoints:public ScenarioBase {
 
   void Render(sf::VertexArray* vertex_array) override {
     for (int i = 0; i < n; ++i) {
-      RenderSquare(vertex_array, i * 6, checkpoint_array, i);
+      rendering::RenderSquare(vertex_array, i * 6, checkpoint_array, i);
     }
     for (int i = 0; i < n; ++i) {
-      RenderShip(vertex_array, n * 6 + i * 9, ship_array, i);
+      rendering::RenderShip(vertex_array, n * 6 + i * 9, ship_array, i);
     }
   }
 

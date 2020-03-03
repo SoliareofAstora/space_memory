@@ -47,7 +47,6 @@ class SwitchBools {
   bool operator[](const std::string name) {
     return values[3 * names[name]];
   }
-
 };
 
 

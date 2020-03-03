@@ -19,7 +19,10 @@ add_library(env SHARED
         Scenario/checkpoints.h
         Scenario/load.h
         Scenario/stopping.hpp
-        Utils/switch_bools.hpp)
+        Utils/switch_bools.hpp
+        Utils/randoms.hpp
+        Rendering/Observations/render_distance.hpp
+        Rendering/Observations/render_ship_velocity.hpp)
 target_include_directories(env PUBLIC /usr/include/python3.6)
 target_link_libraries(
         env

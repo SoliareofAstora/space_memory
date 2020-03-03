@@ -17,6 +17,7 @@ struct ScenarioBase {
   virtual ~ScenarioBase() = default;
 
   virtual boost::python::tuple Step(float* actions) {}
+  virtual boost::python::tuple ManualStep() {}
   virtual boost::python::numpy::ndarray Reset() {}
   virtual int test() {}
 

@@ -78,8 +78,8 @@ struct Ship:DynamicEntity {
 
   void ResetWithRandomVelocity(int index, int minV, int maxV, int maxAngleV) {
     DynamicEntity::ResetWithRandomVelocity(index, minV, maxV);
-    angle[index] = random() % 360;
-    v_angle[index] = random() % (2*maxAngleV) - maxAngleV;
+    angle[index] = RNG::RandomFloat(360);
+    v_angle[index] = RNG::RandomFloatMirror(maxAngleV);
     a_angle[index] = 0;
 
     engines_control[index] = 0;
@@ -100,6 +100,7 @@ struct Ship:DynamicEntity {
     }
     DynamicEntity::Update();
   }
+
   ~Ship() {
     delete[] hit_points;
     delete[] main_engine_power;

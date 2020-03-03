@@ -19,11 +19,12 @@
 
 namespace scenario{
 
-class Stopping:public ScenarioBase{
+class Stopping:public ScenarioBase {
  public:
   int n;
   float passThreshold;
   float resetThreshold;
+  float resetAngleThreshold;
   int minV;
   int maxV;
   int maxAngleV;
@@ -41,9 +42,11 @@ class Stopping:public ScenarioBase{
   bool* done;
 
   Stopping(const boost::python::dict &parameters)
-  :n(boost::python::extract<int>(parameters["n"])) {
+      :n(boost::python::extract<int>(parameters["n"])) {
     passThreshold = boost::python::extract<float>(parameters["passThreshold"]);
     resetThreshold = boost::python::extract<float>(parameters["resetThreshold"]);
+    resetAngleThreshold = boost::python::extract<float>(parameters["resetAngleThreshold"]);
+
     minV = boost::python::extract<int>(parameters["minV"]);
     maxV = boost::python::extract<int>(parameters["maxV"]);
     maxAngleV = boost::python::extract<int>(parameters["maxAngleV"]);
@@ -71,6 +74,10 @@ class Stopping:public ScenarioBase{
     delete[] done;
   }
 
+  boost::python::tuple ManualStep() override {
+
+  }
+
   boost::python::tuple Step(float* actions) override {
     ship_array->Update(actions);
     ship_array->SaveVelocityNorms(currentVelocity);
@@ -78,20 +85,21 @@ class Stopping:public ScenarioBase{
 
     for (int i = 0; i < n; ++i) {
 
-      reward[i]= previousVelocity[i]-currentVelocity[i];
-      if(currentVelocity[i] < passThreshold){
-        reward[i]=1;
-        done[i]=true;
-        ship_array->ResetWithRandomVelocity(i,minV,maxV,maxAngleV);
-        currentVelocity[i]=ship_array->GetVelovityNorm(i);
+      reward[i] = previousVelocity[i] - currentVelocity[i];
+      if (currentVelocity[i] < passThreshold) {
+        reward[i] = 1;
+        done[i] = true;
+        ship_array->ResetWithRandomVelocity(i, minV, maxV, maxAngleV);
+        currentVelocity[i] = ship_array->GetVelovityNorm(i);
       }
-      if(currentVelocity[i] > resetThreshold){
-        reward[i]=-1;
-        done[i]=true;
-        ship_array->ResetWithRandomVelocity(i,minV,maxV,maxAngleV);
-        currentVelocity[i]=ship_array->GetVelovityNorm(i);
+      if (currentVelocity[i] > resetThreshold ||
+      (ship_array->v_angle[i]> resetAngleThreshold|| ship_array->v_angle[i]<-resetAngleThreshold)) {
+        reward[i] = -1;
+        done[i] = true;
+        ship_array->ResetWithRandomVelocity(i, minV, maxV, maxAngleV);
+        currentVelocity[i] = ship_array->GetVelovityNorm(i);
       }
-      previousVelocity[i]=currentVelocity[i];
+      previousVelocity[i] = currentVelocity[i];
     }
 
     boost::python::tuple reward_shape = boost::python::make_tuple(n);
@@ -129,12 +137,11 @@ class Stopping:public ScenarioBase{
 
   boost::python::numpy::ndarray Reset() override {
     for (int i = 0; i < n; ++i) {
-      ship_array->ResetWithRandomVelocity(i,minV,maxV,maxAngleV);
-      currentVelocity[i]=ship_array->GetVelovityNorm(i);
+      ship_array->ResetWithRandomVelocity(i, minV, maxV, maxAngleV);
+      currentVelocity[i] = ship_array->GetVelovityNorm(i);
     }
     return CalculateObservations();
   }
-
 
   sf::VertexArray* InitializeVertexArray() override {
     sf::VertexArray* vertex_array = new sf::VertexArray(sf::Triangles, 9 * n);
@@ -150,14 +157,18 @@ class Stopping:public ScenarioBase{
 
   void Render(sf::VertexArray* vertex_array) override {
     for (int i = 0; i < n; ++i) {
-      RenderShip(vertex_array, i * 9, ship_array, i);
+      rendering::RenderShip(vertex_array, i * 9, ship_array, i);
     }
   }
 
   virtual sf::VertexArray* InitializeDebugRender() {
     return new sf::VertexArray(sf::Lines, 4 * n);
   }
-
+/*
+  * 0 - velocity
+  * 1 - velocity vector angle wr to ship direction
+  * 2 - angular velocity
+  * */
   virtual void RenderDebug(sf::VertexArray* vertex_array) {
     for (int i = 0; i < n; ++i) {
       sf::Vector2f ship_position = sf::Vector2f(
@@ -165,17 +176,17 @@ class Stopping:public ScenarioBase{
           ship_array->position[n + i]);
 
       //Velocity vector
-      vertex_array->operator[](6 * i + 0).position = ship_position;
-      vertex_array->operator[](6 * i + 1).position =
+      vertex_array->operator[](4 * i + 0).position = ship_position;
+      vertex_array->operator[](4 * i + 1).position =
           ship_position + sf::Vector2f(
-              10 * observations[2 * n + i] * sinf(ship_array->angle[i] + observations[3 * n + i]),
-              10 * observations[2 * n + i] * cosf(ship_array->angle[i] + observations[3 * n + i]));
+              10 * observations[0 * n + i] * sinf(ship_array->angle[i] + observations[1 * n + i]),
+              10 * observations[0 * n + i] * cosf(ship_array->angle[i] + observations[1 * n + i]));
 
       //Angular velocity
-      vertex_array->operator[](6 * i + 2).position = vertex_array->operator[](6 * i + 3).position;
-      vertex_array->operator[](6 * i + 3).position = vertex_array->operator[](6 * i + 3).position + sf::Vector2f(
-          20 * observations[4 * n + i] * sinf(ship_array->angle[i] + observations[3 * n + i] + M_PI_2f32),
-          20 * observations[4 * n + i] * cosf(ship_array->angle[i] + observations[3 * n + i] + M_PI_2f32));
+      vertex_array->operator[](4 * i + 2).position = vertex_array->operator[](4 * i + 1).position;
+      vertex_array->operator[](4 * i + 3).position = vertex_array->operator[](4 * i + 1).position + sf::Vector2f(
+          20 * observations[2 * n + i] * sinf(ship_array->angle[i] + observations[1 * n + i] + M_PI_2f32),
+          20 * observations[2 * n + i] * cosf(ship_array->angle[i] + observations[1 * n + i] + M_PI_2f32));
     }
   }
 };

@@ -10,6 +10,7 @@
 #include <utility>
 #include "base_entity.h"
 #include "../../global_config.h"
+#include "../../Utils/randoms.hpp"
 
 
 namespace entity_data{
@@ -62,8 +63,8 @@ struct DynamicEntity:BaseEntity {
 
   void ResetWithRandomVelocity(int index, int minV, int maxV){
     BaseEntity::Reset(index);
-    v[index] = random() % (maxV-minV)+minV;
-    v[n + index] = random() % (maxV-minV)+minV;
+    v[index] = RNG::RandomFloat(minV, maxV);
+    v[n + index] = RNG::RandomFloat(minV, maxV);
     a[index] = 0;
     a[n + index] =0;
   }

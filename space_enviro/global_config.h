@@ -5,6 +5,6 @@
 #ifndef SPACE_ENVIRO__GLOBAL_CONFIG_H_
 #define SPACE_ENVIRO__GLOBAL_CONFIG_H_
 
-const float time_step = 0.5f;
+const float time_step = 0.1f;
 
 #endif //SPACE_ENVIRO__GLOBAL_CONFIG_H_

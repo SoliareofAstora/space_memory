@@ -5,16 +5,19 @@
 #include "environment_controller.h"
 #include "Scenario/load.h"
 
-EnvironmentController::EnvironmentController(const boost::python::dict& parameters) {
+EnvironmentController::EnvironmentController(const boost::python::dict &parameters) {
 
   std::cout << "Initializing Space_Memory Environment\n";
+
+  std::cout<<"Seed: "<<boost::python::extract<int>(parameters["seed"])<<"\n";
+  srand(boost::python::extract<int>(parameters["seed"]));
 
   std::cout << "Initializing Boost and Numpy in C++ \n";
   Py_Initialize();
   boost::python::numpy::initialize();
 
-  std::cout << "Loading Scenario ";
-  std::cout << std::string(boost::python::extract<std::string>(parameters["scenario_name"])) + "\n";
+  std::cout << "Loading Scenario: ";
+  std::cout << std::string(boost::python::extract<std::string>(parameters["scenario_name"]))<<"\n";
   scenario = scenario::load_scenario(parameters);
 
   if (boost::python::extract<bool>(parameters["render"])) {
@@ -43,18 +46,18 @@ boost::python::tuple EnvironmentController::RenderStep(const boost::python::nump
   render_engine->window.pollEvent(e);
   controller.Update();
   if (render_engine->window.hasFocus()) {
-
-    //todo refactor
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
-      controller.Press("render");
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
-      controller.Press("debug");
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift))
-      controller.Press("real_time");
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R))
-      Reset();
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
-      Close();
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift)) {
+      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+        controller.Press("render");
+      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+        controller.Press("debug");
+      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
+        controller.Press("real_time");
+      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R))
+        Reset();
+      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
+        active=false;
+    }
   }
 
   return Step(action_vector);
@@ -96,6 +99,6 @@ EnvironmentController::~EnvironmentController() {
 }
 
 void EnvironmentController::Close() {
-  delete render_engine;
   delete scenario;
+  delete render_engine;
 }
