@@ -17,10 +17,20 @@ struct BaseEntity {
   float* position;
   float* size;
 
+  float default_size = 25;
+
   BaseEntity(const int entities_count):n(entities_count) {
     position = new float[2 * n]();
     size = new float[n]();
     remaining = n;
+    ResetValues();
+  }
+
+  BaseEntity(const int entities_count, float new_size):n(entities_count) {
+    position = new float[2 * n]();
+    size = new float[n]();
+    remaining = n;
+    default_size = new_size;
     ResetValues();
   }
 
@@ -42,12 +52,12 @@ struct BaseEntity {
 //    position[index] = randNum(200);
 //    position[index+n] = randNum(200);
     position[index] = 0;
-    position[index + n] = 0;
+    position[n + index] = 0;
   }
 
   void ResetValues() {
     std::fill(position, position + 2 * n, 0);
-    std::fill(size, size + n, 25);
+    std::fill(size, size + n, default_size);
   }
 
   //Returns true if element you want to delete is the current last one

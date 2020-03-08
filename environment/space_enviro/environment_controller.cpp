@@ -20,10 +20,15 @@ EnvironmentController::EnvironmentController(const boost::python::dict &paramete
   std::cout << std::string(boost::python::extract<std::string>(parameters["scenario_name"]))<<"\n";
   scenario = scenario::load_scenario(parameters);
 
-  if (boost::python::extract<bool>(parameters["render"])) {
+  if (boost::python::extract<bool>(parameters["render_engine"])) {
     std::cout << "Initializing RenderEngine\n";
     render_engine = new rendering::RenderEngine(scenario);
-    controller.Press("render");
+    if (boost::python::extract<bool>(parameters["render"])) {
+      controller.Press("render");
+    }
+    if (boost::python::extract<bool>(parameters["debug"])) {
+      controller.Press("debug");
+    }
   }
 
   std::cout << "Space Environment initialization DONE\n\n";
@@ -35,32 +40,33 @@ boost::python::tuple EnvironmentController::Step(const boost::python::numpy::nda
 }
 
 boost::python::tuple EnvironmentController::RenderStep(const boost::python::numpy::ndarray &action_vector) {
+  auto output = Step(action_vector);
+  if (render_engine != nullptr) {
+    if (controller["render"]) {
+      if (controller["real_time"])
+        w.wait();
+      render_engine->RenderState(scenario, controller["debug"]);
+    }
 
-  if (controller["render"]) {
-    if (controller["real_time"])
-      w.wait();
-    render_engine->RenderState(scenario, controller["debug"]);
-  }
-
-  sf::Event e;
-  render_engine->window.pollEvent(e);
-  controller.Update();
-  if (render_engine->window.hasFocus()) {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift)) {
-      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
-        controller.Press("render");
-      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
-        controller.Press("debug");
-      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
-        controller.Press("real_time");
-      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R))
-        Reset();
-      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
-        active=false;
+    if (render_engine->window.hasFocus()) {
+      sf::Event e;
+      render_engine->window.pollEvent(e);
+      controller.Update();
+      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift)) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+          controller.Press("render");
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+          controller.Press("debug");
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
+          controller.Press("real_time");
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R))
+          Reset();
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
+          active = false;
+      }
     }
   }
-
-  return Step(action_vector);
+  return output;
 }
 
 

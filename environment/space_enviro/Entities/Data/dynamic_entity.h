@@ -20,10 +20,20 @@ struct DynamicEntity:BaseEntity {
   float* a;
   float* mass;
 
+  float default_mass = 100;
+
   DynamicEntity(const int entities_count):BaseEntity(entities_count) {
     v = new float[2 * n]();
     a = new float[2 * n]();
     mass = new float[n]();
+    ResetValues();
+  }
+
+  DynamicEntity(const int entities_count, float new_mass, float new_size):BaseEntity(entities_count, new_size) {
+    v = new float[2 * n]();
+    a = new float[2 * n]();
+    mass = new float[n]();
+    default_mass = new_mass;
     ResetValues();
   }
 
@@ -46,7 +56,7 @@ struct DynamicEntity:BaseEntity {
   void ResetValues() {
     std::fill(v, v + 2 * n, 0);
     std::fill(a, a + 2 * n, 0);
-    std::fill(mass, mass + n, 100);
+    std::fill(mass, mass + n, default_size);
   }
   void ResetAllValues() {
     BaseEntity::ResetValues();
@@ -85,9 +95,9 @@ struct DynamicEntity:BaseEntity {
     }
   }
   // todo Gravity_influence
-  void SaveVelocityNorms(float* output){
+  void SaveVelocityNorms(float* output) {
     for (int i = 0; i < remaining; ++i) {
-      output[i]=  sqrtf(powf(v[i],2) + powf(v[n + i],2));
+      output[i] = sqrtf(powf(v[i], 2) + powf(v[n + i], 2));
     }
   }
 

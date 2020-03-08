@@ -29,7 +29,7 @@ class Stopping:public ScenarioBase {
   int maxV;
   int maxAngleV;
 /*
-* 0 - velocity
+* 0 - velocity length
 * 1 - velocity vector angle wr to ship direction
 * 2 - angular velocity
 */
@@ -51,7 +51,7 @@ class Stopping:public ScenarioBase {
     maxV = boost::python::extract<int>(parameters["maxV"]);
     maxAngleV = boost::python::extract<int>(parameters["maxAngleV"]);
 
-    ship_array = new entity_data::Ship(n);
+    ship_array = entity_data::InitializeShipArrayFromDict(parameters);
     observations = new float[n * 3];
     reward = new float[n];
     previousVelocity = new float[n];

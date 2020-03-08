@@ -18,7 +18,7 @@ void RenderShip(sf::VertexArray* varr, int offset, entity_data::Ship* ships, int
   float angle = ships->angle[i];
   float size = ships->size[i];
   float mainpower = ships->engines_control[i];
-  float sidepower = ships->engines_control[i + ships->n];
+  float sidepower = ships->engines_control[i + ships->remaining];
   sf::Vector2f ap = sf::Vector2f(
       (-1.f / 3) * size * sinf(angle) + x,
       (-1.f / 3) * size * cosf(angle) + y);

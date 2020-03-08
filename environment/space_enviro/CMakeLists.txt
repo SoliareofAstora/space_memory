@@ -22,8 +22,12 @@ add_library(env SHARED
         Utils/switch_bools.hpp
         Utils/randoms.hpp
         Rendering/Observations/render_distance.hpp
-        Rendering/Observations/render_ship_velocity.hpp)
-target_include_directories(env PUBLIC /usr/include/python3.6)
+        Rendering/Observations/render_ship_velocity.hpp
+        )
+
+
+target_include_directories(env PUBLIC ~/miniconda3/envs/space_memory/include/python3.8)
+
 target_link_libraries(
         env
         boost_python3-py36
