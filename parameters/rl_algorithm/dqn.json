@@ -1,0 +1,4 @@
+{"rl_name": "dqn",
+  "memory_size": 3000,
+  "target_update_frequency":10
+}
