@@ -1,5 +1,7 @@
 {"batch_size": 128,
-  "lr": 0.0001,
+  "lr": 0.001,
   "steps": 100000,
-  "model_save_interval":500
+  "model_save_interval":1000,
+  "optimizer": "RMSprop",
+  "loss_name": "smooth_l1_loss"
 }

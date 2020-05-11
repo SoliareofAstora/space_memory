@@ -1,20 +1,17 @@
-import components.model.load_model as load_model
-import components.environment.env_wrapper as env_wrapper
-from components.rl_algorithm.utils.replay_storage import ReplayList
 import pathlib
-import json
 import time
-
-import math
-import random
-import numpy as np
-
 from collections import namedtuple
-from itertools import count
 
+import numpy as np
 import torch
-import torch.optim as optim
-import torch.nn.functional as F
+
+import components.environment.env_wrapper as env_wrapper
+import components.model.load_model as load_model
+import components.rl_algorithm.utils.action_selection as action_selection
+from components.logging_tools import WalkingAverage
+from components.rl_algorithm.utils.replay_storage import ReplayList
+from components.rl_algorithm.utils.optimizers import get_optimizer
+from components.rl_algorithm.utils.loss import get_loss
 
 def run(params):
     env = env_wrapper.env(params)
@@ -28,11 +25,8 @@ def run(params):
     memory = ReplayList(transition, params["memory_size"])
 
     BATCH_SIZE = params["batch_size"]
-    GAMMA = 0.80
-    EPS_START = 0.90
-
-    EPS_END = 0.1
-    EPS_DECAY = 10000
+    GAMMA = params["gamma"]
+    get_actions = action_selection.load_action_selection(params)
 
     policy_net = load_model.get_model(params).to(device)
     target_net = load_model.get_model(params).to(device)
@@ -40,28 +34,11 @@ def run(params):
     target_net.load_state_dict(policy_net.state_dict())
     target_net.eval()
 
-    optimizer = optim.RMSprop(policy_net.parameters(), params["lr"])
-
+    optimizer = get_optimizer(params, policy_net.parameters())
     steps_done = 0
-    action_space = params["action_space"]
+    lossFun = get_loss(params)
 
-    def get_actions(state):
-        with torch.no_grad():
-            output = policy_net(state)
-            q_values = F.softmax(output, dim=0)
-
-        sample = random.random()
-        eps_threshold = EPS_END + (EPS_START - EPS_END) * \
-                        math.exp(-1. * steps_done / EPS_DECAY)
-
-        if sample > eps_threshold:
-            return q_values.max(1)[1]
-        else:
-            return torch.randint(action_space, [q_values.shape[0]]).to(device)
-
-
-
-    def optimize_model(i):
+    def optimize_model():
         if len(memory) < BATCH_SIZE:
             return
         transitions = memory.sample(BATCH_SIZE)
@@ -79,32 +56,13 @@ def run(params):
 
         excepted_state_action_value = (next_state_value.max(1)[0] * GAMMA) + reward_batch
 
-        loss = F.smooth_l1_loss(action_values, excepted_state_action_value.unsqueeze(1).detach())
+        loss = lossFun(action_values, excepted_state_action_value.unsqueeze(1).detach())
         loss.backward()
 
         for param in policy_net.parameters():
             param.grad.data.clamp_(-1, 1)
         optimizer.step()
         optimizer.zero_grad()
-
-
-    class WalkingAverage(object):
-        limit = 100
-        memory = []
-        current = 0
-
-        def __init__(self, limit):
-            self.limit = limit
-
-        def append(self, value):
-            if self.current >= self.limit:
-                self.memory[self.current % self.limit] = value
-            else:
-                self.memory.append(value)
-            self.current += 1
-
-        def get(self):
-            return np.average(self.memory)
 
     average = WalkingAverage(10)
     living_penalty = params["living_penalty"]
@@ -115,9 +73,9 @@ def run(params):
     state = env.reset()
     state = torch.autograd.Variable(torch.Tensor(state).to(device))
     for t in range(limit):
-        actions = get_actions(state)
+        actions = get_actions(policy_net, state).to(device)
         new_state, reward, _ = env.step(actions)
-        average.append(np.sum(reward) * 100)
+        average.append(reward)
         reward -= living_penalty
         if not env.active():
             exit()
@@ -126,7 +84,7 @@ def run(params):
         with open(path/"logs"/"scores.txt", "a") as f:
             f.write(str(t)+","+str(average.get())+'\n')
         state = new_state
-        optimize_model(t)
+        optimize_model()
         steps_done += 1
 
         if (t - 1) % target_update == 0:

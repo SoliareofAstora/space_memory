@@ -3,23 +3,16 @@ import pathlib
 
 params = {}
 
-params['passThreshold'] = 2
-params['resetThreshold'] = 20
-params['resetAngleThreshold'] = 2
-params['minV'] = 5
-params['maxV'] = 10
-params['maxAngleV'] = 2
+params['selector'] = "eps_greedy"
+params['eps_start'] = 0.9
+params['eps_end'] = 0.1
+params['eps_decay'] = 10000
 
-
-FILE_NAME = "environment/default_env_params/universal.json"
-
-with open(FILE_NAME, 'r') as f:
-    abc = json.load(f)
+FILE_NAME = "parameters/action_selection/eps_greedy.json"
 
 if pathlib.Path(FILE_NAME).exists():
     print("File exists")
 else:
-    output = json.dumps(abc).replace(", ",", \n")
+    output = json.dumps(params).replace(", ",", \n")
     with open(FILE_NAME, 'w') as f:
         f.writelines(output)
-        json.dump(params, f)

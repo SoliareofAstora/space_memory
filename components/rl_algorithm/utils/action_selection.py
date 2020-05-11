@@ -4,7 +4,7 @@ import torch
 
 
 class EpsGreedy(object):
-    def __init__(self, action_space, e_start=0.8, e_end=0.05, e_decay=1000):
+    def __init__(self, action_space, e_start=0.9, e_end=0.05, e_decay=1000):
         self.action_space = action_space
         self.start = e_start
         self.end = e_end
@@ -23,3 +23,8 @@ class EpsGreedy(object):
             return q_values
         else:
             return torch.randint(self.action_space, [q_values.shape[0]])
+
+
+def load_action_selection(params):
+    if params["selector"] == "eps_greedy":
+        return EpsGreedy(params["action_space"], params['eps_start'], params['eps_end'], params['eps_decay'])

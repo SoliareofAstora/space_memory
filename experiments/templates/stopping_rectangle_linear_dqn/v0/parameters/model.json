@@ -1,8 +1,0 @@
-{"model_name": "linear", 
-"depth": 10, 
-"width": 50, 
-"activation": "relu", 
-"output_activation": null, 
-"dropout_rate": null, 
-"normalization": null, 
-"model_source": "rectangle_linear"}

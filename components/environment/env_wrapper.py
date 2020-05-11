@@ -18,14 +18,3 @@ class env(object):
         action_list = actions.cpu().tolist()
         actions_real = np.array((self.discrete[action_list, 0], self.discrete[action_list, 1]), dtype=np.float32)
         return self.env.step(actions_real)
-
-# # actions_real = np.array((main_power[(actions / side_space).cpu().tolist()], side_power[(actions % side_space).cpu().tolist()]),  $
-# from components.environment.space_enviro.spaceLib import Window
-# w1 = Window(10)
-# del w1
-#
-#
-# from components.environment.space_enviro.spaceLib import space_env
-# p = {}
-# a=space_env(p)
-# del a

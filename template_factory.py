@@ -18,8 +18,9 @@ class TemplateFactory(object):
     def rename(self, new_name):
         self.params["general"]["name"] = new_name
 
-    def create(self, env, model, rl_algorithm, custom_name=None, training="default", ships="default_ships"):
+    def create(self, env, model, rl_algorithm, custom_name=None,action_selection="eps_greedy", training="default", ships="default_ships"):
         self.params = {"general": {}}
+
         try:
             with open("parameters/environment/scenarios/" + env + ".json", "r") as f:
                 self.params["environment"] = json.load(f)
@@ -55,6 +56,13 @@ class TemplateFactory(object):
         except IOError:
             print("Missing training: " + env)
         self.params["training"]['training_source'] = training
+
+        try:
+            with open("parameters/action_selection/" + action_selection + ".json", "r") as f:
+                self.params["action_selection"] = json.load(f)
+        except IOError:
+            print("Missing action_selection: " + rl_algorithm)
+        self.params["action_selection"]['selector_source'] = rl_algorithm
 
         if custom_name is not None:
             self.params["general"]["name"] = custom_name

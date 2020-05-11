@@ -25,7 +25,6 @@
 class EnvironmentController {
 
  private:
-
   rendering::RenderEngine* render_engine;
   scenario::ScenarioBase* scenario;
   bool active = true;
@@ -34,26 +33,19 @@ class EnvironmentController {
   Waiter w = Waiter(static_cast<int>(time_step * 1000));
   SwitchBools controller = SwitchBools(std::vector<std::string>({"record", "render", "real_time", "debug"}));
 
-
  public:
   explicit EnvironmentController(const boost::python::dict &parameters);
-  void destroy(){
-    std::cout<<"Destroy called";
+  void destroy() {
     delete this;
+  }
+  ~EnvironmentController() {
+    delete scenario;
+    if (rndr) delete render_engine;
   }
 
   boost::python::tuple Step(const boost::python::numpy::ndarray &action_vector);
   boost::python::numpy::ndarray Reset();
-  bool Active(){return active;}
- private:
-  ~EnvironmentController() {
-    std::cout<<"1";
-    delete scenario;
-    std::cout<<"2";
-    if(rndr) delete render_engine;
-    std::cout<<"3";
-
-  }
+  bool Active() { return active; }
 };
 
 

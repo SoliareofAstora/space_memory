@@ -1,7 +1,7 @@
 import numpy as np
 import template_factory
 import copy
-
+import locks
 
 def linear(start, stop, n):
     return list(np.linspace(start, stop, n))
@@ -57,7 +57,7 @@ class SeriesFactory(object):
         return self.series
 
     def save(self):
-        # TODO tworząc template w qqueue też trzeba zakładać locka
+        locks.lock_queue()
         params = self.prepare()
         for param in params:
             template = copy.deepcopy(self.template)
@@ -67,18 +67,19 @@ class SeriesFactory(object):
                 template.change(key, param[key])
             # def save(self, path="experiments/templates/", splitter="/", overwrite_folder_name=None, prefix="v"):
             template.save("experiments/queue/", "_", self.name, "_")
+        locks.unlock_queue()
 
-
-abc = SeriesFactory()
-abc.create("/home/SoliareofAstora/space_memory/experiments/templates/stopping_rectangle_linear_dqn/v1", "second")
-
-abc.multiply_parameters("batch_size", [32,64,128,256])
-abc.multiply_parameters("memory_size",[500,1000,2000,4000])
-abc.multiply_parameters("n",[2,5,10,50,100])
-# abc.add_parameters("abb", [4, 5, 6])
-# abc.multiply_parameters("stuff", ["a", "b", "c"])
-# abc.add_parameters("TMP", [0,1,2,3,4,5,6,7,8])
-
-tmp = abc.prepare()
-
-abc.save()
+# abc = SeriesFactory()
+# abc.create("/home/SoliareofAstora/space_memory/experiments/templates/stopping_rectangle_linear_dqn/v0", "longer")
+# #
+# # abc.multiply_parameters("steps",[5000000])
+# abc.multiply_parameters("batch_size", [32,64,128,256])
+# # abc.multiply_parameters("memory_size",[500,1000,2000,4000])
+# # abc.multiply_parameters("n",[2,5,10,50,100])
+# # # abc.add_parameters("abb", [4, 5, 6])
+# # # abc.multiply_parameters("stuff", ["a", "b", "c"])
+# # # abc.add_parameters("TMP", [0,1,2,3,4,5,6,7,8])
+# #
+# # tmp = abc.prepare()
+# #
+# abc.save()

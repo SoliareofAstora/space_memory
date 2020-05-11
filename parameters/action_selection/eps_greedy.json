@@ -1,0 +1,4 @@
+{"selector": "eps_greedy", 
+"eps_start": 0.9, 
+"eps_end": 0.1, 
+"eps_decay": 10000}
