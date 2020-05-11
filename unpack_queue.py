@@ -11,7 +11,7 @@ def unpack_queue():
     locks.lock_queue()
     os.chdir(str(pathlib.Path.home()) + "/space_memory")
     with ZipFile("experiments/archives/queue.zip","r") as zipFile:
-        zip.extractall()
+        zipFile.extractall()
     locks.unlock_queue()
 
 

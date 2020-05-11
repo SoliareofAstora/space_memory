@@ -23,9 +23,9 @@ def split_training():
         if result == []:
             error = ssh.stderr.readlines()
             all_connected = False
-            print ("ERROR: %s" % error)
+            print("ERROR: %s" % error)
         else:
-            print (result)
+            print(result)
 
     if not all_connected:
         print("Error while connecting to remote hosts, aborting.")
@@ -49,7 +49,7 @@ def split_training():
                 for j in indexList[i]:
                     experiment = local_queue[j]
                     for file in list(experiment.glob("*/*")):
-                        zip.write(file)
+                        zipFile.write(file)
 
         for remote in remotes:
             print("Moving archive to", remote)
