@@ -19,7 +19,7 @@ def run_experiment(path):
     os.mkdir(path/"weights")
     os.mkdir(path/"frames")
     os.mkdir(path/"logs")
-    os.mkdir(path/"output")
+    os.mkdir(path/"results")
     params["frames_path"] = str((path/"frames").absolute())
     params["path"] = str(path)
     if params["rl_name"] == "dqn":
@@ -27,7 +27,7 @@ def run_experiment(path):
 
     if output == 0:
         locks.lock_done()
-        results_path = pathlib.Path("experiments/done")/params["scenario_name"]/params["rl_name"]/path.name
+        results_path = pathlib.Path("experiments/done")/params["scenario_name"]/params["rl_name"]
         results_path.mkdir(parents=True)
         shutil.move(str(path),str(results_path),"-r")
         locks.unlock_done()

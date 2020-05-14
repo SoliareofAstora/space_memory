@@ -85,7 +85,7 @@ class TemplateFactory(object):
                 return
         if default not in self.params.keys():
             self.params[default] = {}
-        print("Parameter",name,"not found")
+        print("Parameter", name, "not found")
         self.params[default][name] = value
 
     def save(self, path="experiments/templates/", splitter="/", overwrite_folder_name=None, prefix="v"):
@@ -118,6 +118,14 @@ class TemplateFactory(object):
             with open(path + template_name + "/parameters/" + key + ".json", "w")as f:
                 f.writelines(string)
 
+    def print(self):
+        for file in self.params.keys():
+            print(file)
+            for name in self.params[file].keys():
+                print("\t", name, self.params[file][name])
+
+
 # tmp = TemplateFactory()
 # tmp.create("stopping",'rectangle_linear','dqn')
+# tmp.print()
 # tmp.save()

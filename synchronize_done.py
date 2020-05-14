@@ -39,9 +39,9 @@ def synchronize_done():
             ["ssh", remote, "python3", remote_home + "/space_memory/pack_new_done.py"])
         os.system('ssh '+remote+" rm -r "+remote_home + "/space_memory/tmp")
         n_new_files = int(tmp.decode().split("\n")[0])
-        print("\tfound %d new files".format(n_new_files))
+        print("found",n_new_files,"new files".format())
         if n_new_files > 0:
-            fname = remote + int(time.time())
+            fname = remote + str(int(time.time()))
             os.system("scp " + remote + ":" + remote_home + "/space_memory/experiments/archives/done.zip " +
                       local + "/space_memory/experiments/archives/" + fname + ".zip")
             with ZipFile(local + "/space_memory/experiments/archives/" + fname + ".zip", "r") as zipFile:

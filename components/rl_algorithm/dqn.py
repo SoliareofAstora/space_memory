@@ -35,7 +35,6 @@ def run(params):
     target_net.eval()
 
     optimizer = get_optimizer(params, policy_net.parameters())
-    steps_done = 0
     lossFun = get_loss(params)
 
     def optimize_model():
@@ -64,7 +63,8 @@ def run(params):
         optimizer.step()
         optimizer.zero_grad()
 
-    average = WalkingAverage(10)
+    log_frequency = params["log_frequency"]
+    average = WalkingAverage(log_frequency)
     living_penalty = params["living_penalty"]
     target_update = params["target_update_frequency"]
     limit = params["steps"]
@@ -78,14 +78,14 @@ def run(params):
         average.append(reward)
         reward -= living_penalty
         if not env.active():
-            exit()
+            return 0
         new_state = torch.autograd.Variable(torch.Tensor(new_state).to(device))
         memory.append(state, actions, new_state, torch.autograd.Variable(torch.Tensor(reward).to(device)))
-        with open(path/"logs"/"scores.txt", "a") as f:
-            f.write(str(t)+","+str(average.get())+'\n')
+        if t % log_frequency == 0:
+            with open(path/"results"/"scores.txt", "a") as f:
+                f.write(str(t)+","+str(average.get())+'\n')
         state = new_state
         optimize_model()
-        steps_done += 1
 
         if (t - 1) % target_update == 0:
             target_net.load_state_dict(policy_net.state_dict())

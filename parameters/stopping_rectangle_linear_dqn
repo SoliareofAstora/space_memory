@@ -1,0 +1,54 @@
+general
+	 name stopping_rectangle_linear_dqn
+environment
+	 scenario_name stopping
+	 passThreshold 2
+	 resetThreshold 20
+	 resetAngleThreshold 2
+	 minV 5
+	 maxV 10
+	 maxAngleV 2
+	 action_matrix [[1, 0], [0, -1], [0, 1], [1, -1], [1, 1]]
+	 observation_space 3
+	 living_penalty 0.1
+	 default_mass 100
+	 default_hitpoints 100
+	 default_main_engine_power 100
+	 default_rotation_engine_power 100
+	 default_size 25
+	 n 100
+	 render False
+	 record False
+	 debug False
+	 env_source stopping
+	 ships_source default_ships
+model
+	 model_name linear
+	 depth 10
+	 width 50
+	 activation relu
+	 output_activation None
+	 dropout_rate None
+	 normalization None
+	 model_source rectangle_linear
+rl_algorithm
+	 rl_name dqn
+	 memory_size 3000
+	 target_update_frequency 10
+	 gamma 0.8
+	 rl_source dqn
+training
+	 batch_size 128
+	 lr 0.001
+	 steps 100000
+	 model_save_interval 1000
+	 optimizer RMSprop
+	 loss_name smooth_l1_loss
+	 log_frequency 10
+	 training_source default
+action_selection
+	 selector eps_greedy
+	 eps_start 0.9
+	 eps_end 0.1
+	 eps_decay 10000
+	 selector_source dqn

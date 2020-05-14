@@ -3,5 +3,6 @@
   "steps": 100000,
   "model_save_interval":1000,
   "optimizer": "RMSprop",
-  "loss_name": "smooth_l1_loss"
+  "loss_name": "smooth_l1_loss",
+  "log_frequency": 10
 }
