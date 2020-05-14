@@ -1,7 +1,6 @@
 import pathlib
 import os
 from zipfile import ZipFile
-os.chdir(str(pathlib.Path.home()) + "/space_memory")
 import locks
 
 
