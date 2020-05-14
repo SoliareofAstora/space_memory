@@ -26,9 +26,11 @@ def run_experiment(path):
         output = dqn.run(params)
 
     if output == 0:
-        locks.lock_done()
         results_path = pathlib.Path("experiments/done")/params["scenario_name"]/params["rl_name"]/params["series_name"]
-        results_path.mkdir(parents=True)
+        if not results_path.exists():
+            results_path.mkdir(parents=True)
+
+        locks.lock_done()
         shutil.move(str(path),str(results_path),"-r")
         locks.unlock_done()
     else:

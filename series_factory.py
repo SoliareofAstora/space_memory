@@ -63,7 +63,7 @@ class SeriesFactory(object):
         for param in params:
             template = copy.deepcopy(self.template)
             template.params["series"] = {"changes": self.changes}
-            template.params["series"]["name"] = self.name
+            template.params["series"]["series_name"] = self.name
             for key in param.keys():
                 template.change(key, param[key])
             template.save("experiments/queue/", "_", self.name, "_")
@@ -76,18 +76,19 @@ class SeriesFactory(object):
         return len(self.prepare())
 
 
-# abc = SeriesFactory()
-# abc.create("/home/SoliareofAstora/space_memory/experiments/templates/stopping_rectangle_linear_dqn/v0", "first")
-#
-# abc.multiply_parameters("steps", [100000])
-# abc.multiply_parameters("batch_size", [32, 512, 1024])
-# abc.multiply_parameters("depth", [2, 5, 10, 30])
-# abc.multiply_parameters("width", [10, 100])
-# abc.multiply_parameters("memory_size", [3000])
-# abc.multiply_parameters("model_save_interval", [19999])
-# abc.multiply_parameters("gamma", [0.8, 0.9, 0.999])
-# abc.multiply_parameters("target_update_frequency",[10,500,2000])
-#
-# print(len(abc))
-#
-# abc.save()
+abc = SeriesFactory()
+abc.create("/home/SoliareofAstora/space_memory/experiments/templates/stopping_rectangle_linear_dqn/v0", "first")
+
+abc.multiply_parameters("steps", [100000])
+abc.multiply_parameters("batch_size", [32, 512, 1024])
+abc.multiply_parameters("depth", [2, 5, 10, 50])
+abc.multiply_parameters("width", [5, 50, 100])
+abc.multiply_parameters("memory_size", [3000])
+abc.multiply_parameters("model_save_interval", [19999])
+abc.multiply_parameters("gamma", [0.8, 0.9, 0.999])
+abc.multiply_parameters("target_update_frequency",[10,500,2000])
+
+
+print(len(abc))
+
+abc.save()
