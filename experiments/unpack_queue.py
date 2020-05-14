@@ -1,7 +1,7 @@
 import pathlib
 import os
 from zipfile import ZipFile
-import locks
+from .. import locks
 
 
 def unpack_queue():
