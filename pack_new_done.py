@@ -14,12 +14,12 @@ def pack_new_done():
     with open(local+"/space_memory/tmp/currentfilelist.json","r") as f:
         files_already_there = json.load(f)
 
-    locks.lock_done()
+    # locks.lock_done()
     local_files = subprocess.check_output(["find", local_path]).decode()
-    locks.unlock_done()
+    # locks.unlock_done()
 
     #FIXME codesmell
-    local_files = local_files.replace(str(locks.lock_done_path()), "").replace(local_path, "").split("\n")
+    local_files = local_files.replace(local_path, "").split("\n")
     local_files = list((filter(lambda x: x != "", local_files)))
     files = set(local_files) - set(files_already_there)
 
