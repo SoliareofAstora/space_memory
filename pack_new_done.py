@@ -18,9 +18,10 @@ def pack_new_done():
     local_files = subprocess.check_output(["find", local_path]).decode()
     locks.unlock_done()
 
-    local_files = local_files.replace(local_path, "").split("\n")
+    #FIXME codesmell
+    local_files = local_files.replace(locks.lock_done_path(), "").replace(local_path, "").split("\n")
     local_files = list((filter(lambda x: x != "", local_files)))
-    files = set(local_files) - set(files_already_there)
+    files = set(local_files) - set(files_already_there) -
 
     print(len(files))
     if len(files) > 0:

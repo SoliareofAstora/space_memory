@@ -20,7 +20,7 @@ def synchronize_done():
     local_files = local_files.replace(local_path, "").split("\n")
     local_files = list((filter(lambda x: x != "", local_files)))
 
-    os.mkdir(local + "/space_memory/tmp")
+    os.mkdir(local + "/space_memory/tmp",)
 
     with open(local + "/space_memory/tmp/currentfilelist.json", "w") as f:
         json.dump(local_files, f)
@@ -28,10 +28,12 @@ def synchronize_done():
     for remote in remote_config.remotes:
         print("processing", remote)
         remote_home = subprocess.check_output(["ssh", remote, "echo", "$HOME"]).decode()[:-1]
+        os.system('ssh '+remote+" mkdir "+remote_home + "/space_memory/tmp")
         os.system("scp " + local + "/space_memory/tmp/currentfilelist.json " +
                   remote + ":" + remote_home + "/space_memory/tmp/currentfilelist.json")
         tmp = subprocess.check_output(
-            ["ssh", remote, "python", remote_home + "/space_memory/pack_new_done.py"])
+            ["ssh", remote, "python3", remote_home + "/space_memory/pack_new_done.py"])
+        os.system('ssh '+remote+" rm -r "+remote_home + "/space_memory/tmp")
         n_new_files = int(tmp.decode().split("\n")[0])
         print("\tfound %d new files".format(n_new_files))
         if n_new_files > 0:
@@ -40,6 +42,7 @@ def synchronize_done():
                       local + "/space_memory/experiments/archives/" + fname + ".zip")
             with ZipFile(local + "/space_memory/experiments/archives/" + fname + ".zip", "r") as zipFile:
                 zipFile.extractall()
+    os.system("rm -r "+local + "/space_memory/tmp")
 
 
 if __name__ == '__main__':
