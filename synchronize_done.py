@@ -31,7 +31,7 @@ def synchronize_done():
         os.system("scp " + local + "/space_memory/tmp/currentfilelist.json " +
                   remote + ":" + remote_home + "/space_memory/tmp/currentfilelist.json")
         tmp = subprocess.check_output(
-            ["ssh", remote, "python", remote_home + "/space_memory/experiments/pack_new_done.py"])
+            ["ssh", remote, "python", remote_home + "/space_memory/pack_new_done.py"])
         n_new_files = int(tmp.decode().split("\n")[0])
         print("\tfound %d new files".format(n_new_files))
         if n_new_files > 0:
