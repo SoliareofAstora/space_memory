@@ -19,7 +19,7 @@ def pack_new_done():
     locks.unlock_done()
 
     #FIXME codesmell
-    local_files = local_files.replace(locks.lock_done_path(), "").replace(local_path, "").split("\n")
+    local_files = local_files.replace(str(locks.lock_done_path()), "").replace(local_path, "").split("\n")
     local_files = list((filter(lambda x: x != "", local_files)))
     files = set(local_files) - set(files_already_there)
 

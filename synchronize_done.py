@@ -19,16 +19,20 @@ def synchronize_done():
     local_files = subprocess.check_output(["find", local_path]).decode()
     local_files = local_files.replace(local_path, "").split("\n")
     local_files = list((filter(lambda x: x != "", local_files)))
-
-    os.mkdir(local + "/space_memory/tmp",)
-
+    try:
+        os.mkdir(local + "/space_memory/tmp",)
+    except Exception:
+        pass
     with open(local + "/space_memory/tmp/currentfilelist.json", "w") as f:
         json.dump(local_files, f)
 
     for remote in remote_config.remotes:
         print("processing", remote)
         remote_home = subprocess.check_output(["ssh", remote, "echo", "$HOME"]).decode()[:-1]
-        os.system('ssh '+remote+" mkdir "+remote_home + "/space_memory/tmp")
+        try:
+            os.system('ssh '+remote+" mkdir "+remote_home + "/space_memory/tmp")
+        except Exception:
+            pass
         os.system("scp " + local + "/space_memory/tmp/currentfilelist.json " +
                   remote + ":" + remote_home + "/space_memory/tmp/currentfilelist.json")
         tmp = subprocess.check_output(
