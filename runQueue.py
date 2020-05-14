@@ -5,15 +5,15 @@ from run_experiment import run_experiment
 import time
 import locks
 
+
 def run_queue():
     queue = pathlib.Path("experiments/queue")
-    lock = queue/"lock"
     while len(list(queue.glob("*"))) > 0:
         locks.lock_queue()
 
-        runs = set(queue.glob("*")) - {lock}
+        runs = set(queue.glob("*")) - {locks.lock_queue_path()}
         if len(runs) == 0:
-            os.rmdir(lock)
+            locks.unlock_queue()
             return
 
         run = list(runs)[0]

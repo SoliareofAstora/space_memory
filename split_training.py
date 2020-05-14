@@ -4,71 +4,50 @@ import subprocess
 import sys
 import random
 from zipfile import ZipFile
-
-remotes = [
-    # "neptune",
-    "walter"
-]
+import remote_config
 
 
 def split_training():
-    os.chdir(str(pathlib.Path.home())+"/space_memory")
-    all_connected = True
-    for remote in remotes:
-        ssh = subprocess.Popen(["ssh", remote, "uname -a"],
-                               shell=False,
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE)
-        result = ssh.stdout.readlines()
-        if result == []:
-            error = ssh.stderr.readlines()
-            all_connected = False
-            print("ERROR: %s" % error)
-        else:
-            print(result)
-
-    if not all_connected:
+    os.chdir(str(pathlib.Path.home()) + "/space_memory")
+    if not remote_config.all_connected():
         print("Error while connecting to remote hosts, aborting.")
-        # return 1
+        return 1
 
     local_queue = list(pathlib.Path("experiments/queue").glob("*"))
     queue_size = len(local_queue)
 
-    if queue_size > 0:
-        random.shuffle(local_queue)
-        step = int(queue_size/len(remotes))
-        indexList = [[i + j * step for i in range(0, step)] for j in range(len(remotes))]
+    if queue_size == 0:
+        print("Queue is empty")
+        return
 
-        if queue_size - indexList[-1][-1] > 1:
-            indexList[-1].extend([i for i in range(indexList[-1][-1]+1,len(local_queue))])
+    random.shuffle(local_queue)
+    step = int(queue_size / len(remote_config.remotes))
+    indexList = [[i + j * step for i in range(0, step)] for j in range(len(remote_config.remotes))]
 
-        for i in range(len(remotes)):
-            remote = remotes[i]
-            print("Preparing zip for", remote)
-            with ZipFile("experiments/archives/"+remote+".zip","w") as zipFile:
-                for j in indexList[i]:
-                    experiment = local_queue[j]
-                    for file in list(experiment.glob("*/*")):
-                        zipFile.write(file)
+    if queue_size - indexList[-1][-1] > 1:
+        indexList[-1].extend([i for i in range(indexList[-1][-1] + 1, len(local_queue))])
 
-        for remote in remotes:
-            print("Moving archive to", remote)
-            os.system("scp experiments/archives/"+remote+".zip "
-                      +remote+":~/space_memory/experiments/archives/queue.zip")
+    for i in range(len(remote_config.remotes)):
+        remote = remote_config.remotes[i]
+        print("Preparing zip for", remote)
+        with ZipFile("experiments/archives/" + remote + ".zip", "w") as zipFile:
+            for j in indexList[i]:
+                experiment = local_queue[j]
+                for file in list(experiment.glob("*/*")):
+                    zipFile.write(file)
 
-        for remote in remotes:
-            print("Unpacking archive to", remote)
-            os.system("ssh "+remote+" python space_memory/unpack_queue.py")
+    for remote in remote_config.remotes:
+        print("Moving archive to", remote)
+        os.system("scp experiments/archives/" + remote + ".zip "
+                  + remote + ":~/space_memory/experiments/archives/queue.zip")
 
+    for remote in remote_config.remotes:
+        print("Unpacking archive to", remote)
+        os.system("ssh " + remote + " python3 space_memory/experiments/unpack_queue.py")
 
+    #todo clear queue
 if __name__ == "__main__":
     split_training()
-
-
-
-
-
-
 
 # import subprocess
 # import os

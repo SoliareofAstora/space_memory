@@ -18,7 +18,8 @@ class TemplateFactory(object):
     def rename(self, new_name):
         self.params["general"]["name"] = new_name
 
-    def create(self, env, model, rl_algorithm, custom_name=None,action_selection="eps_greedy", training="default", ships="default_ships"):
+    def create(self, env, model, rl_algorithm, custom_name=None, action_selection="eps_greedy",
+               training="default", ships="default_ships"):
         self.params = {"general": {}}
 
         try:

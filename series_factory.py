@@ -48,10 +48,10 @@ class SeriesFactory(object):
                     self.series[i][change["name"]] = change['values'][i]
             else:
                 old_len = len(self.series)
-                Source_series = copy.deepcopy(self.series)
+                source_series = copy.deepcopy(self.series)
                 self.series = []
                 for v in range(len(change["values"])):
-                    self.series.extend(copy.deepcopy(Source_series))
+                    self.series.extend(copy.deepcopy(source_series))
                     for i in range(v * old_len, (v + 1) * old_len):
                         self.series[i][change["name"]] = change["values"][v]
         return self.series
@@ -69,17 +69,17 @@ class SeriesFactory(object):
             template.save("experiments/queue/", "_", self.name, "_")
         locks.unlock_queue()
 
-# abc = SeriesFactory()
-# abc.create("/home/SoliareofAstora/space_memory/experiments/templates/stopping_rectangle_linear_dqn/v0", "longer")
-# #
-# # abc.multiply_parameters("steps",[5000000])
-# abc.multiply_parameters("batch_size", [32,64,128,256])
-# # abc.multiply_parameters("memory_size",[500,1000,2000,4000])
-# # abc.multiply_parameters("n",[2,5,10,50,100])
-# # # abc.add_parameters("abb", [4, 5, 6])
-# # # abc.multiply_parameters("stuff", ["a", "b", "c"])
-# # # abc.add_parameters("TMP", [0,1,2,3,4,5,6,7,8])
-# #
-# # tmp = abc.prepare()
-# #
-# abc.save()
+abc = SeriesFactory()
+abc.create("/home/SoliareofAstora/space_memory/experiments/templates/stopping_rectangle_linear_dqn/v0", "longer")
+#
+abc.multiply_parameters("steps",[10])
+abc.multiply_parameters("batch_size", [32,64,128,256])
+# abc.multiply_parameters("memory_size",[500,1000,2000,4000])
+abc.multiply_parameters("n",[2,5,10,50,100])
+# # abc.add_parameters("abb", [4, 5, 6])
+# # abc.multiply_parameters("stuff", ["a", "b", "c"])
+# # abc.add_parameters("TMP", [0,1,2,3,4,5,6,7,8])
+abc.multiply_parameters("model_save_interval",[6])
+# tmp = abc.prepare()
+#
+abc.save()

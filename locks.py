@@ -16,3 +16,18 @@ def lock_queue():
 
 def unlock_queue():
     os.rmdir(lock_queue_path())
+
+
+def lock_done_path():
+    return pathlib.Path("experiments/done/lock")
+
+
+def lock_done():
+    lock = lock_done_path()
+    while lock.exists():
+        time.sleep(1)
+    os.mkdir(lock)
+
+
+def unlock_done():
+    os.rmdir(lock_done_path())

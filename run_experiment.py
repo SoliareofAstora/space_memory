@@ -4,7 +4,7 @@ import pathlib
 import shutil
 import time
 import components.rl_algorithm.dqn as dqn
-
+import locks
 
 def run_experiment(path):
     path = pathlib.Path(path)
@@ -25,9 +25,13 @@ def run_experiment(path):
     if params["rl_name"] == "dqn":
         output = dqn.run(params)
 
-    if output==0:
+    if output == 0:
+        locks.lock_done()
         results_path = pathlib.Path("experiments/done")/params["scenario_name"]/params["rl_name"]/path.name
         results_path.mkdir(parents=True)
         shutil.move(str(path),str(results_path),"-r")
+        locks.unlock_done()
     else:
-        exit("error:")
+        exit("error while running:",path)
+        #todo globaly plik z errorami
+
