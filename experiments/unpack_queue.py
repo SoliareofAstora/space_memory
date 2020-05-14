@@ -1,7 +1,8 @@
 import pathlib
 import os
 from zipfile import ZipFile
-from . import locks
+os.chdir(str(pathlib.Path.home()) + "/space_memory")
+import locks
 
 
 def unpack_queue():
