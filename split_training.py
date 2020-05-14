@@ -43,7 +43,7 @@ def split_training():
 
     for remote in remote_config.remotes:
         print("Unpacking archive to", remote)
-        os.system("ssh " + remote + " python3 space_memory/experiments/unpack_queue.py")
+        os.system("ssh " + remote + " python3 space_memory/unpack_queue.py")
 
     #todo clear queue
 if __name__ == "__main__":
