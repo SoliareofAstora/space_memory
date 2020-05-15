@@ -77,17 +77,18 @@ class SeriesFactory(object):
 
 
 abc = SeriesFactory()
-abc.create("experiments/templates/stopping_rectangle_linear_dqn/v1", "second4")
-
-abc.multiply_parameters("steps", [100])
-abc.multiply_parameters("batch_size", [8, 32])
-abc.multiply_parameters("width", [5, 15,30 , 50])
+abc.create("experiments/templates/stopping_rectangle_linear_dqn/v0", "first")
 abc.multiply_parameters("memory_size", [3000])
-abc.multiply_parameters("model_save_interval", [250])
-abc.multiply_parameters("target_update_frequency",[50,100])
-abc.multiply_parameters("log_frequency",[1])
-# abc.multiply_parameters("render",[True])
-abc.print()
+abc.multiply_parameters("model_save_interval", [10000])
+
+abc.multiply_parameters("batch_size", [32, 128, 512])
+abc.multiply_parameters("depth", [5, 10, 50])
+abc.multiply_parameters("width", [25, 100])
+abc.multiply_parameters("living_penalty", [0.01, 0.1, 0.25])
+abc.multiply_parameters("target_update_frequency", [100, 1000])
+abc.multiply_parameters("eps_end", [0.1, 0.01])
+abc.multiply_parameters("eps_decay", [1000, 10000])
+
 print(len(abc))
 
 abc.save()

@@ -81,16 +81,17 @@ def run(params):
             return 0
         new_state = torch.autograd.Variable(torch.Tensor(new_state).to(device))
         memory.append(state, actions, new_state, torch.autograd.Variable(torch.Tensor(reward).to(device)))
-        if t % log_frequency == 0:
-            with open(path/"results"/"scores.txt", "a") as f:
-                f.write(str(t)+","+str(average.get())+'\n')
         state = new_state
         optimize_model()
 
-        if (t - 1) % target_update == 0:
+        if (t + 1) % log_frequency == 0:
+            with open(path/"results"/"scores.txt", "a") as f:
+                f.write(str(t)+","+str(average.get())+'\n')
+
+        if (t + 1) % target_update == 0:
             target_net.load_state_dict(policy_net.state_dict())
 
-        if (t - 1) % save_interval == 0:
+        if (t + 1) % save_interval == 0:
             torch.save(policy_net, path/"weights"/(str(int(time.time())) + ".pth"))
 
     del env

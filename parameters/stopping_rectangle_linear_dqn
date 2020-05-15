@@ -1,3 +1,5 @@
+general
+	 name stopping_rectangle_linear_dqn
 environment
 	 scenario_name stopping
 	 passThreshold 2
@@ -29,14 +31,6 @@ model
 	 dropout_rate None
 	 normalization None
 	 model_source rectangle_linear
-general
-	 name stopping_rectangle_linear_dqn
-action_selection
-	 selector eps_greedy
-	 eps_start 0.9
-	 eps_end 0.1
-	 eps_decay 10000
-	 selector_source dqn
 rl_algorithm
 	 rl_name dqn
 	 memory_size 3000
@@ -53,3 +47,9 @@ training
 	 log_frequency 10
 	 seed 2040
 	 training_source default
+action_selection
+	 selector eps_greedy
+	 eps_start 0.9
+	 eps_end 0.1
+	 eps_decay 10000
+	 selector_source dqn

@@ -127,5 +127,5 @@ class TemplateFactory(object):
 
 # tmp = TemplateFactory()
 # tmp.create("stopping",'rectangle_linear','dqn')
-# # tmp.print()
+# tmp.print()
 # tmp.save()
