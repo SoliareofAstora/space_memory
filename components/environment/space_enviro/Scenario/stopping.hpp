@@ -138,8 +138,8 @@ class Stopping:public ScenarioBase {
   boost::python::numpy::ndarray Reset() override {
     for (int i = 0; i < n; ++i) {
       ship_array->ResetWithRandomVelocity(i, minV, maxV, maxAngleV);
-      currentVelocity[i] = ship_array->GetVelovityNorm(i);
     }
+    ship_array->SaveVelocityNorms(previousVelocity);
     return CalculateObservations();
   }
 

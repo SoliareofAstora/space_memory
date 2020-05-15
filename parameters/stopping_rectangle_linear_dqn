@@ -1,5 +1,3 @@
-general
-	 name stopping_rectangle_linear_dqn
 environment
 	 scenario_name stopping
 	 passThreshold 2
@@ -31,6 +29,14 @@ model
 	 dropout_rate None
 	 normalization None
 	 model_source rectangle_linear
+general
+	 name stopping_rectangle_linear_dqn
+action_selection
+	 selector eps_greedy
+	 eps_start 0.9
+	 eps_end 0.1
+	 eps_decay 10000
+	 selector_source dqn
 rl_algorithm
 	 rl_name dqn
 	 memory_size 3000
@@ -40,15 +46,10 @@ rl_algorithm
 training
 	 batch_size 128
 	 lr 0.001
-	 steps 100000
+	 steps 50000
 	 model_save_interval 1000
 	 optimizer RMSprop
 	 loss_name smooth_l1_loss
 	 log_frequency 10
+	 seed 2040
 	 training_source default
-action_selection
-	 selector eps_greedy
-	 eps_start 0.9
-	 eps_end 0.1
-	 eps_decay 10000
-	 selector_source dqn
