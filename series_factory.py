@@ -82,12 +82,33 @@ abc.multiply_parameters("memory_size", [3000])
 abc.multiply_parameters("model_save_interval", [10000])
 
 abc.multiply_parameters("batch_size", [32, 128, 512])
-abc.multiply_parameters("depth", [5, 10, 50])
-abc.multiply_parameters("width", [25, 100])
-abc.multiply_parameters("living_penalty", [0.01, 0.1, 0.25])
+abc.multiply_parameters("depth", [5, 10])
+abc.multiply_parameters("width", [25, 100, 200])
+abc.multiply_parameters("living_penalty", [0.01, 0.1, 0.25, 0.5, 1.0, 0.0])
 abc.multiply_parameters("target_update_frequency", [100, 1000])
 abc.multiply_parameters("eps_end", [0.1, 0.01])
 abc.multiply_parameters("eps_decay", [1000, 10000])
+
+print(len(abc))
+
+
+abc.save()
+
+# abc.multiply_parameters("batch_size", [32, 128, 512])
+# abc.multiply_parameters("depth", [5, 10])
+# abc.multiply_parameters("width", [200])
+# abc.multiply_parameters("living_penalty", [0.01, 0.1, 0.25,0.5, 1.0, 0.0])
+# abc.multiply_parameters("target_update_frequency", [100, 1000])
+# abc.multiply_parameters("eps_end", [0.1, 0.01])
+# abc.multiply_parameters("eps_decay", [1000, 10000])
+
+# abc.multiply_parameters("batch_size", [32, 128, 512])
+# abc.multiply_parameters("depth", [5, 10, 50])
+# abc.multiply_parameters("width", [25, 100])
+# abc.multiply_parameters("living_penalty", [0.01, 0.1, 0.25])
+# abc.multiply_parameters("target_update_frequency", [100, 1000])
+# abc.multiply_parameters("eps_end", [0.1, 0.01])
+# abc.multiply_parameters("eps_decay", [1000, 10000])
 
 print(len(abc))
 

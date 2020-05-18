@@ -1,6 +1,9 @@
 import subprocess
 
-remotes = ["walter","neptune"]
+remotes = ["walter",
+           # "neptune",
+           "neptune_local"
+           ]
 
 def all_connected():
     all = True
