@@ -82,7 +82,9 @@ abc.multiply_parameters("memory_size", [100000])
 abc.multiply_parameters("model_save_interval", [100000])
 abc.multiply_parameters("batch_size", [512, 1024])
 abc.multiply_parameters("living_penalty", [0.1,0.5, 1.0, 0.0])
-
+abc.multiply_parameters("eps_decay", [10000,100000])
+abc.multiply_parameters("gamma", [0.99])
+abc.print()
 print(len(abc))
 
 abc.save()

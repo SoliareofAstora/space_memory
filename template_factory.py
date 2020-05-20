@@ -124,11 +124,11 @@ class TemplateFactory(object):
             for name in self.params[file].keys():
                 print("\t", name, self.params[file][name])
 
-
-tmp = TemplateFactory()
-tmp.create("checkpoint_single",'fat_linear','dqn',training="long500k")
-tmp.print()
-tmp.save()
+#
+# tmp = TemplateFactory()
+# tmp.create("checkpoint_single",'fat_linear','dqn',training="long500k")
+# tmp.print()
+# tmp.save()
 
 # tmp = TemplateFactory()
 # tmp.create("stopping",'rectangle_linear','dqn')

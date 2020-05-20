@@ -1,10 +1,10 @@
-{"batch_size": 128,
+{"batch_size": 512,
   "lr": 0.001,
-  "steps": 50000,
+  "steps": 500000,
   "living_penalty": 0.1,
   "model_save_interval":1000,
   "optimizer": "RMSprop",
   "loss_name": "smooth_l1_loss",
-  "log_frequency": 10,
+  "log_frequency": 50,
   "seed": 2040
 }
