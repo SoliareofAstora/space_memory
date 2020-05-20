@@ -1,6 +1,6 @@
 {"batch_size": 128,
   "lr": 0.001,
-  "steps": 500000,
+  "steps": 50000,
   "living_penalty": 0.1,
   "model_save_interval":1000,
   "optimizer": "RMSprop",

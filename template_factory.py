@@ -62,8 +62,8 @@ class TemplateFactory(object):
             with open("parameters/action_selection/" + action_selection + ".json", "r") as f:
                 self.params["action_selection"] = json.load(f)
         except IOError:
-            print("Missing action_selection: " + rl_algorithm)
-        self.params["action_selection"]['selector_source'] = rl_algorithm
+            print("Missing action_selection: " + action_selection)
+        self.params["action_selection"]['selector_source'] = action_selection
 
         if custom_name is not None:
             self.params["general"]["name"] = custom_name
@@ -126,7 +126,7 @@ class TemplateFactory(object):
 
 
 tmp = TemplateFactory()
-tmp.create("checkpoint_single",'rectangle_linear','dqn')
+tmp.create("checkpoint_single",'fat_linear','dqn',training="long500k")
 tmp.print()
 tmp.save()
 

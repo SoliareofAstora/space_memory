@@ -77,20 +77,13 @@ class SeriesFactory(object):
 
 
 abc = SeriesFactory()
-abc.create("/home/SoliareofAstora/space_memory/experiments/templates/checkpoint_single_rectangle_linear_dqn/v0", "longer")
-abc.multiply_parameters("steps",[500000])
-abc.multiply_parameters("memory_size", [3000])
-abc.multiply_parameters("model_save_interval", [10000])
-abc.multiply_parameters("batch_size", [32, 128, 512])
-abc.multiply_parameters("depth", [10,20])
-abc.multiply_parameters("width", [200])
-abc.multiply_parameters("living_penalty", [ 1.0, 0.0])
-# abc.multiply_parameters("target_update_frequency", [100, 1000])
-# abc.multiply_parameters("eps_end", [0.1, 0.01])
-# abc.multiply_parameters("eps_decay", [1000, 10000])
+abc.create("/home/SoliareofAstora/space_memory/experiments/templates/checkpoint_single_fat_linear_dqn/v0", "first")
+abc.multiply_parameters("memory_size", [100000])
+abc.multiply_parameters("model_save_interval", [100000])
+abc.multiply_parameters("batch_size", [512, 1024])
+abc.multiply_parameters("living_penalty", [0.1,0.5, 1.0, 0.0])
 
 print(len(abc))
-
 
 abc.save()
 
