@@ -82,13 +82,13 @@ class CheckpointSingle:public ScenarioBase {
       reward[i] -= distance[i];
       if (distance[i] > resetThreshold ||
           (ship_array->v_angle[i] > resetAngleThreshold || ship_array->v_angle[i] < -resetAngleThreshold)) {
-        reward[i] = -1;
+        reward[i] -= 1;
         done[i] = true;
         ship_array->ResetWithRandomVelocity(i, minV, maxV, maxAngleV);
         distance[i] = entity_data::Distance(ship_array, i, checkpoint_array, i);
       }
       if (distance[i] < passThreshold) {
-        reward[i] = 1;
+        reward[i] += 1;
         done[i] = true;
         ship_array->ResetWithRandomVelocity(i, minV, maxV, maxAngleV);
         checkpoint_array->ResetCheckpoint(i);

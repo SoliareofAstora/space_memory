@@ -31,5 +31,5 @@ def test_experiment(path):
     if params["rl_name"] == "dqn":
         output = dqn.run(params)
 
-path = "/home/SoliareofAstora/space_memory/experiments/templates/checkpoint_single_rectangle_linear_dqn/v1"
+path = "/home/SoliareofAstora/space_memory/experiments/queue/longer__3"
 test_experiment(path)
