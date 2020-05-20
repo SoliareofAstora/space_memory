@@ -7,5 +7,6 @@
 "maxV": 10,
 "maxAngleV": 1,
 "action_matrix": [[1, 0], [0, -1], [0, 1], [1, -1], [1, 1]],
-"observation_space": 5
+"observation_space": 5,
+"reward_manipulation": "no_negative_reward"
 }

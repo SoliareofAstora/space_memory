@@ -12,6 +12,8 @@ from components.logging_tools import WalkingAverage
 from components.rl_algorithm.utils.replay_storage import ReplayList
 from components.rl_algorithm.utils.optimizers import get_optimizer
 from components.rl_algorithm.utils.loss import get_loss
+from components.rl_algorithm.utils.reward_manipulation import load_reward_manipulation
+
 
 def run(params):
     env = env_wrapper.env(params)
@@ -36,6 +38,8 @@ def run(params):
 
     optimizer = get_optimizer(params, policy_net.parameters())
     lossFun = get_loss(params)
+
+    reward_manipulation = load_reward_manipulation(params)
 
     def optimize_model():
         if len(memory) < BATCH_SIZE:
@@ -76,6 +80,7 @@ def run(params):
         actions = get_actions(policy_net, state).to(device)
         new_state, reward, _ = env.step(actions)
         average.append(reward)
+        reward = reward_manipulation(reward)
         reward -= living_penalty
         if not env.active():
             return 0

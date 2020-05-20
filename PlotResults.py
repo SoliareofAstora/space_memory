@@ -54,7 +54,7 @@ else:
 experiments = list(filter(lambda x: len(x)==3,experiments))
 
 # np.unique(list(map(lambda x: x["parameters"]["steps"], experiments)))
-# experiments = list(filter(lambda x: x['parameters']["depth"]!=50,experiments))
+experiments = list(filter(lambda x: x['parameters']["steps"]==50000,experiments))
 
 toverify = []
 for key in experiments[0]["parameters"].keys():

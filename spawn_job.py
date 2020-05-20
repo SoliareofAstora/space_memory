@@ -4,9 +4,7 @@ import remote_config
 
 def spawn_job():
     for remote in remote_config.remotes:
-        command = "ssh " + remote + " source space_memory/runq.sh"
-        print(command)
-        os.system(command)
+        os.system("ssh " + remote + " source space_memory/runq.sh")
 
 
 if __name__ == "__main__":
