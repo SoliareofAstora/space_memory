@@ -20,6 +20,11 @@
 namespace scenario{
 
 class Stopping:public ScenarioBase {
+  /*
+ * 0 - velocity length
+ * 1 - velocity vector angle wr to ship direction
+ * 2 - angular velocity
+ */
  public:
   int n;
   float passThreshold;
@@ -28,13 +33,8 @@ class Stopping:public ScenarioBase {
   int minV;
   int maxV;
   int maxAngleV;
-/*
-* 0 - velocity length
-* 1 - velocity vector angle wr to ship direction
-* 2 - angular velocity
-*/
-  entity_data::Ship* ship_array;
 
+  entity_data::Ship* ship_array;
   float* observations;
   float* reward;
   float* previousVelocity;
@@ -84,7 +84,7 @@ class Stopping:public ScenarioBase {
     std::fill(done, done + n, false);
 
     for (int i = 0; i < n; ++i) {
-
+      //todo change it to swaping buffers just like checkpots
       reward[i] = previousVelocity[i] - currentVelocity[i];
       if (currentVelocity[i] < passThreshold) {
         reward[i] = 1;
@@ -118,13 +118,20 @@ class Stopping:public ScenarioBase {
     );
   }
 
+  /*
+* 0 - velocity length
+* 1 - velocity vector angle wr to ship direction
+* 2 - angular velocity
+*/
   boost::python::numpy::ndarray CalculateObservations() {
     for (int i = 0; i < n; ++i) {
+      observations[0 * n + i] = ship_array->GetVelovityNorm(i);
+      // TODO: why is here -M_PI_2f32???
       float s = sinf(ship_array->angle[i] - M_PI_2f32);
       float c = cosf(ship_array->angle[i] - M_PI_2f32);
-      observations[0 * n + i] = ship_array->GetVelovityNorm(i);
-      observations[1 * n + i] = atan2f(-(s * ship_array->v[i] + c * ship_array->v[n + i]),
-                                       c * ship_array->v[i] - s * ship_array->v[n + i]);
+      float x = c * ship_array->v[i] - s * ship_array->v[n + i];
+      float y = s * ship_array->v[i] + c * ship_array->v[n + i];
+      observations[1 * n + i] = atan2f(-y,x);
     }
     std::memcpy(&observations[2 * n], ship_array->v_angle, n * sizeof(float));
 
@@ -177,16 +184,22 @@ class Stopping:public ScenarioBase {
 
       //Velocity vector
       vertex_array->operator[](4 * i + 0).position = ship_position;
-      vertex_array->operator[](4 * i + 1).position =
-          ship_position + sf::Vector2f(
+      vertex_array->operator[](4 * i + 1).position = ship_position + sf::Vector2f(5*ship_array->v[i], 5*ship_array->v[n + i]);
+//              10 * observations[0 * n + i] * sinf(ship_array->angle[i] + observations[1 * n + i]),
+//              10 * observations[0 * n + i] * cosf(ship_array->angle[i] + observations[1 * n + i]));
+
+
+      vertex_array->operator[](4 * i + 2).position = ship_position;
+      vertex_array->operator[](4 * i + 3).position = ship_position + sf::Vector2f(
               10 * observations[0 * n + i] * sinf(ship_array->angle[i] + observations[1 * n + i]),
               10 * observations[0 * n + i] * cosf(ship_array->angle[i] + observations[1 * n + i]));
 
+
       //Angular velocity
-      vertex_array->operator[](4 * i + 2).position = vertex_array->operator[](4 * i + 1).position;
-      vertex_array->operator[](4 * i + 3).position = vertex_array->operator[](4 * i + 1).position + sf::Vector2f(
-          20 * observations[2 * n + i] * sinf(ship_array->angle[i] + observations[1 * n + i] + M_PI_2f32),
-          20 * observations[2 * n + i] * cosf(ship_array->angle[i] + observations[1 * n + i] + M_PI_2f32));
+//      vertex_array->operator[](4 * i + 2).position = vertex_array->operator[](4 * i + 1).position;
+//      vertex_array->operator[](4 * i + 3).position = vertex_array->operator[](4 * i + 1).position + sf::Vector2f(
+//          20 * observations[2 * n + i] * sinf(ship_array->angle[i] + observations[1 * n + i] + M_PI_2f32),
+//          20 * observations[2 * n + i] * cosf(ship_array->angle[i] + observations[1 * n + i] + M_PI_2f32));
     }
   }
 };

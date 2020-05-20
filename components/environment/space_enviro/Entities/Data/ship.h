@@ -29,8 +29,6 @@ struct Ship:DynamicEntity {
   float default_main_engine_power = 100;
   float default_rotation_engine_power = 100;
 
-
-
   Ship(const int entities_count):DynamicEntity(entities_count) {
     hit_points = new float[n]();
     main_engine_power = new float[n]();
@@ -42,8 +40,8 @@ struct Ship:DynamicEntity {
   }
 
   Ship(const int entities_count, float new_hitpoints, float new_main_engine_power,
-      float new_rotation_engine_power, float new_mass, float new_size
-      ):DynamicEntity(entities_count,new_mass,new_size) {
+       float new_rotation_engine_power, float new_mass, float new_size
+  ):DynamicEntity(entities_count, new_mass, new_size) {
     hit_points = new float[n]();
     main_engine_power = new float[n]();
     rotation_engine_power = new float[n]();
@@ -126,13 +124,13 @@ struct Ship:DynamicEntity {
   }
 };
 
-Ship* InitializeShipArrayFromDict(const boost::python::dict &parameters){
-  return new Ship(boost::python::extract<int>(parameters["n"])
-      ,boost::python::extract<float>(parameters["default_hitpoints"])
-      ,boost::python::extract<float>(parameters["default_main_engine_power"])
-      ,boost::python::extract<float>(parameters["default_rotation_engine_power"])
-      ,boost::python::extract<float>(parameters["default_mass"])
-      ,boost::python::extract<float>(parameters["default_size"]));
+Ship* InitializeShipArrayFromDict(const boost::python::dict &parameters) {
+  return new Ship(boost::python::extract<int>(parameters["n"]),
+                  boost::python::extract<float>(parameters["default_hitpoints"]),
+                  boost::python::extract<float>(parameters["default_main_engine_power"]),
+                  boost::python::extract<float>(parameters["default_rotation_engine_power"]),
+                  boost::python::extract<float>(parameters["default_mass"]),
+                  boost::python::extract<float>(parameters["default_size"]));
 }
 }// namespace entity_data
 

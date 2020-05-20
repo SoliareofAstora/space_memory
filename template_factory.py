@@ -125,6 +125,11 @@ class TemplateFactory(object):
                 print("\t", name, self.params[file][name])
 
 
+tmp = TemplateFactory()
+tmp.create("checkpoint_single",'rectangle_linear','dqn')
+tmp.print()
+tmp.save()
+
 # tmp = TemplateFactory()
 # tmp.create("stopping",'rectangle_linear','dqn')
 # tmp.print()

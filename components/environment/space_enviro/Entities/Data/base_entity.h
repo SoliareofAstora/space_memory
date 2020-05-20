@@ -49,8 +49,6 @@ struct BaseEntity {
   }
 
   void Reset(int index) {
-//    position[index] = randNum(200);
-//    position[index+n] = randNum(200);
     position[index] = 0;
     position[n + index] = 0;
   }
@@ -61,6 +59,7 @@ struct BaseEntity {
   }
 
   //Returns true if element you want to delete is the current last one
+  //UNTESTED PIPELINE
   bool Remove(int index) {
     remaining--;
     if (remaining == index) { return true; }
@@ -69,12 +68,20 @@ struct BaseEntity {
     size[index] = size[remaining];
     return false;
   }
+
 };
 
 float Distance(BaseEntity* a, int i, BaseEntity* b, int j) {
   return sqrtf(
       powf(a->position[i] - b->position[j], 2)
           + powf(a->position[a->n + i] - b->position[b->n + j], 2));
+}
+
+void PairwiseDistance(BaseEntity* a, BaseEntity* b, float* output) {
+  for (int i = 0; i < a->n; ++i) {
+    output[i] = sqrtf(powf(a->position[i] - b->position[i], 2)
+                          + powf(a->position[a->n + i] - b->position[a->n + i], 2));
+  }
 }
 
 }// namespace entity_data

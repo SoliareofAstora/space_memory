@@ -6,6 +6,7 @@ import time
 import components.rl_algorithm.dqn as dqn
 import locks
 
+
 def run_experiment(path):
     path = pathlib.Path(path)
     params = {}

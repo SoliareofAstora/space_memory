@@ -2,8 +2,8 @@
 // Created by SoliareofAstora on 29/05/19.
 //
 
-#ifndef SPACE_ENVIRO_CHECKPOINT_SCENARIO_H
-#define SPACE_ENVIRO_CHECKPOINT_SCENARIO_H
+#ifndef SPACE_ENVIRO_CHECKPOINT_DOUBLE_SCENARIO_H
+#define SPACE_ENVIRO_CHECKPOINT_DOUBLE_SCENARIO_H
 
 #include <cmath>
 #include <boost/python.hpp>
@@ -18,7 +18,7 @@
 
 namespace scenario{
 
-class Checkpoints:public ScenarioBase {
+class CheckpointDouble:public ScenarioBase {
  public:
   int n;
 
@@ -36,7 +36,7 @@ class Checkpoints:public ScenarioBase {
   float* distance;
   bool* done;
 
-  Checkpoints(const boost::python::dict &parameters)
+  CheckpointDouble(const boost::python::dict &parameters)
   :n(boost::python::extract<int>(parameters["n"])) {
     ship_array = new entity_data::Ship(n);
     checkpoint_array = new CheckpointArray(n, 700);
@@ -50,7 +50,7 @@ class Checkpoints:public ScenarioBase {
     }
   }
 
-  ~Checkpoints() {
+  ~CheckpointDouble() {
     delete ship_array;
     delete checkpoint_array;
 
@@ -227,4 +227,4 @@ class Checkpoints:public ScenarioBase {
 //    return 0;
 //}
 
-#endif //SPACE_ENVIRO_CHECKPOINT_SCENARIO_H
+#endif //SPACE_ENVIRO_CHECKPOINT_DOUBLE_SCENARIO_H
