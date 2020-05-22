@@ -16,7 +16,8 @@ add_library(env SHARED
         Rendering/Primitives/render_ship.h
         Rendering/Primitives/render_square.hpp
         Scenario/base.h
-        Scenario/checkpoint_single.h
+        Scenario/checkpoint_single_v1.h
+        Scenario/checkpoint_single_v2.h
         Scenario/checkpoint_double.h
         Scenario/load.h
         Scenario/stopping.hpp

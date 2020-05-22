@@ -29,7 +29,7 @@ def funfun(index):
     return experiments
 
 
-path = pathlib.Path("/home/SoliareofAstora/space_memory/experiments/done/checkpoint_single/dqn/first")
+path = pathlib.Path("/home/SoliareofAstora/space_memory/experiments/done/checkpoint_single/dqn")
 paths = np.array(list(path.glob("**/parameters")))
 
 if len(paths) > 3:
@@ -43,7 +43,7 @@ if len(paths) > 3:
         result = p.map(funfun,indexList)
     experiments = []
     for res in result:
-        experiments+= res
+        experiments += res
 
 else:
     experiments = funfun([i for i in range(len(paths))])
@@ -54,7 +54,7 @@ else:
 experiments = list(filter(lambda x: len(x)==3,experiments))
 
 # np.unique(list(map(lambda x: x["parameters"]["steps"], experiments)))
-experiments = list(filter(lambda x: x['parameters']["steps"]==50000,experiments))
+# experiments = list(filter(lambda x: x['parameters']["steps"]==50000,experiments))
 
 toverify = []
 for key in experiments[0]["parameters"].keys():
@@ -91,7 +91,7 @@ for ver in toverify:
         arr = np.array(list(map(lambda x: x['results'],selectedExperiments)))
         arr = np.average(arr,axis=0)
         # plt.plot(arr, color=colors[color_id], label=value)
-        plt.plot(running_mean(arr,10),color=colors[color_id], label=value, linewidth=0.5)
+        plt.plot(running_mean(arr,500),color=colors[color_id], label=value, linewidth=0.5)
 
         # plt.plot(running_mean(selectedExperiments[0]["results"], 50), color=colors[color_id], label=value)
         # for e in selectedExperiments[1:]:
@@ -104,7 +104,7 @@ for ver in toverify:
     plt.show()
 
 for e in experiments:
-    plt.plot(running_mean(e["results"],50),linewidth=0.01)
+    plt.plot(running_mean(e["results"],50),linewidth=0.1)
 plt.title("All "+str(len(experiments))+"experiments: Stopping DQN 3 actions")
 #plt.savefig("plot_results/AllRuns"+str(len(experiments))+".png", dpi=400)
 plt.show()

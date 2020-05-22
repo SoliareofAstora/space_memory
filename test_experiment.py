@@ -31,5 +31,5 @@ def test_experiment(path):
     if params["rl_name"] == "dqn":
         output = dqn.run(params)
 
-path = "/home/SoliareofAstora/space_memory/experiments/queue/longer__3"
+path = "/home/SoliareofAstora/space_memory/experiments/queue/first__2"
 test_experiment(path)

@@ -86,14 +86,14 @@ struct Ship:DynamicEntity {
 
   void Reset(int index) {
     DynamicEntity::Reset(index);
-    angle[index] = 0; //randNum(360);
+    angle[index] = 0;
     v_angle[index] = 0;
     a_angle[index] = 0;
   }
 
   void ResetWithRandomVelocity(int index, int minV, int maxV, int maxAngleV) {
     DynamicEntity::ResetWithRandomVelocity(index, minV, maxV);
-    angle[index] = RNG::RandomFloat(360);
+    angle[index] = RNG::RandomFloatMirror(M_PIf32);
     v_angle[index] = RNG::RandomFloatMirror(maxAngleV);
     a_angle[index] = 0;
   }

@@ -76,20 +76,19 @@ class SeriesFactory(object):
         return len(self.prepare())
 
 
-abc = SeriesFactory()
-abc.create("/home/SoliareofAstora/space_memory/experiments/templates/checkpoint_single_fat_linear_dqn/v0", "first")
-abc.multiply_parameters("memory_size", [100000])
-abc.multiply_parameters("model_save_interval", [100000])
-abc.multiply_parameters("batch_size", [1024])
-abc.multiply_parameters("living_penalty", [-1, 0, 0.1, 1])
-abc.multiply_parameters("eps_decay", [10000, 100000])
-abc.multiply_parameters("gamma", [0.99])
-abc.multiply_parameters("target_update_frequency", [1000, 10000])
-abc.multiply_parameters("reward_manipulation", ["identity", "no_negative_reward"])
-abc.print()
-print(len(abc))
-
-abc.save()
+# abc = SeriesFactory()
+# abc.create("/home/SoliareofAstora/space_memory/experiments/templates/checkpoint_single_fat_linear_dqn/v0", "second")
+# abc.multiply_parameters("memory_size", [100000])
+# abc.multiply_parameters("model_save_interval", [100000])
+# abc.multiply_parameters("batch_size", [1024])
+# abc.multiply_parameters("living_penalty", [0, 0.1])
+# abc.multiply_parameters("eps_decay", [10000, 100000])
+# abc.multiply_parameters("gamma", [0.9])
+# abc.multiply_parameters("target_update_frequency", [500, 1000, 2000])
+# abc.print()
+# print(len(abc))
+#
+# abc.save()
 
 # abc.create("experiments/templates/stopping_rectangle_linear_dqn/v0", "first")
 # abc.multiply_parameters("memory_size", [3000])

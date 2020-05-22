@@ -10,7 +10,8 @@
 #include <boost/python/numpy.hpp>
 #include <boost/python.hpp>
 #include "base.h"
-#include "checkpoint_single.h"
+#include "checkpoint_single_v1.h"
+#include "checkpoint_single_v2.h"
 #include "checkpoint_double.h"
 #include "stopping.hpp"
 
@@ -19,8 +20,10 @@ namespace scenario{
 ScenarioBase* load_scenario(const boost::python::dict &parameters) {
 
   std::string sn = boost::python::extract<std::string>(parameters["scenario_name"]);
-  if (sn == "checkpoint_single")
-    return new CheckpointSingle(parameters);
+  if (sn == "checkpoint_single" || sn == "checkpoint_single_v1")
+    return new CheckpointSingleV1(parameters);
+  if (sn == "checkpoint_single_v2")
+    return new CheckpointSingleV2(parameters);
 //  if (sn == "checkpoints")
 //    return new CheckpointDouble(parameters);
   if (sn == "stopping")

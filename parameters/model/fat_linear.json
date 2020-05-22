@@ -1,6 +1,6 @@
 {"model_name": "linear",
-  "depth":10,
-  "width":50,
+  "depth":5,
+  "width":500,
   "activation": "relu",
   "output_activation": null,
   "dropout_rate": null,

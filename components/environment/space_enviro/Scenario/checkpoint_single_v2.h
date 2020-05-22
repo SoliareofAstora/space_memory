@@ -2,8 +2,8 @@
 // Created by SoliareofAstora on 29/05/19.
 //
 
-#ifndef SPACE_ENVIRO_CHECKPOINT_SINGLE_SCENARIO_H
-#define SPACE_ENVIRO_CHECKPOINT_SINGLE_SCENARIO_H
+#ifndef SPACE_ENVIRO_CHECKPOINT_SINGLE_SCENARIO_V2_H
+#define SPACE_ENVIRO_CHECKPOINT_SINGLE_SCENARIO_V2_H
 
 #include <cmath>
 #include <boost/python.hpp>
@@ -18,7 +18,7 @@
 
 namespace scenario{
 
-class CheckpointSingle:public ScenarioBase {
+class CheckpointSingleV2:public ScenarioBase {
   /*
  * 0 - distance between ship and checkpoint
  * 1 - angle between ship direction and checkpoint
@@ -31,68 +31,73 @@ class CheckpointSingle:public ScenarioBase {
   float passThreshold;
   float resetThreshold;
   float resetAngleThreshold;
-  int minV;
-  int maxV;
-  int maxAngleV;
 
   entity_data::Ship* ship_array;
   CheckpointArray* checkpoint_array;
   float* observations;
   float* reward;
   float* distance;
+  float* old_distance;
+  float* velocity_toward_checkpoint;
+  float* old_velocity_toward_checkpoint;
   bool* done;
 
-  CheckpointSingle(const boost::python::dict &parameters)
+  CheckpointSingleV2(const boost::python::dict &parameters)
   :n(boost::python::extract<int>(parameters["n"])) {
     passThreshold = boost::python::extract<float>(parameters["passThreshold"]);
     resetThreshold = boost::python::extract<float>(parameters["resetThreshold"]);
     resetAngleThreshold = boost::python::extract<float>(parameters["resetAngleThreshold"]);
-    minV = boost::python::extract<int>(parameters["minV"]);
-    maxV = boost::python::extract<int>(parameters["maxV"]);
-    maxAngleV = boost::python::extract<int>(parameters["maxAngleV"]);
 
     ship_array = new entity_data::Ship(n);
     checkpoint_array = new CheckpointArray(n, boost::python::extract<int>(parameters["spawn_square"]));
     observations = new float[n * 5];
     reward = new float[n];
     distance = new float[n];
+    old_distance = new float[n];
+    velocity_toward_checkpoint = new float[n];
+    old_velocity_toward_checkpoint = new float[n];
     done = new bool[n];
-    entity_data::PairwiseDistance(ship_array, checkpoint_array, distance);
+    Reset();
   }
 
-  ~CheckpointSingle() {
+  ~CheckpointSingleV2() {
     delete ship_array;
     delete checkpoint_array;
 
     delete[] observations;
     delete[] reward;
     delete[] distance;
+    delete[] old_distance;
+    delete[] velocity_toward_checkpoint;
+    delete[] old_velocity_toward_checkpoint;
     delete[] done;
   }
 
   boost::python::tuple Step(float* actions) override {
-    ship_array->Update(actions);
-
-    // TODO: change it to swapping arrays. Do not copy values over and over
-    std::memcpy(reward, distance, n * sizeof(float));
     std::fill(done, done + n, false);
+    std::memcpy(old_distance, distance, n * sizeof(float));
+    std::memcpy(old_velocity_toward_checkpoint, velocity_toward_checkpoint, n * sizeof(float));
+    ship_array->Update(actions);
+    entity_data::PairwiseDistance(ship_array, checkpoint_array, distance);
+    // TODO: change it to swapping arrays. Do not copy values over and over
 
     for (int i = 0; i < n; ++i) {
-      distance[i] = entity_data::Distance(ship_array, i, checkpoint_array, i);
-      reward[i] -= distance[i];
-      if (distance[i] > resetThreshold ||
-          (ship_array->v_angle[i] > resetAngleThreshold || ship_array->v_angle[i] < -resetAngleThreshold)) {
-        reward[i] -= 1;
+      velocity_toward_checkpoint[i] = old_distance[i] - distance[i];
+      reward[i] = velocity_toward_checkpoint[i] - old_velocity_toward_checkpoint[i];
+      if (distance[i] < passThreshold ||
+      distance[i] > resetThreshold ||
+      ship_array->v_angle[i] > resetAngleThreshold ||
+      ship_array->v_angle[i] < -resetAngleThreshold) {
+        if (distance[i] < passThreshold) {
+          reward[i] += 1;
+          checkpoint_array->ResetCheckpoint(i);
+        } else {
+          reward[i] -= 1;
+        }
         done[i] = true;
-        ship_array->ResetWithRandomVelocity(i, minV, maxV, maxAngleV);
+        ship_array->Reset(i);
         distance[i] = entity_data::Distance(ship_array, i, checkpoint_array, i);
-      }
-      if (distance[i] < passThreshold) {
-        reward[i] += 1;
-        done[i] = true;
-        ship_array->ResetWithRandomVelocity(i, minV, maxV, maxAngleV);
-        checkpoint_array->ResetCheckpoint(i);
-        distance[i] = entity_data::Distance(ship_array, i, checkpoint_array, i);
+        velocity_toward_checkpoint[i] = 0;
       }
     }
 
@@ -143,6 +148,9 @@ class CheckpointSingle:public ScenarioBase {
     checkpoint_array->Reset();
     ship_array->ResetAllValues();
     entity_data::PairwiseDistance(ship_array, checkpoint_array, distance);
+    entity_data::PairwiseDistance(ship_array, checkpoint_array, old_distance);
+    std::fill(velocity_toward_checkpoint, velocity_toward_checkpoint + n, 0.f);
+    std::fill(old_velocity_toward_checkpoint, old_velocity_toward_checkpoint + n, 0.f);
     return CalculateObservations();
   }
 
@@ -245,4 +253,4 @@ class CheckpointSingle:public ScenarioBase {
 //    return 0;
 //}
 
-#endif //SPACE_ENVIRO_CHECKPOINT_SINGLE_SCENARIO_H
+#endif //SPACE_ENVIRO_CHECKPOINT_SINGLE_SCENARIO_V2_H

@@ -126,6 +126,12 @@ class TemplateFactory(object):
 
 
 # tmp = TemplateFactory()
+# tmp.create("checkpoint_single_v2",'fat_linear','dqn',training="long500k")
+# tmp.print()
+# tmp.save()
+#
+#
+# tmp = TemplateFactory()
 # tmp.create("checkpoint_single",'fat_linear','dqn',training="long500k")
 # tmp.print()
 # tmp.save()

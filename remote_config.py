@@ -1,8 +1,8 @@
 import subprocess
 
 remotes = ["walter",
-           # "neptune",
-           "neptune_local"
+           "neptune",
+           # "neptune_local"
            ]
 
 def all_connected():
