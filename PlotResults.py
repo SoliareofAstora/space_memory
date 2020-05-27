@@ -29,7 +29,8 @@ def funfun(index):
     return experiments
 
 
-path = pathlib.Path("/home/SoliareofAstora/space_memory/experiments/done/checkpoint_single/dqn")
+path = pathlib.Path("/home/SoliareofAstora/space_memory/experiments/done/checkpoint_single")
+# path = pathlib.Path("/home/SoliareofAstora/space_memory/experiments/done/checkpoint_single_v2")
 paths = np.array(list(path.glob("**/parameters")))
 
 if len(paths) > 3:
