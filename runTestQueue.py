@@ -4,10 +4,8 @@ import pathlib
 import time
 import json
 import numpy as np
-
 import torch
 import components.environment.env_wrapper as env_wrapper
-
 
 
 def run_test_queue():
@@ -16,6 +14,7 @@ def run_test_queue():
     for test in testqueue:
         locks.lock_path(test_path)
         if (test/"results"/"test.json").exists():
+            locks.unlock_path(test_path)
             continue
         f = open((test/"results"/"test.json"),'a')
         f.close()
