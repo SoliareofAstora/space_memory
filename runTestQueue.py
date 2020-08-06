@@ -16,8 +16,7 @@ def run_test_queue():
     for test in testqueue:
         locks.lock_path(test_path)
         if (test/"results"/"test.json").exists():
-            exit(0)
-            # continue
+            continue
         f = open((test/"results"/"test.json"),'a')
         f.close()
         locks.unlock_path(test_path)
@@ -33,6 +32,8 @@ def run_test_queue():
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         if not torch.cuda.is_available():
             os.remove((test/"results"/"test.json"))
+            f = open((test_path/"NOCUDA"), 'a')
+            f.close()
             exit(1)
         result = []
         for weights in list(test.glob("weights/*.pth")):
