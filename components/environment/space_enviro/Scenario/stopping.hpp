@@ -196,10 +196,10 @@ class Stopping:public ScenarioBase {
 
 
       //Angular velocity
-//      vertex_array->operator[](4 * i + 2).position = vertex_array->operator[](4 * i + 1).position;
-//      vertex_array->operator[](4 * i + 3).position = vertex_array->operator[](4 * i + 1).position + sf::Vector2f(
-//          20 * observations[2 * n + i] * sinf(ship_array->angle[i] + observations[1 * n + i] + M_PI_2f32),
-//          20 * observations[2 * n + i] * cosf(ship_array->angle[i] + observations[1 * n + i] + M_PI_2f32));
+      vertex_array->operator[](4 * i + 2).position = vertex_array->operator[](4 * i + 1).position;
+      vertex_array->operator[](4 * i + 3).position = vertex_array->operator[](4 * i + 1).position + sf::Vector2f(
+          20 * observations[2 * n + i] * sinf(ship_array->angle[i] + observations[1 * n + i] + M_PI_2f32),
+          20 * observations[2 * n + i] * cosf(ship_array->angle[i] + observations[1 * n + i] + M_PI_2f32));
     }
   }
 };

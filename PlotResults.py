@@ -28,9 +28,12 @@ def funfun(index):
             continue
     return experiments
 
+# path = pathlib.Path("/home/SoliareofAstora/space_memory/experiments/done/stopping/dqn/first")
+path = pathlib.Path("/home/SoliareofAstora/space_memory/experiments/done/checkpoint_single/dqn/1m_long")
+# path = pathlib.Path("/home/SoliareofAstora/space_memory/experiments/done/checkpoint_single_v2/dqn/1m_long")
 
-path = pathlib.Path("/home/SoliareofAstora/space_memory/experiments/done/checkpoint_single")
-# path = pathlib.Path("/home/SoliareofAstora/space_memory/experiments/done/checkpoint_single_v2")
+
+
 paths = np.array(list(path.glob("**/parameters")))
 
 if len(paths) > 3:
@@ -55,7 +58,7 @@ else:
 experiments = list(filter(lambda x: len(x)==3,experiments))
 
 # np.unique(list(map(lambda x: x["parameters"]["steps"], experiments)))
-# experiments = list(filter(lambda x: x['parameters']["steps"]==50000,experiments))
+experiments = list(filter(lambda x: x['parameters']["depth"]!=50,experiments))
 
 toverify = []
 for key in experiments[0]["parameters"].keys():
@@ -105,11 +108,11 @@ for ver in toverify:
     plt.show()
 
 for e in experiments:
-    plt.plot(running_mean(e["results"],50),linewidth=0.1)
+    plt.plot(running_mean(e["results"],50),linewidth=0.05)
 plt.title("All "+str(len(experiments))+"experiments: Stopping DQN 3 actions")
 #plt.savefig("plot_results/AllRuns"+str(len(experiments))+".png", dpi=400)
 plt.show()
 
 # plt.cla()
 # plt.clf()
-# plt.close()
+# plt.close()import numpy as np

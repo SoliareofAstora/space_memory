@@ -89,10 +89,10 @@ class CheckpointSingleV2:public ScenarioBase {
       ship_array->v_angle[i] > resetAngleThreshold ||
       ship_array->v_angle[i] < -resetAngleThreshold) {
         if (distance[i] < passThreshold) {
-          reward[i] += 1;
+          reward[i] = 1;
           checkpoint_array->ResetCheckpoint(i);
         } else {
-          reward[i] -= 1;
+          reward[i] = -1;
         }
         done[i] = true;
         ship_array->Reset(i);

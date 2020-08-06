@@ -34,7 +34,6 @@ class RenderEngine {
     debug_vertex_array = scenario->InitializeDebugRender();
     recording_path = redpth;
     show_debug = debug;
-
     frame_counter = 0;
     sf::View v(sf::FloatRect(-750, -750, 1500, 1500));
 
@@ -73,7 +72,7 @@ class RenderEngine {
 
         std::stringstream filename;
         filename << std::setw(10) << std::setfill('0') << frame_counter;
-        texture->getTexture().copyToImage().saveToFile(recording_path+filename.str()+".png");
+        texture->getTexture().copyToImage().saveToFile(recording_path+"/"+filename.str()+".png");
         frame_counter++;
       }
     }
