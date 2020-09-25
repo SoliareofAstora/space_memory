@@ -6,6 +6,7 @@
 #define SPACE_ENVIRO_SCENARIO_BASE_H
 
 #include <SFML/Graphics/VertexArray.hpp>
+#include <SFML/Graphics/Text.hpp>
 #include <boost/python/tuple.hpp>
 #include <boost/python/numpy.hpp>
 #include <boost/python.hpp>
@@ -27,6 +28,8 @@ struct ScenarioBase {
 
   virtual sf::VertexArray* InitializeDebugRender() {}
   virtual void RenderDebug(sf::VertexArray* vertex_array) {}
+
+  virtual void UpdateText(sf::Text* text){}
 };
 
 }// namespace scenario

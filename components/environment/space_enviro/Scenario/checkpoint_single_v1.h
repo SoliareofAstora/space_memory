@@ -42,6 +42,9 @@ class CheckpointSingleV1:public ScenarioBase {
   float* distance;
   bool* done;
 
+  int pasedCount = 0;
+  int failedCount = 0;
+
   CheckpointSingleV1(const boost::python::dict &parameters)
   :n(boost::python::extract<int>(parameters["n"])) {
     passThreshold = boost::python::extract<float>(parameters["passThreshold"]);
@@ -84,12 +87,14 @@ class CheckpointSingleV1:public ScenarioBase {
           (ship_array->v_angle[i] > resetAngleThreshold || ship_array->v_angle[i] < -resetAngleThreshold)) {
         reward[i] = -1;
         done[i] = true;
+        failedCount += 1;
         ship_array->ResetWithRandomVelocity(i, minV, maxV, maxAngleV);
         distance[i] = entity_data::Distance(ship_array, i, checkpoint_array, i);
       }
       if (distance[i] < passThreshold) {
         reward[i] = 1;
         done[i] = true;
+        pasedCount += 1;
         ship_array->ResetWithRandomVelocity(i, minV, maxV, maxAngleV);
         checkpoint_array->ResetCheckpoint(i);
         distance[i] = entity_data::Distance(ship_array, i, checkpoint_array, i);
@@ -191,8 +196,8 @@ class CheckpointSingleV1:public ScenarioBase {
       vertex_array->operator[](6 * i + 2).position = ship_position;
       vertex_array->operator[](6 * i + 3).position =
           ship_position + sf::Vector2f(
-              10 * observations[2 * n + i] * sinf(ship_array->angle[i] + observations[3 * n + i]),
-              10 * observations[2 * n + i] * cosf(ship_array->angle[i] + observations[3 * n + i]));
+              3 * observations[2 * n + i] * sinf(ship_array->angle[i] + observations[3 * n + i]),
+              3 * observations[2 * n + i] * cosf(ship_array->angle[i] + observations[3 * n + i]));
 
       //Angular velocity
       vertex_array->operator[](6 * i + 4).position = vertex_array->operator[](6 * i + 3).position;
@@ -200,6 +205,10 @@ class CheckpointSingleV1:public ScenarioBase {
           20 * observations[4 * n + i] * sinf(ship_array->angle[i] + observations[3 * n + i] + M_PI_2f32),
           20 * observations[4 * n + i] * cosf(ship_array->angle[i] + observations[3 * n + i] + M_PI_2f32));
     }
+  }
+  virtual void UpdateText(sf::Text* text){
+    text->setString("Second scenario: \n success: "+std::to_string(pasedCount)+"\n failure: "+std::to_string(failedCount));
+
   }
 };
 

@@ -1,0 +1,21 @@
+\BOOKMARK [1][-]{section.1}{Abstrakt}{}% 1
+\BOOKMARK [1][-]{section.2}{Wstep}{}% 2
+\BOOKMARK [1][-]{section.3}{Srodowisko}{}% 3
+\BOOKMARK [2][-]{subsection.3.1}{Akcje}{section.3}% 4
+\BOOKMARK [2][-]{subsection.3.2}{Stan}{section.3}% 5
+\BOOKMARK [2][-]{subsection.3.3}{Graficzna reprezentacja srodowiska}{section.3}% 6
+\BOOKMARK [2][-]{subsection.3.4}{Funkcja aktualizacji srodowiska}{section.3}% 7
+\BOOKMARK [2][-]{subsection.3.5}{Scenariusze i modelowanie funkcji nagrody}{section.3}% 8
+\BOOKMARK [1][-]{section.4}{Definicja uczenia ze wzmocnieniem}{}% 9
+\BOOKMARK [1][-]{section.5}{G\233ebokie uczenie funkcji wartosci akcji Q}{}% 10
+\BOOKMARK [2][-]{subsection.5.1}{Problemy g\233ebokiego uczenia ze wzmocnieniem}{section.5}% 11
+\BOOKMARK [2][-]{subsection.5.2}{Sztuczna siec neuronowa}{section.5}% 12
+\BOOKMARK [2][-]{subsection.5.3}{Algorytm}{section.5}% 13
+\BOOKMARK [1][-]{section.6}{System do przeprowadzania eksperyment\363w}{}% 14
+\BOOKMARK [2][-]{subsection.6.1}{Tworzenie eksperyment\363w}{section.6}% 15
+\BOOKMARK [2][-]{subsection.6.2}{Uruchamianie obliczen}{section.6}% 16
+\BOOKMARK [2][-]{subsection.6.3}{Synchronizacja wynik\363w}{section.6}% 17
+\BOOKMARK [1][-]{section.7}{Przeprowadzone eksperymenty i wyniki treningu}{}% 18
+\BOOKMARK [1][-]{section.8}{Wyniki test\363w}{}% 19
+\BOOKMARK [1][-]{section.9}{Analiza trzech agent\363w z pierwszego srodowiska}{}% 20
+\BOOKMARK [1][-]{section.10}{Podsumowanie}{}% 21

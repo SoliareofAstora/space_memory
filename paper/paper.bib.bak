@@ -1,0 +1,133 @@
+@misc{mnih2013playing,
+    title={Playing Atari with Deep Reinforcement Learning},
+    author={Volodymyr Mnih and Koray Kavukcuoglu and David Silver and Alex Graves and Ioannis Antonoglou and Daan Wierstra and Martin Riedmiller},
+    year={2013},
+    eprint={1312.5602},
+    archivePrefix={arXiv},
+    primaryClass={cs.LG}
+}
+@book{sutton,
+	author = {Sutton, Richard S. and Barto, Andrew G.},
+	title = {Reinforcement Learning: An Introduction},
+	year = {2018},
+	isbn = {0262039249},
+	publisher = {A Bradford Book},
+	address = {Cambridge, MA, USA}
+}
+@article{go,
+	title	= {Mastering the game of Go with deep neural networks and tree search},
+	author	= {David Silver and Aja Huang and Christopher J. Maddison and Arthur Guez and Laurent Sifre and George van den Driessche and Julian Schrittwieser and Ioannis Antonoglou and Veda Panneershelvam and Marc Lanctot and Sander Dieleman and Dominik Grewe and John Nham and Nal Kalchbrenner and Ilya Sutskever and Timothy Lillicrap and Madeleine Leach and Koray Kavukcuoglu and Thore Graepel and Demis Hassabis},
+	year	= {2016},
+	URL	= {https://storage.googleapis.com/deepmind-media/alphago/AlphaGoNaturePaper.pdf},
+	journal	= {Nature},
+	pages	= {484--503},
+	volume	= {529}
+}
+@article{zero,
+author = {Silver, David and Hubert, Thomas and Schrittwieser, Julian and Antonoglou, Ioannis and Lai, Matthew and Guez, Arthur and Lanctot, Marc and Sifre, Laurent and Kumaran, Dharshan and Graepel, Thore and Lillicrap, Timothy and Simonyan, Karen and Hassabis, Demis},
+year = {2018},
+month = {12},
+pages = {1140-1144},
+title = {A general reinforcement learning algorithm that masters chess, shogi, and Go through self-play},
+volume = {362},
+journal = {Science},
+doi = {10.1126/science.aar6404}
+}
+@article{star,
+author = {Vinyals, Oriol and Babuschkin, Igor and Czarnecki, Wojciech and Mathieu, Michaël and Dudzik, Andrew and Chung, Junyoung and Choi, David and Powell, Richard and Ewalds, Timo and Georgiev, Petko and Oh, Junhyuk and Horgan, Dan and Kroiss, Manuel and Danihelka, Ivo and Huang, Aja and Sifre, Laurent and Cai, Trevor and Agapiou, John and Jaderberg, Max and Silver, David},
+year = {2019},
+month = {11},
+pages = {},
+title = {Grandmaster level in StarCraft II using multi-agent reinforcement learning},
+volume = {575},
+journal = {Nature},
+doi = {10.1038/s41586-019-1724-z}
+}
+@article{frnn,
+  author    = {Ross B. Girshick},
+  title     = {Fast {R-CNN}},
+  journal   = {CoRR},
+  volume    = {abs/1504.08083},
+  year      = {2015},
+  url       = {http://arxiv.org/abs/1504.08083},
+  archivePrefix = {arXiv},
+  eprint    = {1504.08083},
+  timestamp = {Mon, 13 Aug 2018 16:49:11 +0200},
+  biburl    = {https://dblp.org/rec/journals/corr/Girshick15.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+@article{rms,
+  author    = {Alex Graves},
+  title     = {Generating Sequences With Recurrent Neural Networks},
+  journal   = {CoRR},
+  volume    = {abs/1308.0850},
+  year      = {2013},
+  url       = {http://arxiv.org/abs/1308.0850},
+  archivePrefix = {arXiv},
+  eprint    = {1308.0850},
+  timestamp = {Mon, 13 Aug 2018 16:47:21 +0200},
+  biburl    = {https://dblp.org/rec/journals/corr/Graves13.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@article{wyzwania,
+  author    = {Gabriel Dulac-Arnold and Daniel J. Mankowitz and Todd Hester},
+  title     = {Challenges of Real-World Reinforcement Learning},
+  journal   = {CoRR},
+  volume    = {abs/1904.12901},
+  year      = {2019},
+  url       = {http://arxiv.org/abs/1904.12901},
+  archivePrefix = {arXiv},
+  eprint    = {1904.12901},
+  timestamp = {Tue, 25 Jun 2019 11:11:15 +0200},
+  biburl    = {https://dblp.org/rec/journals/corr/abs-1904-12901.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@incollection{torch,
+title = {PyTorch: An Imperative Style, High-Performance Deep Learning Library},
+author = {Paszke, Adam and Gross, Sam and Massa, Francisco and Lerer, Adam and Bradbury, James and Chanan, Gregory and Killeen, Trevor and Lin, Zeming and Gimelshein, Natalia and Antiga, Luca and Desmaison, Alban and Kopf, Andreas and Yang, Edward and DeVito, Zachary and Raison, Martin and Tejani, Alykhan and Chilamkurthy, Sasank and Steiner, Benoit and Fang, Lu and Bai, Junjie and Chintala, Soumith},
+booktitle = {Advances in Neural Information Processing Systems 32},
+editor = {H. Wallach and H. Larochelle and A. Beygelzimer and F. d Alche-Buc and E. Fox and R. Garnett},
+pages = {8024--8035},
+year = {2019},
+publisher = {Curran Associates, Inc.},
+url = {http://papers.neurips.cc/paper/9015-pytorch-an-imperative-style-high-performance-deep-learning-library.pdf}
+}
+
+@article{relu,
+  author    = {Abien Fred Agarap},
+  title     = {Deep Learning using Rectified Linear Units (ReLU)},
+  journal   = {CoRR},
+  volume    = {abs/1803.08375},
+  year      = {2018},
+  url       = {http://arxiv.org/abs/1803.08375},
+  archivePrefix = {arXiv},
+  eprint    = {1803.08375},
+  timestamp = {Mon, 13 Aug 2018 16:47:13 +0200},
+  biburl    = {https://dblp.org/rec/journals/corr/abs-1803-08375.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@misc{rmssource,
+author = {Geoffrey Hinton with Nitish Srivastava Kevin Swersky},
+title = {Neural Networks for Machine Learning}
+}
+
+@misc{sfml,
+author = {Laurent Gomila},
+title = {Simple and Fast  Multimedia Library SFML},
+url={https://github.com/SFML/SFML}
+}
+
+@misc{boost,
+title={boost c++ libraries},
+url={https://www.boost.org/}
+}
+
+@misc{five,
+author = {OpenAI},
+title = {OpenAI Five Defeats Dota 2 World Champions},
+year = {2019},
+url = {https://openai.com/blog/openai-five-defeats-dota-2-world-champions/}
+}

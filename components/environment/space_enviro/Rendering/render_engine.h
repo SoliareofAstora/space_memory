@@ -26,8 +26,11 @@ class RenderEngine {
   bool rendering = false;
   bool recording = false;
   bool show_debug = false;
+  bool show_text = true;
   std::string recording_path;
   int frame_counter;
+  sf::Font font;
+  sf::Text text;
 
   RenderEngine(scenario::ScenarioBase* scenario, std::string redpth, bool render, bool record, bool debug) {
     vertex_array = scenario->InitializeVertexArray();
@@ -47,6 +50,16 @@ class RenderEngine {
       texture->create(1024, 1024);
       texture->setView(v);
     }
+
+    if (!font.loadFromFile("arial.ttf"))
+    {
+      exit(1);
+    }
+    text.setFont(font);
+    text.setCharacterSize(32);
+    text.setFillColor(sf::Color::White);
+    text.setPosition(-750, -750);
+    text.setString("test");
   }
 
   void RenderState(scenario::ScenarioBase* scenario) {
@@ -60,6 +73,10 @@ class RenderEngine {
         if (show_debug) {
           window->draw(*debug_vertex_array);
         }
+        if (show_text) {
+          scenario->UpdateText(&text);
+          window->draw(text);
+        }
         window->display();
       }
       if (recording) {
@@ -67,6 +84,10 @@ class RenderEngine {
         texture->draw(*vertex_array);
         if (show_debug) {
           texture->draw(*debug_vertex_array);
+        }
+        if (show_text) {
+          scenario->UpdateText(&text);
+          texture->draw(text);
         }
         texture->display();
 
@@ -79,8 +100,10 @@ class RenderEngine {
   }
 
   ~RenderEngine() {
-    delete window;
-    delete texture;
+    if(window==NULL)
+      delete window;
+    if(texture==NULL)
+      delete texture;
     delete vertex_array;
     delete debug_vertex_array;
   }

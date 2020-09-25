@@ -183,6 +183,9 @@ class CheckpointDouble:public ScenarioBase {
           20 * observations[4 * n + i] * cosf(ship_array->angle[i] + observations[3 * n + i] + M_PI_2f32));
     }
   }
+  virtual void UpdateText(sf::Text* text){
+
+  }
 };
 
 } // namespace scenario

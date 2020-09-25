@@ -42,6 +42,9 @@ class CheckpointSingleV2:public ScenarioBase {
   float* old_velocity_toward_checkpoint;
   bool* done;
 
+  int pasedCount = 0;
+  int failedCount = 0;
+
   CheckpointSingleV2(const boost::python::dict &parameters)
   :n(boost::python::extract<int>(parameters["n"])) {
     passThreshold = boost::python::extract<float>(parameters["passThreshold"]);
@@ -91,8 +94,10 @@ class CheckpointSingleV2:public ScenarioBase {
         if (distance[i] < passThreshold) {
           reward[i] = 1;
           checkpoint_array->ResetCheckpoint(i);
+          pasedCount += 1;
         } else {
           reward[i] = -1;
+          failedCount += 1;
         }
         done[i] = true;
         ship_array->Reset(i);
@@ -199,8 +204,8 @@ class CheckpointSingleV2:public ScenarioBase {
       vertex_array->operator[](6 * i + 2).position = ship_position;
       vertex_array->operator[](6 * i + 3).position =
           ship_position + sf::Vector2f(
-              10 * observations[2 * n + i] * sinf(ship_array->angle[i] + observations[3 * n + i]),
-              10 * observations[2 * n + i] * cosf(ship_array->angle[i] + observations[3 * n + i]));
+              3 * observations[2 * n + i] * sinf(ship_array->angle[i] + observations[3 * n + i]),
+              3 * observations[2 * n + i] * cosf(ship_array->angle[i] + observations[3 * n + i]));
 
       //Angular velocity
       vertex_array->operator[](6 * i + 4).position = vertex_array->operator[](6 * i + 3).position;
@@ -208,6 +213,9 @@ class CheckpointSingleV2:public ScenarioBase {
           20 * observations[4 * n + i] * sinf(ship_array->angle[i] + observations[3 * n + i] + M_PI_2f32),
           20 * observations[4 * n + i] * cosf(ship_array->angle[i] + observations[3 * n + i] + M_PI_2f32));
     }
+  }
+  virtual void UpdateText(sf::Text* text){
+    text->setString("Third scenario: \n success: "+std::to_string(pasedCount)+"\n failure: "+std::to_string(failedCount));
   }
 };
 

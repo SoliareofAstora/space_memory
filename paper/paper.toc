@@ -1,0 +1,22 @@
+\babel@toc {polish}{}
+\contentsline {section}{\numberline {1}Abstrakt}{3}{section.1}
+\contentsline {section}{\numberline {2}Wst\IeC {\k e}p}{3}{section.2}
+\contentsline {section}{\numberline {3}\IeC {\'S}rodowisko}{3}{section.3}
+\contentsline {subsection}{\numberline {3.1}Akcje}{4}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Stan}{4}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}Graficzna reprezentacja \IeC {\'s}rodowiska}{4}{subsection.3.3}
+\contentsline {subsection}{\numberline {3.4}Funkcja aktualizacji \IeC {\'s}rodowiska}{5}{subsection.3.4}
+\contentsline {subsection}{\numberline {3.5}Scenariusze i~modelowanie funkcji nagrody}{5}{subsection.3.5}
+\contentsline {section}{\numberline {4}Definicja uczenia ze wzmocnieniem}{6}{section.4}
+\contentsline {section}{\numberline {5}G\IeC {\l }\IeC {\k e}bokie uczenie funkcji warto\IeC {\'s}ci akcji $Q$}{8}{section.5}
+\contentsline {subsection}{\numberline {5.1}Problemy g\IeC {\l }\IeC {\k e}bokiego uczenia ze wzmocnieniem}{8}{subsection.5.1}
+\contentsline {subsection}{\numberline {5.2}Sztuczna sie\IeC {\'c} neuronowa}{9}{subsection.5.2}
+\contentsline {subsection}{\numberline {5.3}Algorytm}{10}{subsection.5.3}
+\contentsline {section}{\numberline {6}System do przeprowadzania eksperyment\IeC {\'o}w}{10}{section.6}
+\contentsline {subsection}{\numberline {6.1}Tworzenie eksperyment\IeC {\'o}w}{10}{subsection.6.1}
+\contentsline {subsection}{\numberline {6.2}Uruchamianie oblicze\IeC {\'n}}{11}{subsection.6.2}
+\contentsline {subsection}{\numberline {6.3}Synchronizacja wynik\IeC {\'o}w}{11}{subsection.6.3}
+\contentsline {section}{\numberline {7}Przeprowadzone eksperymenty i~wyniki treningu}{11}{section.7}
+\contentsline {section}{\numberline {8}Wyniki test\IeC {\'o}w}{15}{section.8}
+\contentsline {section}{\numberline {9}Analiza trzech agent\IeC {\'o}w z~pierwszego \IeC {\'s}rodowiska}{19}{section.9}
+\contentsline {section}{\numberline {10}Podsumowanie}{22}{section.10}

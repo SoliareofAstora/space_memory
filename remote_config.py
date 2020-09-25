@@ -1,6 +1,7 @@
 import subprocess
 
-remotes = ["walter",
+remotes = [
+    # "walter",
            "neptune",
            # "neptune_local"
            ]

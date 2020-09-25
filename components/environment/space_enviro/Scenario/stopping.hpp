@@ -41,6 +41,9 @@ class Stopping:public ScenarioBase {
   float* currentVelocity;
   bool* done;
 
+  int pasedCount = 0;
+  int failedCount = 0;
+
   Stopping(const boost::python::dict &parameters)
       :n(boost::python::extract<int>(parameters["n"])) {
     passThreshold = boost::python::extract<float>(parameters["passThreshold"]);
@@ -89,12 +92,14 @@ class Stopping:public ScenarioBase {
       if (currentVelocity[i] < passThreshold) {
         reward[i] = 1;
         done[i] = true;
+        pasedCount += 1;
         ship_array->ResetWithRandomVelocity(i, minV, maxV, maxAngleV);
         currentVelocity[i] = ship_array->GetVelovityNorm(i);
       }
       if (currentVelocity[i] > resetThreshold ||
       (ship_array->v_angle[i]> resetAngleThreshold|| ship_array->v_angle[i]<-resetAngleThreshold)) {
         reward[i] = -1;
+        failedCount += 1;
         done[i] = true;
         ship_array->ResetWithRandomVelocity(i, minV, maxV, maxAngleV);
         currentVelocity[i] = ship_array->GetVelovityNorm(i);
@@ -202,6 +207,11 @@ class Stopping:public ScenarioBase {
           20 * observations[2 * n + i] * cosf(ship_array->angle[i] + observations[1 * n + i] + M_PI_2f32));
     }
   }
+
+  virtual void UpdateText(sf::Text* text){
+    text->setString("First scenario: \n success: "+std::to_string(pasedCount)+"\n failure: "+std::to_string(failedCount));
+  }
+
 };
 
 } // namespace scenario
